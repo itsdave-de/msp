@@ -1,0 +1,174 @@
+{
+ "allow_rename": 1,
+ "autoname": "format:NET-{network_address}/{cidr_mask}-{it_landscape}",
+ "creation": "2021-03-18 03:13:40.772882",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "network_address",
+  "subnet_mask",
+  "host_min",
+  "host_max",
+  "broadcast",
+  "number_of_hosts",
+  "column_break_4",
+  "cidr_mask",
+  "configuration_section",
+  "default_gateway",
+  "primary_dns",
+  "secondary_dns",
+  "column_break_13",
+  "vlan",
+  "dhcp_server",
+  "1_to_1_nat_network_address",
+  "aditional_data_section",
+  "it_landscape",
+  "description",
+  "customer",
+  "location"
+ ],
+ "fields": [
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "network_address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Network Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cidr_mask",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "CIDR Mask",
+   "options": "24\n25\n26\n27\n28\n29\n30\n31\n32",
+   "reqd": 1
+  },
+  {
+   "fieldname": "subnet_mask",
+   "fieldtype": "Data",
+   "label": "Subnet Mask"
+  },
+  {
+   "fieldname": "broadcast",
+   "fieldtype": "Data",
+   "label": "Broadcast",
+   "read_only": 1
+  },
+  {
+   "fieldname": "host_min",
+   "fieldtype": "Data",
+   "label": "Host min",
+   "read_only": 1
+  },
+  {
+   "fieldname": "host_max",
+   "fieldtype": "Data",
+   "label": "Host max",
+   "read_only": 1
+  },
+  {
+   "fieldname": "number_of_hosts",
+   "fieldtype": "Data",
+   "label": "number of Hosts",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vlan",
+   "fieldtype": "Data",
+   "label": "VLAN"
+  },
+  {
+   "fieldname": "default_gateway",
+   "fieldtype": "Data",
+   "label": "Default Gateway"
+  },
+  {
+   "fieldname": "primary_dns",
+   "fieldtype": "Data",
+   "label": "Primary DNS"
+  },
+  {
+   "fieldname": "secondary_dns",
+   "fieldtype": "Data",
+   "label": "Secondary DNS"
+  },
+  {
+   "fieldname": "dhcp_server",
+   "fieldtype": "Data",
+   "label": "DHCP Server"
+  },
+  {
+   "fieldname": "1_to_1_nat_network_address",
+   "fieldtype": "Data",
+   "label": "1 to 1 NAT Network Address"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "IT Landscape",
+   "options": "IT Landscape",
+   "reqd": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "configuration_section",
+   "fieldtype": "Section Break",
+   "label": "Configuration"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "aditional_data_section",
+   "fieldtype": "Section Break",
+   "label": "Aditional Data"
+  }
+ ],
+ "modified": "2021-03-24 00:12:13.023565",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IP Network",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_views": 1
+}

@@ -1,0 +1,60 @@
+{
+ "autoname": "ITCL-.#####",
+ "creation": "2021-03-18 02:30:47.686842",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "customer",
+  "it_landscape",
+  "completed_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "completed_on",
+   "fieldtype": "Datetime",
+   "label": "Completed on"
+  }
+ ],
+ "modified": "2021-03-18 02:30:47.686842",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Checklist",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,62 @@
+{
+ "autoname": "ITCON-.#####",
+ "creation": "2021-03-18 02:54:42.727620",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "customer",
+  "it_landscape",
+  "it_contract_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "it_contract_type",
+   "fieldtype": "Link",
+   "label": "IT Contract Type",
+   "options": "IT Contract Type"
+  }
+ ],
+ "modified": "2021-03-23 21:04:54.623670",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Contract",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "title",
+ "track_changes": 1
+}

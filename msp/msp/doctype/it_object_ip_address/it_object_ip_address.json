@@ -1,0 +1,44 @@
+{
+ "creation": "2021-03-18 03:40:19.147899",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ip_address",
+  "interface_caption",
+  "main_address"
+ ],
+ "fields": [
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "IP Address",
+   "options": "IP Address"
+  },
+  {
+   "fieldname": "interface_caption",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Interface Caption"
+  },
+  {
+   "default": "0",
+   "fieldname": "main_address",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Main Address"
+  }
+ ],
+ "istable": 1,
+ "modified": "2021-03-18 03:46:44.712861",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Object IP Address",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,149 @@
+{
+ "autoname": "ITO-.#####",
+ "creation": "2021-03-18 01:33:25.740040",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "overview_section",
+  "title",
+  "main_ip",
+  "link",
+  "status",
+  "column_break_4",
+  "type",
+  "item",
+  "customer",
+  "it_landscape",
+  "location",
+  "description_section",
+  "description",
+  "image",
+  "network_config_section",
+  "ip_adresses"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Title"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "network_config_section",
+   "fieldtype": "Section Break",
+   "label": "Advanced Network Config"
+  },
+  {
+   "fieldname": "overview_section",
+   "fieldtype": "Section Break",
+   "label": "Overview"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Link",
+   "label": "Type",
+   "options": "IT Object Type"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "main_ip",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Main IP Address",
+   "options": "IP Address"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "in Production\nImplementation\nin Maintenance\nDecommissioned"
+  },
+  {
+   "fieldname": "link",
+   "fieldtype": "Link",
+   "label": "Main Admin Account",
+   "options": "IT User Account"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "ip_adresses",
+   "fieldtype": "Table",
+   "label": "IP Adresses",
+   "options": "IT Object IP Address"
+  }
+ ],
+ "image_field": "image",
+ "modified": "2021-03-23 21:28:29.467402",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Object",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "title, main_ip, item, description",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "title",
+ "track_changes": 1,
+ "track_views": 1
+}

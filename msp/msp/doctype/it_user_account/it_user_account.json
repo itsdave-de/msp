@@ -1,0 +1,80 @@
+{
+ "autoname": "ITUACC-.#####",
+ "creation": "2021-03-18 02:43:33.591837",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "username",
+  "password",
+  "domain",
+  "account_type",
+  "it_landscape",
+  "upn"
+ ],
+ "fields": [
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Username"
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
+  },
+  {
+   "fieldname": "account_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Account Type",
+   "options": "IT User Account Type"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "domain",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Domain"
+  },
+  {
+   "fieldname": "upn",
+   "fieldtype": "Data",
+   "label": "UPN"
+  }
+ ],
+ "modified": "2021-03-24 00:27:17.507476",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT User Account",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "upn",
+ "track_changes": 1
+}
