@@ -98,7 +98,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "in Production\nImplementation\nin Maintenance\nDecommissioned"
+   "options": "in Production\nImplementation\nin Maintenance\nfailed\nDecommissioned"
   },
   {
    "fieldname": "link",
@@ -120,7 +120,7 @@
   }
  ],
  "image_field": "image",
- "modified": "2021-03-23 21:28:29.467402",
+ "modified": "2021-03-24 13:25:22.542341",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
