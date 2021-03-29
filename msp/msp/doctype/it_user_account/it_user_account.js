@@ -4,6 +4,7 @@
 frappe.ui.form.on('IT User Account', {
 	refresh: function(frm) {
         frm.add_custom_button('Copy PW', () => frm.trigger('get_pw'));
+        frm.add_custom_button('Generate PW', () => frm.trigger('generate_new_pw'));
 
     },
     get_pw: function(frm) {
@@ -13,6 +14,16 @@ frappe.ui.form.on('IT User Account', {
         },
         (r) => {
 			frm.events.CopyToClipboard(r.message)
+        }
+        );
+    },
+    generate_new_pw: function(frm) {
+        frm.call('generate_new_pw', {
+        },
+        (r) => {
+			frm.events.CopyToClipboard(r.message);
+            frm.set_value()("password", r.message);
+            frm.save()
         }
         );
     },

@@ -46,7 +46,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "CIDR Mask",
-   "options": "24\n25\n26\n27\n28\n29\n30\n31\n32",
+   "options": "24\n16\n12\n8\n32\n31\n30\n29\n28\n27\n26\n25\n23\n22\n21\n20\n19\n18\n17\n15\n14\n13\n11\n10\n9\n7\n6\n5\n4\n3\n2\n1",
    "reqd": 1
   },
   {
@@ -147,7 +147,7 @@
    "label": "Aditional Data"
   }
  ],
- "modified": "2021-03-24 00:12:13.023565",
+ "modified": "2021-03-29 15:19:10.791248",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IP Network",

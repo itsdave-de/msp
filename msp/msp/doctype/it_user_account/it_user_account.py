@@ -5,6 +5,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from passwordgenerator import pwgenerator
 
 class ITUserAccount(Document):
 
@@ -23,3 +24,10 @@ class ITUserAccount(Document):
         self.save()
         """
         return(self.get_password("password"))
+    
+    @frappe.whitelist()
+    def generate_new_pw(self):
+        new_password = pwgenerator.generate()
+        print(new_password)
+        return(new_password)
+
