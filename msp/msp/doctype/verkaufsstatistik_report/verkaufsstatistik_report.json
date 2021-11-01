@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "autoname": "VKSR-.#####",
+ "creation": "2021-10-26 11:58:38.201900",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "from_date",
+  "preset",
+  "artikel",
+  "column_break_4",
+  "to_date",
+  "report",
+  "report_section",
+  "report_basierend_auf",
+  "gruppiert_nach",
+  "zeiteinheit_section",
+  "resolution",
+  "ausgabe_section",
+  "report_ausgabe"
+ ],
+ "fields": [
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "\u00a0From Date"
+  },
+  {
+   "fieldname": "preset",
+   "fieldtype": "Select",
+   "label": "Preset",
+   "options": "\nLast Week\nLast Month\nLast Year\nYTD"
+  },
+  {
+   "fieldname": "artikel",
+   "fieldtype": "Table MultiSelect",
+   "label": "Artikel",
+   "options": "Verkaufsstatistik Report Artikel"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "report",
+   "fieldtype": "Button",
+   "label": "Report",
+   "options": "do_report"
+  },
+  {
+   "fieldname": "resolution",
+   "fieldtype": "Select",
+   "label": "Auswahl",
+   "options": "period\ndaily\nweekly\nmonthly\nyearly\nemployee",
+   "translatable": 1
+  },
+  {
+   "fieldname": "ausgabe_section",
+   "fieldtype": "Section Break",
+   "label": "Ausgabe"
+  },
+  {
+   "fieldname": "report_ausgabe",
+   "fieldtype": "Text Editor",
+   "label": "Report Ausgabe"
+  },
+  {
+   "fieldname": "report_section",
+   "fieldtype": "Section Break",
+   "label": " Report"
+  },
+  {
+   "fieldname": "report_basierend_auf",
+   "fieldtype": "Select",
+   "label": " Report basierend auf",
+   "options": "Rechnung\nLieferschein"
+  },
+  {
+   "fieldname": "gruppiert_nach",
+   "fieldtype": "Select",
+   "label": "Gruppiert nach",
+   "options": "Artikel\nMitarbeiter"
+  },
+  {
+   "fieldname": "zeiteinheit_section",
+   "fieldtype": "Section Break",
+   "label": "Zeiteinheit"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-10-26 16:02:19.458345",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Verkaufsstatistik Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
