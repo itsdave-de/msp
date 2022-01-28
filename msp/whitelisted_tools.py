@@ -3,7 +3,7 @@ from datetime import datetime
 
 @frappe.whitelist()
 def get_ssh_keys_for_landscape(landscape):
-    keys = frappe.get_all("SSH Public Key", filters={"it_landscape": landscape, "active": 1})
+    keys = frappe.get_all("SSH Public Key", filters={"it_landscape": landscape, "status": "active"})
     print(keys)
     if len(keys) >= 1:
         keys_str = ""
