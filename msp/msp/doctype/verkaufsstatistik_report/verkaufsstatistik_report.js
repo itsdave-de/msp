@@ -8,15 +8,15 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
         frm.trigger('preset');
         
         },
-    setup: function(frm) {
-        frm.set_query("artikel",function(){
-            return {
-                filters: [
-                    ["Item","item_group", "in", ["Anwendungsentwicklung", "Arbeitszeiten Techniker"]]
-                ]
-            }
-        });
-    },
+    // setup: function(frm) {
+    //     frm.set_query("artikel",function(){
+    //         return {
+    //             filters: [
+    //                 ["Item","item_group", "in", ["Anwendungsentwicklung", "Arbeitszeiten Techniker"]]
+    //             ]
+    //         }
+    //     });
+    // },
     preset: function(frm) {
         if (!frm.doc.preset) {
             // No preset selected. Allow manual selection of dates.

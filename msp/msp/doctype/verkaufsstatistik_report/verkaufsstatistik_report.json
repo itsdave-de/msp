@@ -68,7 +68,8 @@
   {
    "fieldname": "report_ausgabe",
    "fieldtype": "Text Editor",
-   "label": "Report Ausgabe"
+   "label": "Report Ausgabe",
+   "read_only": 1
   },
   {
    "fieldname": "report_section",
@@ -95,7 +96,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-26 16:02:19.458345",
+ "modified": "2022-03-11 08:32:22.749064",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Verkaufsstatistik Report",
