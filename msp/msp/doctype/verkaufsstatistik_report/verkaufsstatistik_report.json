@@ -15,6 +15,9 @@
   "report_section",
   "report_basierend_auf",
   "gruppiert_nach",
+  "section_break_10",
+  "anzahl",
+  "preis",
   "zeiteinheit_section",
   "resolution",
   "ausgabe_section",
@@ -57,7 +60,7 @@
    "fieldname": "resolution",
    "fieldtype": "Select",
    "label": "Auswahl",
-   "options": "period\ndaily\nweekly\nmonthly\nyearly\nemployee",
+   "options": "period\ndaily\nweekly\nmonthly\nyearly",
    "translatable": 1
   },
   {
@@ -92,11 +95,27 @@
    "fieldname": "zeiteinheit_section",
    "fieldtype": "Section Break",
    "label": "Zeiteinheit"
+  },
+  {
+   "default": "0",
+   "fieldname": "anzahl",
+   "fieldtype": "Check",
+   "label": "Anzahl"
+  },
+  {
+   "default": "0",
+   "fieldname": "preis",
+   "fieldtype": "Check",
+   "label": "Preis"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-03-11 08:32:22.749064",
+ "modified": "2022-03-14 16:25:40.030362",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Verkaufsstatistik Report",
