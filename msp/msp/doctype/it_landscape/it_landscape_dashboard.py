@@ -9,7 +9,7 @@ def get_data():
 		'transactions': [
 			{
 				'label': _('Objects'),
-				'items': ['IT Object', 'IT User Account', 'IP Network', 'IP Address' ]
+				'items': ['IT Object', 'IT User Account', 'IP Network', 'IP Address', 'SSH Public Key' ]
 			},
 			{
 				'label': _('Processes'),

@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_rename": 1,
  "autoname": "field:abbreviation",
  "creation": "2021-03-18 01:39:06.814363",
@@ -9,7 +10,9 @@
   "title",
   "abbreviation",
   "customer",
-  "description"
+  "customer_name",
+  "description",
+  "section_break_6"
  ],
  "fields": [
   {
@@ -39,9 +42,22 @@
    "in_standard_filter": 1,
    "label": "Abbreviation",
    "unique": 1
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
   }
  ],
- "modified": "2021-03-24 00:34:10.605746",
+ "links": [],
+ "modified": "2022-01-27 23:36:00.711074",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",

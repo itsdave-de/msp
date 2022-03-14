@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "ITO-.#####",
  "creation": "2021-03-18 01:33:25.740040",
  "doctype": "DocType",
@@ -120,7 +121,8 @@
   }
  ],
  "image_field": "image",
- "modified": "2021-03-24 13:25:22.542341",
+ "links": [],
+ "modified": "2022-01-27 22:39:21.190206",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
@@ -140,7 +142,7 @@
   }
  ],
  "quick_entry": 1,
- "search_fields": "title, main_ip, item, description",
+ "search_fields": "title, main_ip, item",
  "sort_field": "modified",
  "sort_order": "DESC",
  "title_field": "title",
