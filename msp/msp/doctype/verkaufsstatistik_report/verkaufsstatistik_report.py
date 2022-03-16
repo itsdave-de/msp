@@ -9,7 +9,7 @@ from datetime import datetime as dt
 from pprint import pprint
 import pandas as pd
 import numpy as np
-from retail.retail.doctype.flex_report.flex_report import pivot_table
+
 
 
 class VerkaufsstatistikReport(Document):
@@ -95,13 +95,18 @@ class VerkaufsstatistikReport(Document):
 			values.append("Anzahl")
 		if self.preis == 1:
 			values.append("Preis")
+		if len(values) == 0:
+			frappe.msgprint("Bitte Vergleichswert auswählen")
+
 		if self.gruppiert_nach == "Artikel":
 			df_pivot =df.pivot_table(index=date, columns="Item", values = values, aggfunc = np.sum, fill_value=0)
 		else:
 			df_pivot =df.pivot_table(index=date, columns="Mitarbeiter", values = values, aggfunc = np.sum, fill_value=0)
 		
-		
-		
+		# df_pivot.columns = df_pivot.columns.droplevel(0) #remove amount
+		# df_pivot.columns.name = None               #remove categories
+		# df_pivot = df_pivot.reset_index()                #index to columns
+		# print(df_pivot)
 		# #df_grouped = df.groupby(filters).agg({'Anzahl': ['sum']}).reset_index()
 		# if self.anzahl == 1:
 		# 	df['Item']=df['Item'].map('{} Anzahl'.format)
@@ -120,11 +125,11 @@ class VerkaufsstatistikReport(Document):
 		a = df_pivot.drop(date,axis=1).astype(float)
 		a[date] = df_pivot[date]
 		a.set_index(date, inplace = True)
-		c = a.columns.tolist()
+		#c = a.columns.tolist()
 		# = [lambda x : x.replace('(', '').replace(')','').replace("'",'') for x in c]
 																					
-		print(c)
-		print(a)
+		
+		#print(a)
 		
 	
 		
