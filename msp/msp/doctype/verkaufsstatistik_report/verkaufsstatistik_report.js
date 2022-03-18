@@ -4,6 +4,14 @@
 frappe.ui.form.on('Verkaufsstatistik Report', {
 	refresh: function(frm) {
         
+        frm.add_custom_button('Generate Excel Sheet', () => frm.trigger('generate_excel_sheet'));
+        frm.add_custom_button('Generate Report', () => frm.trigger('generate_report'));
+		},
+		generate_report: function(frm) {
+			frm.call('generate_report', {}, () => frm.reload_doc());
+		},
+		generate_excel_sheet: function(frm) {
+			frm.call('generate_excel_sheet', {}, () => frm.reload_doc());
         moment.locale("de") // weeks start on monday
         frm.trigger('preset');
         
@@ -17,6 +25,7 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
     //         }
     //     });
     // },
+
     preset: function(frm) {
         if (!frm.doc.preset) {
             // No preset selected. Allow manual selection of dates.
@@ -35,52 +44,9 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
                 frm.events.set_dates(frm, frappe.datetime.year_to_date());
             }
         }
-
-        
     },
-    
-    from_date: (frm) => frm.trigger('set_to_date'),
-    set_to_date: function (frm) {
-        
-        const len_in_days = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), 'days');
-        let to_date = moment(frm.doc.from_date).add(len_in_days, 'days');
-
-        if (frm.doc.preset && frm.doc.preset !== 'YTD') {
-            // to_date is equal to the end of the week / month / year of from_date
-            const time_map = {
-                'Last Week': 'week',
-                'Last Month': 'month',
-                'Last Year': 'year',
-            }
-            to_date = moment(frm.doc.from_date).endOf(time_map[frm.doc.preset]);
-        }
-
-        
+    set_dates: function(frm, date_range) {
+        frm.set_value('from_date', date_range.start);
+        frm.set_value('to_date', date_range.end);
     },
-    set_from_date: function(frm) {
-        
-
-        if (frm.doc.to_previous_year) {
-            frm.toggle_enable(['from_date'], false);
-            let from_date = moment(frm.doc.from_date).subtract(1, 'year');
-
-            if (frm.doc.preset == 'Last Week') {
-                const week = moment(frm.doc.from_date).format('WW');
-                const previous_year = (moment(frm.doc.from_date).year() - 1).toString();
-                from_date = moment(`${previous_year}W${week}`);
-            }
-
-            frm.set_value('from_date', from_date.format());
-        } else {
-            frm.toggle_enable(['from_date'], true);
-		}
-	},
-	
-	set_dates: function(frm, date_range) {
-	frm.set_value('from_date', date_range.start);
-	frm.set_value('to_date', date_range.end);	
-    },
-    
-    
-});
-
+    });
