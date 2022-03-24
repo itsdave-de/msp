@@ -3,17 +3,20 @@
 
 frappe.ui.form.on('Verkaufsstatistik Report', {
 	refresh: function(frm) {
+        moment.locale("de") // weeks start on monday
+        frm.trigger('preset');
         
         frm.add_custom_button('Generate Excel Sheet', () => frm.trigger('generate_excel_sheet'));
         frm.add_custom_button('Generate Report', () => frm.trigger('generate_report'));
 		},
 		generate_report: function(frm) {
 			frm.call('generate_report', {}, () => frm.reload_doc());
+        
+            
 		},
 		generate_excel_sheet: function(frm) {
 			frm.call('generate_excel_sheet', {}, () => frm.reload_doc());
-        moment.locale("de") // weeks start on monday
-        frm.trigger('preset');
+        
         
         },
     // setup: function(frm) {
