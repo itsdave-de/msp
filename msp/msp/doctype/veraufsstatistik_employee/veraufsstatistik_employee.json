@@ -1,28 +1,29 @@
 {
  "actions": [],
- "creation": "2021-10-26 11:56:57.811638",
+ "allow_rename": 1,
+ "creation": "2022-03-17 13:43:21.255556",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "item"
+  "employee"
  ],
  "fields": [
   {
-   "fieldname": "item",
+   "fieldname": "employee",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Item",
-   "options": "Item"
+   "label": "Employee",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-03-17 11:51:20.508506",
+ "modified": "2022-03-17 13:43:21.255556",
  "modified_by": "Administrator",
  "module": "MSP",
- "name": "Verkaufsstatistik Report Artikel",
+ "name": "Veraufsstatistik Employee",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

@@ -8,16 +8,19 @@
  "field_order": [
   "from_date",
   "preset",
-  "artikel",
   "column_break_4",
   "to_date",
-  "report",
+  "section_break_6",
+  "gruppiert",
+  "artikel",
+  "employee",
   "report_section",
   "report_basierend_auf",
   "gruppiert_nach",
   "section_break_10",
   "anzahl",
   "preis",
+  "summenzeile",
   "zeiteinheit_section",
   "resolution",
   "ausgabe_section",
@@ -36,6 +39,7 @@
    "options": "\nLast Week\nLast Month\nLast Year\nYTD"
   },
   {
+   "depends_on": "eval:doc.gruppiert==\"Item\"",
    "fieldname": "artikel",
    "fieldtype": "Table MultiSelect",
    "label": "Artikel",
@@ -49,12 +53,6 @@
    "fieldname": "to_date",
    "fieldtype": "Date",
    "label": "To Date"
-  },
-  {
-   "fieldname": "report",
-   "fieldtype": "Button",
-   "label": "Report",
-   "options": "do_report"
   },
   {
    "fieldname": "resolution",
@@ -89,7 +87,7 @@
    "fieldname": "gruppiert_nach",
    "fieldtype": "Select",
    "label": "Gruppiert nach",
-   "options": "Artikel\nMitarbeiter"
+   "options": "Artikel\nMitarbeiter\nAlle"
   },
   {
    "fieldname": "zeiteinheit_section",
@@ -110,12 +108,36 @@
   },
   {
    "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Parameter"
+  },
+  {
+   "fieldname": "section_break_6",
    "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "summenzeile",
+   "fieldtype": "Check",
+   "label": "Summenzeile"
+  },
+  {
+   "depends_on": "eval:doc.gruppiert==\"Employee\"",
+   "fieldname": "employee",
+   "fieldtype": "Table MultiSelect",
+   "label": "Employee",
+   "options": "Veraufsstatistik Employee"
+  },
+  {
+   "fieldname": "gruppiert",
+   "fieldtype": "Select",
+   "label": "Auswahl",
+   "options": "Item\nEmployee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-03-14 16:25:40.030362",
+ "modified": "2022-03-18 13:14:49.834111",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Verkaufsstatistik Report",
