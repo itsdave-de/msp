@@ -57,7 +57,7 @@
   }
  ],
  "links": [],
- "modified": "2022-01-27 23:36:00.711074",
+ "modified": "2022-04-20 14:36:03.078442",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",
@@ -72,6 +72,29 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
    "share": 1,
    "write": 1
   }
