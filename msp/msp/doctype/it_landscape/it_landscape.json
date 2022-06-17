@@ -76,7 +76,7 @@
    "fieldname": "operating_mode",
    "fieldtype": "Select",
    "label": "Operating Mode",
-   "options": "\nSLA\nHosting\nown IT with Support Contract\nself maintained"
+   "options": "\nSLA\nHosting\nown IT with Support Contract\nself maintained\nneglected"
   },
   {
    "fieldname": "description_section",
@@ -102,7 +102,7 @@
  ],
  "image_field": "landscape_image",
  "links": [],
- "modified": "2022-06-17 11:04:02.866184",
+ "modified": "2022-06-17 12:03:50.957612",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",
