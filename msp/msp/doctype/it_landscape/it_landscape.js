@@ -4,10 +4,10 @@
 frappe.ui.form.on('IT Landscape', {
 	refresh: function(frm) {
 			frm.add_custom_button('Copy SSH Keys', () => frm.trigger('copy_ssh_keys'), 'Actions');
-			if (frm.doc.ticket_system_link != "") {
+			if (frm.doc.ticket_system_link) {
 				frm.add_custom_button('Open Ticket System', () => frm.trigger('open_ticket_system'), 'Actions');
 			};
-			if (frm.doc.monitoring_link != "") {
+			if (frm.doc.monitoring_link) {
 				frm.add_custom_button('Open Monitoring', () => frm.trigger('open_monitoring'), 'Actions');
 			}
 		},
