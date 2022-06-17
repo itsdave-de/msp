@@ -8,11 +8,18 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "abbreviation",
   "customer",
   "customer_name",
+  "abbreviation",
+  "column_break_5",
+  "operating_mode",
+  "contract",
+  "description_section",
   "description",
-  "section_break_6"
+  "section_break_6",
+  "landscape_image",
+  "monitoring_link",
+  "ticket_system_link"
  ],
  "fields": [
   {
@@ -53,11 +60,49 @@
   },
   {
    "fieldname": "section_break_6",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Aditional Data"
+  },
+  {
+   "fieldname": "landscape_image",
+   "fieldtype": "Attach Image",
+   "label": "Landscape Image"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operating_mode",
+   "fieldtype": "Select",
+   "label": "Operating Mode",
+   "options": "\nSLA\nHosting\nown IT with Support Contract\nself maintained"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "contract",
+   "fieldtype": "Link",
+   "label": "Contract",
+   "options": "IT Contract"
+  },
+  {
+   "fieldname": "monitoring_link",
+   "fieldtype": "Data",
+   "label": "Monitoring Link"
+  },
+  {
+   "fieldname": "ticket_system_link",
+   "fieldtype": "Data",
+   "label": "Ticket System Link"
   }
  ],
+ "image_field": "landscape_image",
  "links": [],
- "modified": "2022-04-20 14:36:03.078442",
+ "modified": "2022-06-17 11:04:02.866184",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",
