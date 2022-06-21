@@ -21,7 +21,10 @@
   "description",
   "image",
   "network_config_section",
-  "ip_adresses"
+  "ip_adresses",
+  "external_links_section",
+  "monitoring_link",
+  "admin_interface_link"
  ],
  "fields": [
   {
@@ -118,11 +121,27 @@
    "fieldtype": "Table",
    "label": "IP Adresses",
    "options": "IT Object IP Address"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "external_links_section",
+   "fieldtype": "Section Break",
+   "label": "External Links"
+  },
+  {
+   "fieldname": "monitoring_link",
+   "fieldtype": "Data",
+   "label": "Monitoring Link"
+  },
+  {
+   "fieldname": "admin_interface_link",
+   "fieldtype": "Data",
+   "label": "Admin Interface Link"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2022-01-27 22:39:21.190206",
+ "modified": "2022-06-17 11:43:07.550361",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
@@ -137,6 +156,29 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
    "share": 1,
    "write": 1
   }

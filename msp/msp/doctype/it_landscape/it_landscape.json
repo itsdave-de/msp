@@ -8,11 +8,18 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "abbreviation",
   "customer",
   "customer_name",
+  "abbreviation",
+  "column_break_5",
+  "operating_mode",
+  "contract",
+  "description_section",
   "description",
-  "section_break_6"
+  "section_break_6",
+  "landscape_image",
+  "monitoring_link",
+  "ticket_system_link"
  ],
  "fields": [
   {
@@ -53,11 +60,49 @@
   },
   {
    "fieldname": "section_break_6",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Aditional Data"
+  },
+  {
+   "fieldname": "landscape_image",
+   "fieldtype": "Attach Image",
+   "label": "Landscape Image"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operating_mode",
+   "fieldtype": "Select",
+   "label": "Operating Mode",
+   "options": "\nSLA\nHosting\nown IT with Support Contract\nself maintained\nneglected"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "contract",
+   "fieldtype": "Link",
+   "label": "Contract",
+   "options": "IT Contract"
+  },
+  {
+   "fieldname": "monitoring_link",
+   "fieldtype": "Data",
+   "label": "Monitoring Link"
+  },
+  {
+   "fieldname": "ticket_system_link",
+   "fieldtype": "Data",
+   "label": "Ticket System Link"
   }
  ],
+ "image_field": "landscape_image",
  "links": [],
- "modified": "2022-01-27 23:36:00.711074",
+ "modified": "2022-06-17 12:03:50.957612",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",
@@ -72,6 +117,29 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
    "share": 1,
    "write": 1
   }

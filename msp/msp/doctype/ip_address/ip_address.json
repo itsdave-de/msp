@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "allow_rename": 1,
  "autoname": "format:IP-{ip_address}-{it_landscape}",
  "creation": "2021-03-18 03:15:11.235106",
@@ -53,7 +54,8 @@
    "reqd": 1
   }
  ],
- "modified": "2021-03-24 00:15:34.341218",
+ "links": [],
+ "modified": "2022-06-17 11:21:47.850521",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IP Address",
@@ -68,6 +70,30 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
    "share": 1,
    "write": 1
   }

@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "ITCON-.#####",
  "creation": "2021-03-18 02:54:42.727620",
  "doctype": "DocType",
@@ -8,7 +9,14 @@
   "title",
   "customer",
   "it_landscape",
-  "it_contract_type"
+  "it_contract_type",
+  "sla_details_section",
+  "html_10",
+  "reaction_time_emergeny",
+  "reaction_time_urgent",
+  "reaction_time_issue",
+  "reaction_time_change",
+  "column_break_11"
  ],
  "fields": [
   {
@@ -33,9 +41,44 @@
    "fieldtype": "Link",
    "label": "IT Contract Type",
    "options": "IT Contract Type"
+  },
+  {
+   "fieldname": "sla_details_section",
+   "fieldtype": "Section Break",
+   "label": "SLA Details"
+  },
+  {
+   "fieldname": "reaction_time_emergeny",
+   "fieldtype": "Data",
+   "label": "Reaction Time Emergeny"
+  },
+  {
+   "fieldname": "reaction_time_urgent",
+   "fieldtype": "Data",
+   "label": "Reaction Time Urgent"
+  },
+  {
+   "fieldname": "reaction_time_issue",
+   "fieldtype": "Data",
+   "label": "Reaction Time Issue"
+  },
+  {
+   "fieldname": "reaction_time_change",
+   "fieldtype": "Data",
+   "label": "Reaction Time Change"
+  },
+  {
+   "fieldname": "html_10",
+   "fieldtype": "HTML",
+   "options": "Reaktion Times May be written Hours like \"4H\"  or in Business Days Like \"1BD\""
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
   }
  ],
- "modified": "2021-03-23 21:04:54.623670",
+ "links": [],
+ "modified": "2022-06-17 11:19:34.968766",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Contract",
@@ -50,6 +93,29 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
    "share": 1,
    "write": 1
   }

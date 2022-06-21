@@ -16,7 +16,7 @@ app_license = "GPLv3"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/msp/css/msp.css"
-# app_include_js = "/assets/msp/js/msp.js"
+app_include_js = "/assets/msp/js/customer_quick_entry.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/msp/css/msp.css"
@@ -79,13 +79,11 @@ app_license = "GPLv3"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Customer": {
+		"on_update": "msp.msp.customer_quick_entry.custom_customer_info"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
