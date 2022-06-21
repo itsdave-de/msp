@@ -42,30 +42,30 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
                     beforeOneWeek2 = new Date(beforeOneWeek),
                     day = beforeOneWeek.getDay(),
                     diffToMonday = beforeOneWeek.getDate() - day + (day === 0 ? -6 : 1),
-                    lastMonday = new Date(beforeOneWeek.setDate(diffToMonday)),
-                    lastSunday = new Date(beforeOneWeek2.setDate(diffToMonday + 6))
+                    lastMonday = new Date(beforeOneWeek.setDate(diffToMonday)).toISOString().split('T')[0],
+                    lastSunday = new Date(beforeOneWeek2.setDate(diffToMonday + 6)).toISOString().split('T')[0]
                 console.log(lastMonday,lastSunday)
                 frm.set_value('from_date',lastMonday)
                 frm.set_value('to_date',lastSunday)
             } else if (frm.doc.preset === 'Last Month') {
                 let date = new Date(),
-                    previousMonthFirstDay = new Date(date.getFullYear(), date.getMonth() - 1, 1),
-                    previousMonthLastDay = new Date(date.getFullYear(), date.getMonth() , 0)
+                    previousMonthFirstDay = new Date(date.getFullYear(), date.getMonth()- 1, 2).toISOString().split('T')[0],
+                    previousMonthLastDay = new Date(date.getFullYear(), date.getMonth() , 1).toISOString().split('T')[0]
                     console.log(previousMonthFirstDay,previousMonthLastDay)
                 frm.set_value('from_date',previousMonthFirstDay)
                 frm.set_value('to_date',previousMonthLastDay)
             } else if (frm.doc.preset === 'Last Year') {
                 let currentYear = new Date().getFullYear(),
                     previousYear =  currentYear-1,
-                    firstDay = new Date(previousYear, 0, 1),
-                    lastDay = new Date(previousYear, 11, 31)
+                    firstDay = new Date(previousYear, 0, 2).toISOString().split('T')[0],
+                    lastDay = new Date(currentYear, 0, 1).toISOString().split('T')[0]
                 console.log(lastDay);
                 frm.set_value('from_date',firstDay)
                 frm.set_value('to_date',lastDay)
             } else if (frm.doc.preset === 'YTD') {
                 let currentYear = new Date().getFullYear(),
-                    firstDaySY = new Date(currentYear, 0, 1),
-                    today = new Date();
+                    firstDaySY = new Date(currentYear, 0, 2).toISOString().split('T')[0],
+                    today = new Date().toISOString().split('T')[0];
                 frm.set_value('from_date',firstDaySY);
                 frm.set_value('to_date',today);
                 
