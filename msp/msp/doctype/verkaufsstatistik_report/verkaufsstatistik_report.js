@@ -28,6 +28,7 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
     //         }
     //     });
     // },
+    
 
     preset: function(frm) {
         if (!frm.doc.preset) {
@@ -38,18 +39,51 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
             frm.toggle_enable(['from_date', 'to_date'], false);
 
             if (frm.doc.preset === 'Last Week') {
-                frm.events.set_dates(frm, frappe.datetime.previous("week"));
+                let beforeOneWeek = new Date(new Date().getTime() - 60 * 60 * 24 * 7 * 1000),
+                    beforeOneWeek2 = new Date(beforeOneWeek),
+                    day = beforeOneWeek.getDay(),
+                    diffToMonday = beforeOneWeek.getDate() - day + (day === 0 ? -6 : 1),
+                    lastMonday = convertDate(new Date(beforeOneWeek.setDate(diffToMonday))),
+                    lastSunday = convertDate(new Date(beforeOneWeek2.setDate(diffToMonday + 6)))
+                console.log(lastMonday,lastSunday)
+                frm.set_value('from_date',lastMonday)
+                frm.set_value('to_date',lastSunday)
             } else if (frm.doc.preset === 'Last Month') {
-                frm.events.set_dates(frm, frappe.datetime.previous("month"));
+                let date = new Date(),
+                    previousMonthFirstDay = convertDate(new Date(date.getFullYear(), date.getMonth()- 1, 1)),
+                    previousMonthLastDay = convertDate(new Date(date.getFullYear(), date.getMonth() , 0))
+                    console.log(previousMonthFirstDay,previousMonthLastDay)
+                frm.set_value('from_date',previousMonthFirstDay)
+                frm.set_value('to_date',previousMonthLastDay)
             } else if (frm.doc.preset === 'Last Year') {
-                frm.events.set_dates(frm, frappe.datetime.previous("year"));
+                let currentYear = new Date().getFullYear(),
+                    previousYear =  currentYear-1,
+                    firstDay = convertDate(new Date(previousYear, 0,1 )),
+                    lastDay = convertDate(new Date(previousYear, 11, 31))
+                console.log(lastDay);
+                frm.set_value('from_date',firstDay)
+                frm.set_value('to_date',lastDay)
             } else if (frm.doc.preset === 'YTD') {
-                frm.events.set_dates(frm, frappe.datetime.year_to_date());
+                let currentYear = new Date().getFullYear(),
+                    firstDaySY = convertDate(new Date(currentYear, 0, 1)),
+                    today = convertDate(new Date())
+                frm.set_value('from_date',firstDaySY);
+                frm.set_value('to_date',today);
+                
             }
         }
     },
-    set_dates: function(frm, date_range) {
-        frm.set_value('from_date', date_range.start);
-        frm.set_value('to_date', date_range.end);
-    },
+    
     });
+
+    
+    function convertDate(date) {
+        let yyyy = date.getFullYear().toString(),
+            mm = (date.getMonth()+1).toString(),
+            dd  = date.getDate().toString(),
+            mmChars = mm.split(''),
+            ddChars = dd.split('')
+    
+        return yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
+        }
+  
