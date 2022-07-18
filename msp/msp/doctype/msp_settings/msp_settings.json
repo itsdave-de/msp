@@ -1,0 +1,52 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-07-18 10:23:49.010330",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "open_it_cockpit_integration_section",
+  "oitc_url",
+  "oitc_api_key"
+ ],
+ "fields": [
+  {
+   "fieldname": "open_it_cockpit_integration_section",
+   "fieldtype": "Section Break",
+   "label": "Open IT Cockpit Integration"
+  },
+  {
+   "fieldname": "oitc_url",
+   "fieldtype": "Data",
+   "label": "OITC URL"
+  },
+  {
+   "fieldname": "oitc_api_key",
+   "fieldtype": "Password",
+   "label": "OITC API Key"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2022-07-18 10:23:49.010330",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "MSP Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

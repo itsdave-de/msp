@@ -23,8 +23,9 @@
   "network_config_section",
   "ip_adresses",
   "external_links_section",
+  "admin_interface_link",
   "monitoring_link",
-  "admin_interface_link"
+  "oitc_host_uuid"
  ],
  "fields": [
   {
@@ -126,7 +127,7 @@
    "collapsible": 1,
    "fieldname": "external_links_section",
    "fieldtype": "Section Break",
-   "label": "External Links"
+   "label": "External References"
   },
   {
    "fieldname": "monitoring_link",
@@ -137,11 +138,16 @@
    "fieldname": "admin_interface_link",
    "fieldtype": "Data",
    "label": "Admin Interface Link"
+  },
+  {
+   "fieldname": "oitc_host_uuid",
+   "fieldtype": "Data",
+   "label": "OITC Host UUID"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2022-06-17 11:43:07.550361",
+ "modified": "2022-07-18 10:24:39.463386",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
