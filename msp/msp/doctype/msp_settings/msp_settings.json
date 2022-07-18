@@ -8,7 +8,10 @@
  "field_order": [
   "open_it_cockpit_integration_section",
   "oitc_url",
-  "oitc_api_key"
+  "oitc_api_key",
+  "qr_code_settings_section",
+  "qr_code_dark_color",
+  "qr_code_scale"
  ],
  "fields": [
   {
@@ -25,12 +28,27 @@
    "fieldname": "oitc_api_key",
    "fieldtype": "Password",
    "label": "OITC API Key"
+  },
+  {
+   "fieldname": "qr_code_settings_section",
+   "fieldtype": "Section Break",
+   "label": "QR Code Settings"
+  },
+  {
+   "fieldname": "qr_code_dark_color",
+   "fieldtype": "Color",
+   "label": "QR Code Dark Color"
+  },
+  {
+   "fieldname": "qr_code_scale",
+   "fieldtype": "Int",
+   "label": "QR Code Scale"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-07-18 10:23:49.010330",
+ "modified": "2022-07-18 10:53:35.413597",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Settings",

@@ -1,5 +1,7 @@
+from this import d
 from erpnext.stock.doctype import item
 import frappe
+import re
 
 
 def set_item_group_warehouse():
@@ -47,7 +49,48 @@ def get_warehouse_for_label(item_code):
     return
 
 @frappe.whitelist()
-def get_qr_code(data, format=None):
+def get_epc_inline(name, iban, amount, text, color_dark=None, scale=None):
+    from segno import helpers
+    settings = frappe.get_single("MSP Settings")
+    #determinate color
+    if color_dark:
+        m = re.match("(#\d{3}|#\d{6})", color_dark)
+        if m:
+            color_dark = m[1]
+    else:
+        if settings.qr_code_dark_color:
+            color_dark = settings.qr_code_dark_color
+        else:
+            color_dark = "#333A3F"
+    #determinate Scale
+    if not scale:
+        scale = settings.qr_code_scale if settings.qr_code_scale else 1
+
+    qrcode = helpers.make_epc_qr(
+        name=name,
+        iban=iban,
+        amount=amount,
+        text=text)
+    return qrcode.svg_inline(dark=color_dark, scale=scale)
+
+@frappe.whitelist()
+def get_qr_code_inline(data, color_dark=None, scale=None):
     import segno
-    
+    settings = frappe.get_single("MSP Settings")
+    #determinate color
+    if color_dark:
+        m = re.match("(#\d{3}|#\d{6})", color_dark)
+        if m:
+            color_dark = m[1]
+    else:
+        if settings.qr_code_dark_color:
+            color_dark = settings.qr_code_dark_color
+        else:
+            color_dark = "#333A3F"
+    #determinate Scale
+    if not scale:
+        scale = settings.qr_code_scale if settings.qr_code_scale else 1
+    scale = float(scale)
+    qrcode = segno.make(data)
+    return qrcode.svg_inline(dark=color_dark, scale=scale)
 

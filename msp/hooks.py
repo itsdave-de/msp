@@ -20,7 +20,9 @@ app_include_js = "/assets/msp/js/customer_quick_entry.js"
 
 jenv = {
 	"methods": [
-		"jinja_get_item_price:msp.things.get_item_price_for_label"
+		"jinja_get_item_price:msp.things.get_item_price_for_label",
+		"jinja_get_epc_code:msp.things.get_epc_inline",
+		"jinja_get_qr_code:msp.things.get_qr_code_inline"
 	]
 }
 
