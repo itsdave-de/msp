@@ -17,6 +17,8 @@
   "customer",
   "it_landscape",
   "location",
+  "monitoring_section",
+  "oitc_output",
   "description_section",
   "description",
   "image",
@@ -143,11 +145,22 @@
    "fieldname": "oitc_host_uuid",
    "fieldtype": "Data",
    "label": "OITC Host UUID"
+  },
+  {
+   "fieldname": "monitoring_section",
+   "fieldtype": "Column Break",
+   "label": "Monitoring"
+  },
+  {
+   "fieldname": "oitc_output",
+   "fieldtype": "HTML",
+   "label": "OITC Output",
+   "options": "<div id=\"oitc-output\">OITC output expected</div>"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2022-07-18 10:24:39.463386",
+ "modified": "2022-07-18 15:05:40.504305",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
