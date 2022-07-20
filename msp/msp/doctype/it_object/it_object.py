@@ -30,7 +30,7 @@ class ITObject(Document):
                         'currentState': host_data['Hoststatus']['humanState'],
                         'lastCheck': host_data['Hoststatus']['lastCheckInWords'],
                         'nextCheck': host_data['Hoststatus']['nextCheckInWords'],
-                        'currentStateSince': host_data['Hoststatus']['lastHardStateChangeInWords']
+                        'currentStateSince': host_data['Hoststatus']['last_state_change_in_words']
                     },
                     'servicesStatus': {
                         'totalServices': host_data['ServicestatusSummary']['total'],
