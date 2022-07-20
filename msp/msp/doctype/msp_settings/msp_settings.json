@@ -8,7 +8,12 @@
  "field_order": [
   "open_it_cockpit_integration_section",
   "oitc_url",
+  "oitc_api_key_header_string",
   "oitc_api_key",
+  "column_break_column",
+  "oitc_status_up_color",
+  "oitc_status_down_color",
+  "oitc_status_unreachable_color",
   "qr_code_settings_section",
   "qr_code_dark_color",
   "qr_code_scale"
@@ -27,7 +32,8 @@
   {
    "fieldname": "oitc_api_key",
    "fieldtype": "Password",
-   "label": "OITC API Key"
+   "label": "OITC API Key",
+   "length": 200
   },
   {
    "fieldname": "qr_code_settings_section",
@@ -43,12 +49,40 @@
    "fieldname": "qr_code_scale",
    "fieldtype": "Int",
    "label": "QR Code Scale"
+  },
+  {
+   "default": "X-OITC-API ",
+   "fieldname": "oitc_api_key_header_string",
+   "fieldtype": "Read Only",
+   "label": "OITC API Key Header string",
+   "length": 100,
+   "options": "X-OITC-API "
+  },
+  {
+   "fieldname": "column_break_column",
+   "fieldtype": "Column Break",
+   "label": "Column Break"
+  },
+  {
+   "fieldname": "oitc_status_up_color",
+   "fieldtype": "Color",
+   "label": "OITC Status Up Color"
+  },
+  {
+   "fieldname": "oitc_status_down_color",
+   "fieldtype": "Color",
+   "label": "OITC Status Down Color"
+  },
+  {
+   "fieldname": "oitc_status_unreachable_color",
+   "fieldtype": "Color",
+   "label": "OITC Status Unreachable Color"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-07-18 10:53:35.413597",
+ "modified": "2022-07-19 12:16:04.805493",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Settings",
