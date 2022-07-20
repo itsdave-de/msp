@@ -9,7 +9,7 @@ from frappe.model.document import Document
 
 class ITObject(Document):
 
-    def get_host_status_from_hosts_data(self, hosts_data, status_colors):
+    def get_host_status_from_hosts_data(self, hosts_data, msp_settings_doc):
 
         host_data_response = {} 
 
@@ -39,7 +39,11 @@ class ITObject(Document):
                         }
                     }
                 },
-                'statusColors': status_colors
+                'statusColors': {
+                    'upStateColor': msp_settings_doc.oitc_status_up_color,
+                    'downStateColor': msp_settings_doc.oitc_status_down_color,
+                    'unreachableStateColor': msp_settings_doc.oitc_status_unreachable_color
+                }
             }
 
         return host_data_response
@@ -62,12 +66,7 @@ class ITObject(Document):
 
             hosts_data = requests.get(url=endpoint, headers=headers, verify=False)
 
-            status_colors = {
-                'upStateColor': msp_settings_doc.oitc_status_up_color,
-                'downStateColor': msp_settings_doc.oitc_status_down_color,
-                'unreachableStateColor': msp_settings_doc.oitc_status_unreachable_color
-            }
-            return self.get_host_status_from_hosts_data(hosts_data.json(), status_colors)
+            return self.get_host_status_from_hosts_data(hosts_data.json(), msp_settings_doc)
         except Exception as exception:
             exception_message = f'Data could not be fetched from {msp_settings_doc.oitc_url}. Error -> {str(exception)}'
 
