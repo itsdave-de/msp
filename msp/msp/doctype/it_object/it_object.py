@@ -11,7 +11,10 @@ class ITObject(Document):
 
     def get_host_status_from_hosts_data(self, hosts_data, msp_settings_doc):
 
-        host_data_response = {} 
+        host_data_response = {
+            'status': 204,
+            'response': f'Host with UUID {self.oitc_host_uuid} was not found in OITC. Check if the UUID is correct'
+        } 
 
         for host_data in hosts_data['all_hosts']:
 
@@ -60,7 +63,7 @@ class ITObject(Document):
             }
 
         try:
-            endpoint = f'{msp_settings_doc.oitc_url}hosts/index.json?angular=true&scroll=true&page=1'
+            endpoint = f'{msp_settings_doc.oitc_url}hosts/index.json?angular=true&scroll=true&filter[Hosts.uuid]={self.oitc_host_uuid}'
             api_authorization = f'{msp_settings_doc.oitc_api_key_header_string}' + msp_settings_doc.get_password('oitc_api_key')
             headers = {'Authorization': api_authorization}
 
@@ -68,9 +71,7 @@ class ITObject(Document):
 
             return self.get_host_status_from_hosts_data(hosts_data.json(), msp_settings_doc)
         except Exception as exception:
-            exception_message = f'Data could not be fetched from {msp_settings_doc.oitc_url}. Error -> {str(exception)}'
-
             return {
                 'status': 500,
-                'response': exception_message
+                'response': f'Data could not be fetched from {msp_settings_doc.oitc_url}. Error -> {str(exception)}'
             }
