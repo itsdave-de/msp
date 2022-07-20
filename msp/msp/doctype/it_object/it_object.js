@@ -14,7 +14,8 @@ frappe.ui.form.on('IT Object', {
 			--uib-line-weight: 5px;
 
 			position: relative;
-			margin: 6rem auto;
+			margin: 0 auto;
+			top: 45%;
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -59,6 +60,17 @@ frappe.ui.form.on('IT Object', {
 		`;
 
 		const container = document.getElementById('oitc-output');
+
+		// Set width and height to <div> parent element and to <form> grandparent element so relative width and height with % works greate
+		container.parentElement.parentElement.style.width = '100%';
+		container.parentElement.parentElement.style.height = '100%';
+		container.parentElement.style.width = '100%';
+		container.parentElement.style.height = '90%';
+
+		// Set this styles to showcase where the information will appear
+		container.style.width = '100%';
+		container.style.height = '100%';
+		container.style.background = 'rgba(212, 204, 203, 0.4)';
 		container.innerHTML = loader;
 
 		frm.call('get_oitc_host_status_data', {})
