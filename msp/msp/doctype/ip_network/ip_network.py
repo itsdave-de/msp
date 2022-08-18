@@ -8,7 +8,34 @@ from ipaddress import IPv4Address, IPv4Network
 from frappe.model.document import Document
 
 class IPNetwork(Document):
-	pass
+	@frappe.whitelist()
+	def get_used_ips(self):
+		values = {'ip_network': self.name}
+		result = []
+		result = frappe.db.sql("""
+			SELECT
+				ipa.ip_address,
+				ito.title,
+				ito.type
+			FROM `tabIP Address` ipa
+				JOIN `tabIT Object` ito
+				ON ipa.it_object = ito.name
+			WHERE ipa.ip_network = %(ip_network)s
+		""", values=values, as_dict=1)
+		
+		for ip_network_reserved_range in self.ip_network_reserved_ranges_table:
+			result.append({
+				'ip_address': ip_network_reserved_range.start,
+				'title': ip_network_reserved_range.type,
+				'type': 'DHCP Range Start'
+			})
+			result.append({
+				'ip_address': ip_network_reserved_range.end,
+				'title': ip_network_reserved_range.type,
+				'type': 'DHCP Range End'
+			})
+
+		return result
 
 @frappe.whitelist()
 def calculate_network_data(doc):

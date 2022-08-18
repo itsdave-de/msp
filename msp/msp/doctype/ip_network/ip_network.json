@@ -27,7 +27,11 @@
   "it_landscape",
   "description",
   "customer",
-  "location"
+  "location",
+  "ip_network_reserved_ranges_section",
+  "ip_network_reserved_ranges_table",
+  "usage_overview_section",
+  "usage_overview_table"
  ],
  "fields": [
   {
@@ -146,10 +150,32 @@
    "fieldname": "aditional_data_section",
    "fieldtype": "Section Break",
    "label": "Aditional Data"
+  },
+  {
+   "fieldname": "ip_network_reserved_ranges_section",
+   "fieldtype": "Section Break",
+   "label": "IP Network Reserved Ranges"
+  },
+  {
+   "fieldname": "ip_network_reserved_ranges_table",
+   "fieldtype": "Table",
+   "label": "IP Network Reserved Ranges Table",
+   "options": "IP Network Reserved Range"
+  },
+  {
+   "fieldname": "usage_overview_section",
+   "fieldtype": "Section Break",
+   "label": "Usage Overview "
+  },
+  {
+   "fieldname": "usage_overview_table",
+   "fieldtype": "HTML",
+   "label": "Usage Overview Table",
+   "options": "<div id=\"usage-overview-table\">Used IPs expected</div>"
   }
  ],
  "links": [],
- "modified": "2022-06-17 11:20:37.093173",
+ "modified": "2022-08-18 10:28:34.233288",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IP Network",
