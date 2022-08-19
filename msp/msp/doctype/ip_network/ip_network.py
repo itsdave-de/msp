@@ -10,7 +10,7 @@ from frappe.model.document import Document
 class IPNetwork(Document):
 	@frappe.whitelist()
 	def get_used_ips(self):
-		values = {'ip_network': self.name}
+		values = {'ip_network': self.name, 'status': 'Decommissioned'}
 		result = []
 		result = frappe.db.sql("""
 			SELECT
@@ -23,6 +23,7 @@ class IPNetwork(Document):
 				JOIN `tabIT Object` ito
 				ON ipa.it_object = ito.name
 			WHERE ipa.ip_network = %(ip_network)s
+				AND ito.status != %(status)s
 		""", values=values, as_dict=1)
 		
 		for ip_network_reserved_range in self.ip_network_reserved_ranges_table:

@@ -19,6 +19,8 @@ frappe.ui.form.on('IP Network', {
 });
 
 function getUsedIpsInNetwork(frm) {
+	displayLoader();
+
 	frm.call('get_used_ips', {})
 		.then((response) => {
 			const container = document.getElementById("usage-overview-table");
@@ -32,16 +34,16 @@ function getUsedIpsInNetwork(frm) {
 								data-doctype-name="${element?.ip_address_name ?? ''}"
 								data-doctype-type="IP Address"
 							>
-								${element?.ip_address ?? "-"}
+								${(element?.ip_address === '') ? "-" : element?.ip_address}
 							</td>
 							<td
 								style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left; ${element?.ip_address_name ? 'cursor: pointer;' : ''}"
 								data-doctype-name="${element?.it_object_name ?? ''}"
 								data-doctype-type="IT Object"
 							>
-								${element?.title ?? "-"}
+								${(element?.title === '') ? "-" : element?.title}
 							</td>
-							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${element?.type ?? "-"}</td>
+							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${(element?.type === '') ? "-" : element?.type}</td>
 						</tr>
 					`;
 			});
@@ -75,3 +77,71 @@ function getUsedIpsInNetwork(frm) {
 			});
 		})
 }
+function displayLoader() {
+	const container = document.getElementById("usage-overview-table");
+	const loader = `
+		<div class="line-wobble"></div>
+		<style>
+		.line-wobble {
+			--uib-size: 80px;
+			--uib-speed: 1.75s;
+			--uib-color: black;
+			--uib-line-weight: 5px;
+
+			position: relative;
+			margin: 0 auto;
+			top: 45%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: var(--uib-line-weight);
+			width: var(--uib-size);
+			border-radius: calc(var(--uib-line-weight) / 2);
+			overflow: hidden;
+			transform: translate3d(0, 0, 0);
+		  }
+
+		  .line-wobble::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			background-color: var(--uib-color);
+			opacity: 0.1;
+		  }
+
+		  .line-wobble::after {
+			content: '';
+			height: 100%;
+			width: 100%;
+			border-radius: calc(var(--uib-line-weight) / 2);
+			animation: wobble var(--uib-speed) ease-in-out infinite;
+			transform: translateX(-95%);
+			background-color: var(--uib-color);
+		  }
+
+		  @keyframes wobble {
+			0%,
+			100% {
+			  transform: translateX(-95%);
+			}
+			50% {
+			  transform: translateX(95%);
+			}
+		  }
+		</style>
+		`;
+
+	// Set width and height to <div> parent element and to <form> grandparent element so relative width and height with % works greate
+	container.parentElement.parentElement.style.width = '100%';
+	container.parentElement.parentElement.style.height = '100%';
+	container.parentElement.style.width = '100%';
+
+	// Set this styles to showcase where the information will appear
+	container.style.width = '100%';
+	container.style.height = '100%';
+	container.innerHTML = loader;
+}
+
