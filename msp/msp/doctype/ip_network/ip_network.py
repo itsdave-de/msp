@@ -14,7 +14,9 @@ class IPNetwork(Document):
 		result = []
 		result = frappe.db.sql("""
 			SELECT
+				ipa.name as ip_address_name,
 				ipa.ip_address,
+				ito.name as it_object_name,
 				ito.title,
 				ito.type
 			FROM `tabIP Address` ipa

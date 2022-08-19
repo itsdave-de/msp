@@ -14,11 +14,6 @@ frappe.ui.form.on('IP Network', {
 				}
 			})
 		})
-	},
-	onload_post_render(frm) {
-		getUsedIpsInNetwork(frm);
-	},
-	after_save(frm) {
 		getUsedIpsInNetwork(frm);
 	}
 });
@@ -32,8 +27,20 @@ function getUsedIpsInNetwork(frm) {
 			response?.message?.forEach((element) => {
 				tableBody += `
 						<tr>
-							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${element?.ip_address ?? "-"}</td>
-							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${element?.title ?? "-"}</td>
+							<td
+								style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left; ${element?.ip_address_name ? 'cursor: pointer;' : ''}"
+								data-doctype-name="${element?.ip_address_name ?? ''}"
+								data-doctype-type="IP Address"
+							>
+								${element?.ip_address ?? "-"}
+							</td>
+							<td
+								style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left; ${element?.ip_address_name ? 'cursor: pointer;' : ''}"
+								data-doctype-name="${element?.it_object_name ?? ''}"
+								data-doctype-type="IT Object"
+							>
+								${element?.title ?? "-"}
+							</td>
 							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${element?.type ?? "-"}</td>
 						</tr>
 					`;
@@ -55,5 +62,16 @@ function getUsedIpsInNetwork(frm) {
 				` : 'No IPs used for this network';
 
 			container.innerHTML = table;
+
+			document.querySelectorAll('[data-doctype-name]').forEach(element => {
+				element.addEventListener('click', (event) => {
+					event.preventDefault();
+					if (event.target.dataset?.doctypeName === '') {
+						return;
+					}
+
+					frappe.set_route('Form', event.target.dataset?.doctypeType, event.target.dataset?.doctypeName);
+				});
+			});
 		})
 }
