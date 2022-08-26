@@ -30,31 +30,31 @@ function getUsedIpsInNetwork(frm) {
 				tableBody += `
 						<tr>
 							<td
-								style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left; ${element?.ip_address_name ? 'cursor: pointer;' : ''}"
+								${element?.ip_address_name ? 'style="cursor: pointer;"' : ''}
 								data-doctype-name="${element?.ip_address_name ?? ''}"
 								data-doctype-type="IP Address"
 							>
 								${(element?.ip_address === '') ? "-" : element?.ip_address}
 							</td>
 							<td
-								style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left; ${element?.ip_address_name ? 'cursor: pointer;' : ''}"
+								${element?.ip_address_name ? 'style="cursor: pointer; text-decoration: underline;"' : ''}
 								data-doctype-name="${element?.it_object_name ?? ''}"
 								data-doctype-type="IT Object"
 							>
-								${(element?.title === '') ? "-" : element?.title}
+								${(element?.title === '') ? __("no object assigned") : element?.title}
 							</td>
-							<td style="border: 1px solid #000; padding: 0.5rem 1rem; text-align: left;">${(element?.type === '') ? "-" : element?.type}</td>
+							<td style="">${(element?.type === '') ? __("no type assigned") : element?.type}</td>
 						</tr>
 					`;
 			});
 
 			const table = tableBody ? `
-					<table style="border-collapse: collapse; border: 2px solid #000; text-align: left; width: 100%; color: #000;">
-						<thead>
+					<table style="" class="table table-striped table-bordered">
+						<thead class="thead-dark">
 							<tr>
-								<th scope="col" style="border: 1px solid #000; padding: 0.5rem 1rem;">IP</th>
-								<th scope="col" style="border: 1px solid #000; padding: 0.5rem 1rem;">Name</th>
-								<th scope="col" style="border: 1px solid #000; padding: 0.5rem 1rem;">Type</th>
+								<th scope="col">IP</th>
+								<th scope="col">Name</th>
+								<th scope="col">Type</th>
 							</tr>
 						</thead>
 						<tbody>
