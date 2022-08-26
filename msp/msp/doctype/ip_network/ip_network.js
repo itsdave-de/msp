@@ -23,6 +23,7 @@ function getUsedIpsInNetwork(frm) {
 
 	frm.call('get_used_ips', {})
 		.then((response) => {
+			console.log(response);
 			const container = document.getElementById("usage-overview-table");
 			let tableBody = ``;
 
@@ -37,13 +38,13 @@ function getUsedIpsInNetwork(frm) {
 								${(element?.ip_address === '') ? "-" : element?.ip_address}
 							</td>
 							<td
-								${element?.ip_address_name ? 'style="cursor: pointer; text-decoration: underline;"' : ''}
+								${(element?.it_object_name) ? 'style="cursor: pointer; text-decoration: underline;"' : ''}
 								data-doctype-name="${element?.it_object_name ?? ''}"
 								data-doctype-type="IT Object"
 							>
-								${(element?.title === '') ? __("no object assigned") : element?.title}
+								${(element?.title === '' || element?.title === null) ? __("no object assigned") : element?.title}
 							</td>
-							<td style="">${(element?.type === '') ? __("no type assigned") : element?.type}</td>
+							<td style="">${(element?.type === ''|| element?.type === null) ? __("no type assigned") : element?.type}</td>
 						</tr>
 					`;
 			});
