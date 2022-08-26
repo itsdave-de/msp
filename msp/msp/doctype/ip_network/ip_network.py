@@ -20,7 +20,7 @@ class IPNetwork(Document):
 				ito.title,
 				ito.type
 			FROM `tabIP Address` ipa
-				JOIN `tabIT Object` ito
+				LEFT JOIN `tabIT Object` ito
 				ON ipa.it_object = ito.name
 			WHERE ipa.ip_network = %(ip_network)s
 				AND ito.status != %(status)s
