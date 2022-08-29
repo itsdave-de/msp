@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "AUTOINV-.#####",
+ "creation": "2022-08-29 13:47:37.295147",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "invoicing_grouped_by",
+  "close_invoiced_delivery_notes_section",
+  "close",
+  "invoices_from_delivery_notes_section",
+  "customer",
+  "get_invoice",
+  "date",
+  "invoice_count",
+  "customer_count"
+ ],
+ "fields": [
+  {
+   "fieldname": "invoicing_grouped_by",
+   "fieldtype": "Select",
+   "label": "Invoicing grouped by",
+   "options": "\nService and Goods\nService and Goods and Sales Order"
+  },
+  {
+   "fieldname": "close_invoiced_delivery_notes_section",
+   "fieldtype": "Section Break",
+   "label": "Close invoiced Delivery Notes"
+  },
+  {
+   "fieldname": "close",
+   "fieldtype": "Button",
+   "label": "Close"
+  },
+  {
+   "fieldname": "invoices_from_delivery_notes_section",
+   "fieldtype": "Section Break",
+   "label": "Invoices from delivery notes"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "get_invoice",
+   "fieldtype": "Button",
+   "label": "Get Invoice",
+   "options": "get_invoice_dict"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "invoice_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Invoice count"
+  },
+  {
+   "fieldname": "customer_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Customer count"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-08-29 14:26:06.333736",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Auto Invoice Generator",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
