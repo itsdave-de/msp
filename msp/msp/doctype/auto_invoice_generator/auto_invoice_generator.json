@@ -13,6 +13,7 @@
   "invoices_from_delivery_notes_section",
   "customer",
   "get_invoice",
+  "statistics",
   "date",
   "invoice_count",
   "customer_count"
@@ -68,11 +69,16 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Customer count"
+  },
+  {
+   "fieldname": "statistics",
+   "fieldtype": "Section Break",
+   "label": "Statistics"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-29 14:26:06.333736",
+ "modified": "2022-08-29 14:44:35.107379",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Auto Invoice Generator",
