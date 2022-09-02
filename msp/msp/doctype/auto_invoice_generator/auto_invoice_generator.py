@@ -128,7 +128,7 @@ class AutoInvoiceGenerator(Document):
 						print(dn["name"])
 						print(item.qty)
 						print(item.uom)
-						if item.item_group == "Dienstleistungen" or item.item_group == "Anfahrten" or item.item_group == "Arbeitszeiten Techniker" or item.item_group == "Anwendungsentwicklung":
+						if item.item_group == "Dienstleistungen" or item.item_group == "Anfahrten" or item.item_group == "Arbeitszeiten Techniker" or item.item_group == "Zuschläge" or item.item_group == "Anwendungsentwicklung":
 							service_items.append(invoice_doc_item)
 						elif item.against_sales_order:
 							sales_order_items.append(invoice_doc_item)

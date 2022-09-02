@@ -33,7 +33,8 @@
   {
    "fieldname": "close",
    "fieldtype": "Button",
-   "label": "Close"
+   "label": "Close",
+   "options": "close_invoiced_delivery_notes"
   },
   {
    "fieldname": "invoices_from_delivery_notes_section",
@@ -78,7 +79,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-29 14:44:35.107379",
+ "modified": "2022-09-02 11:56:18.512522",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Auto Invoice Generator",
