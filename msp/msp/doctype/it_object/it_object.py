@@ -8,6 +8,23 @@ import requests
 from frappe.model.document import Document
 
 class ITObject(Document):
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.main_ip:
+            return
+
+        ip_address_name_with_it_object = frappe.db.get_value("IP Address", {'it_object': self.name}, ['name'])
+        if ip_address_name_with_it_object:
+            current_ip_address_with_it_object_doctype = frappe.get_doc("IP Address", ip_address_name_with_it_object)
+            current_ip_address_with_it_object_doctype.it_object = None
+            current_ip_address_with_it_object_doctype.it_object_name = None
+            current_ip_address_with_it_object_doctype.save()
+
+        ip_address_doctype = frappe.get_doc("IP Address", self.main_ip)
+        ip_address_doctype.it_object = self.name
+        ip_address_doctype.it_object_name = self.title
+        ip_address_doctype.save()
+        frappe.db.commit()
 
     def get_host_status_from_hosts_data(self, hosts_data, msp_settings_doc):
 
