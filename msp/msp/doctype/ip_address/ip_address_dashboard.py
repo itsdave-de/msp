@@ -4,15 +4,11 @@ from frappe import _
 def get_data():
 	return {
 		'heatmap': False,
-		'fieldname': 'ip_network',
+		'fieldname': 'ip_address',
 		'transactions': [
 			{
-				'label': _('Objects'),
-				'items': ['IP Address' ]
-			},
-			{
 				'label': _('Processes'),
-				'items': ['ToDo' ]
+				'items': ['ToDo']
 			}
 		]
 	}
