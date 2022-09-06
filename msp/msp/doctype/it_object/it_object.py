@@ -10,6 +10,9 @@ from frappe.model.document import Document
 class ITObject(Document):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+        self.set_it_object_data_in_ip_address_doctype()
+
+    def set_it_object_data_in_ip_address_doctype(self):
         if not self.main_ip:
             return
 
@@ -92,3 +95,9 @@ class ITObject(Document):
                 'status': 500,
                 'response': f'Data could not be fetched from {msp_settings_doc.oitc_url}. Error -> {str(exception)}'
             }
+
+def set_it_object_data_in_ip_address_doctype_for_existing_it_objects():
+        it_objects = frappe.db.get_all("IT Object", fields=['name'])
+        for it_object in it_objects:
+            it_object_doctype = frappe.get_doc("IT Object", it_object['name'])
+            it_object_doctype.set_it_object_data_in_ip_address_doctype()
