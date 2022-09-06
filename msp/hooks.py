@@ -87,11 +87,11 @@ jenv = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"Customer": {
-# 		"on_update": "msp.msp.customer_quick_entry.custom_customer_info"
-# 	}
-# }
+doc_events = {
+	"Location": {
+		"before_save": "msp.tools.hooks_methods.build_full_location_path"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
