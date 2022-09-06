@@ -27,6 +27,7 @@
   "it_landscape",
   "description",
   "customer",
+  "location_full_path",
   "location",
   "ip_network_reserved_ranges_section",
   "ip_network_reserved_ranges_table",
@@ -172,10 +173,17 @@
    "fieldtype": "HTML",
    "label": "Usage Overview Table",
    "options": "<div id=\"usage-overview-table\">Used IPs expected</div>"
+  },
+  {
+   "fetch_from": "location.html_full_path",
+   "fieldname": "location_full_path",
+   "fieldtype": "Text Editor",
+   "label": "Location Full Path",
+   "read_only": 1
   }
  ],
  "links": [],
- "modified": "2022-08-18 10:28:34.233288",
+ "modified": "2022-09-06 16:39:46.172950",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IP Network",
