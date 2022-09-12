@@ -39,6 +39,8 @@ jenv = {
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
+doctype_js = {"Location" : "public/js/location.js"}
+
 # Home Pages
 # ----------
 
