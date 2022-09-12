@@ -135,3 +135,6 @@ doc_events = {
 # 	"Task": "msp.task.get_dashboard_data"
 # }
 
+override_doctype_class = {
+    "Location": "msp.overrides.location.CustomLocation.CustomLocation"
+}
