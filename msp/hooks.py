@@ -39,6 +39,8 @@ jenv = {
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
+doctype_js = {"Location" : "public/js/location.js"}
+
 # Home Pages
 # ----------
 
@@ -133,3 +135,6 @@ doc_events = {
 # 	"Task": "msp.task.get_dashboard_data"
 # }
 
+override_doctype_class = {
+    "Location": "msp.overrides.location.CustomLocation.CustomLocation"
+}
