@@ -103,7 +103,10 @@ class VerkaufsstatistikReport(Document):
 		df['Kalenderwoche']= df['Date'].dt.isocalendar().week
 		#df['Monat']= df['Date'].dt.month
 		df['Jahr'] = df['Date'].dt.year
-		df['Monat'] = df['Date'].dt.strftime("%m.%Y")
+		df['Month'] = df['Date'].dt.month
+		df['Monat'] = df['Date'].dt.to_period('M')
+		print(df['Month'].tolist())
+		#df['Monat'] = df['Date'].dt.strftime("%m.%Y")
 		from_date_dt = dt. strptime(self.from_date, '%Y-%m-%d')
 		from_date_st = from_date_dt.strftime('%d.%m.%Y')
 		to_date_dt = dt. strptime(self.to_date, '%Y-%m-%d')
@@ -148,21 +151,6 @@ class VerkaufsstatistikReport(Document):
 			df_pivot =df.pivot_table(index=date, columns="Mitarbeiter", values = values, aggfunc = np.sum, fill_value=0)
 		elif self.gruppiert_nach == "Alle":
 			df_pivot =df.pivot_table(index=date, values = values, aggfunc = np.sum, fill_value=0)
-		# df_pivot.columns = df_pivot.columns.droplevel(0) #remove amount
-		# df_pivot.columns.name = None               #remove categories
-		# df_pivot = df_pivot.reset_index()                #index to columns
-		# print(df_pivot)
-		# #df_grouped = df.groupby(filters).agg({'Anzahl': ['sum']}).reset_index()
-		# if self.anzahl == 1:
-		# 	df['Item']=df['Item'].map('{} Anzahl'.format)
-		# 	df_grouped = df.groupby(filters)['Anzahl'].sum().reset_index()
-		# 	df_pivot1 = df_grouped.pivot_table(index= date,columns='Item',values='Anzahl')
-		# 	df_pivot1 = df_pivot.fillna(0)
-		# if self.preis == 1:
-		# 	df['Item']=df['Item'].map('{} Preis'.format)
-		# 	df_grouped = df.groupby(filters)['Preis'].sum().reset_index()
-		# 	df_pivot2 = df_grouped.pivot_table(index= date,columns='Item',values='Preis')
-		# 	df_pivot2= df_pivot.fillna(0)
 		
 	
 		df_pivot = pd.DataFrame(df_pivot.to_records()) 
@@ -170,7 +158,7 @@ class VerkaufsstatistikReport(Document):
 		a = df_pivot.drop(date,axis=1).astype(float)
 		a[date] = df_pivot[date]
 		a.set_index(date, inplace = True)
-																		
+																	
 		#print(a)
 		#df_pivot = df_pivot.astype(float)d
 		#df_pivot = self.add_total_row(df_pivot)
