@@ -13,7 +13,7 @@ def get_data():
 			},
 			{
 				'label': _('Processes'),
-				'items': ['IT Contract']
+				'items': ['IT Contract', 'ToDo']
 			}
 		]
 	}

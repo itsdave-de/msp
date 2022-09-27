@@ -16,6 +16,7 @@
   "item",
   "customer",
   "it_landscape",
+  "location_full_path",
   "location",
   "monitoring_section",
   "oitc_output",
@@ -156,11 +157,18 @@
    "fieldtype": "HTML",
    "label": "OITC Output",
    "options": "<div id=\"oitc-output\">OITC output expected</div>"
+  },
+  {
+   "fetch_from": "location.html_full_path",
+   "fieldname": "location_full_path",
+   "fieldtype": "Text Editor",
+   "label": "Location Full Path",
+   "read_only": 1
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2022-07-18 15:05:40.504305",
+ "modified": "2022-09-06 16:18:52.084632",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",

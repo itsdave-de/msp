@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+import socket
 from ipaddress import IPv4Address, IPv4Network
 from frappe.model.document import Document
 
@@ -16,6 +17,7 @@ class IPNetwork(Document):
 			SELECT
 				ipa.name as ip_address_name,
 				ipa.ip_address,
+				ipa.protocol,
 				ito.name as it_object_name,
 				ito.title,
 				ito.type,
@@ -35,15 +37,19 @@ class IPNetwork(Document):
 			used_ips.append({
 				'ip_address': ip_network_reserved_range.start,
 				'title': ip_network_reserved_range.type,
-				'type': 'DHCP Range Start'
+				'type': 'DHCP Range Start',
+				'protocol': ip_network_reserved_range.protocol
 			})
 			used_ips.append({
 				'ip_address': ip_network_reserved_range.end,
 				'title': ip_network_reserved_range.type,
-				'type': 'DHCP Range End'
+				'type': 'DHCP Range End',
+				'protocol': ip_network_reserved_range.protocol
 			})
 
-		return used_ips
+		# Sorting method is using inet_pton built in function which is used to convert IPs from string format to a packed, binary format to be able to compare them. It supports IPv4 and IPv6 IPs
+		# @see https://docs.python.org/3/library/socket.html#socket.inet_pton and https://stackoverflow.com/a/6545090 for more information
+		return sorted(used_ips, key=lambda item: socket.inet_pton(socket.AF_INET if item['protocol'] == 'IPv4' or not item['protocol'] else socket.AF_INET6 , item['ip_address']))
 
 @frappe.whitelist()
 def calculate_network_data(doc):
