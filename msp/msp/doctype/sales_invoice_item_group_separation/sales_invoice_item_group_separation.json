@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "SIIGS-.#####",
+ "creation": "2022-09-20 14:17:11.567012",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "active",
+  "customers",
+  "item_groups"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "description": "Legt fest, ob diese Regel aktiv ist. Es darf immer nur eine aktive Regel per Kunde geben.",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "description": "Es wird nach folgenden Item-Groups getrennt. Die Priorisierung erfolgt gem. der Reihenfolge innerhalb der Liste. Nur wenn die Option \"recursive\" aktiv ist, werden alle Child Item-Groups unterhalb der genannten Item-Group ber\u00fccksichtigt. ( Ermitteln und immer \"in\" - Filter verwenden) ",
+   "fieldname": "item_groups",
+   "fieldtype": "Table",
+   "label": "Item Groups",
+   "options": "Sales Invoice Item Group Separation Entry"
+  },
+  {
+   "description": "Diese Regel ist f\u00fcr die folgenden Kunden anzuwenden, solange eine der Abrechungsmethoden mit Item-Group Bezug beim Customer hinterlegt ist.",
+   "fieldname": "customers",
+   "fieldtype": "Table",
+   "label": "Customers",
+   "options": "Sales Invoice Item Group Separation Customer"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-09-20 14:34:09.246244",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Sales Invoice Item Group Separation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
