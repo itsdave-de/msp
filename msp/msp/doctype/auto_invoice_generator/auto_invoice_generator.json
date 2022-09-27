@@ -7,7 +7,6 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "invoicing_grouped_by",
   "close_invoiced_delivery_notes_section",
   "close",
   "invoices_from_delivery_notes_section",
@@ -16,15 +15,10 @@
   "statistics",
   "date",
   "invoice_count",
-  "customer_count"
+  "customer_count",
+  "log"
  ],
  "fields": [
-  {
-   "fieldname": "invoicing_grouped_by",
-   "fieldtype": "Select",
-   "label": "Invoicing grouped by",
-   "options": "\nService and Goods\nService and Goods and Sales Order"
-  },
   {
    "fieldname": "close_invoiced_delivery_notes_section",
    "fieldtype": "Section Break",
@@ -75,11 +69,17 @@
    "fieldname": "statistics",
    "fieldtype": "Section Break",
    "label": "Statistics"
+  },
+  {
+   "fieldname": "log",
+   "fieldtype": "Small Text",
+   "label": "Log"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-02 11:56:18.512522",
+ "migration_hash": "81a435d8fdde574c14c22be58f9e32ca",
+ "modified": "2022-09-22 14:23:33.413375",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Auto Invoice Generator",
