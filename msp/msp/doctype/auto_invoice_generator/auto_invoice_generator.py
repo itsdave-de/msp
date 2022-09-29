@@ -132,6 +132,8 @@ class AutoInvoiceGenerator(Document):
 				cust_count += 1
 				items = self.get_invoicing_items_for_cust(cust)
 				print(items)
+				print("len Items")
+				print(len(items))
 				invoicing_items = []
 
 				if cust_doc.billing_mode == "ASAP":
@@ -152,27 +154,48 @@ class AutoInvoiceGenerator(Document):
 				else:	
 					item_group_separation_dict = get_item_group_assignment_table(cust)
 					print(item_group_separation_dict)
+					
 					separation_item_groups = [[item_group_separation_dict[x].item_group,item_group_separation_dict[x].filter]  for x in range(1, len(item_group_separation_dict) + 1) ]	
 					if cust_doc.billing_mode == "per Item Group":
+						print("vor Separation")
+						print(len(items))
 						for el in separation_item_groups:
 							print(el[1])
+							print(items)
 							a = []
-							for item in items:
+							items_list = items.copy()
+							for item in items_list:
+							# for i in item_name:
+							# 	item = filter(lambda item: item['name'] == i, items)
+								print(item)
+
+								#print(item.item_group)
 								if item.item_group in el[1]:
+									print(True)
 									invoice_doc_item = self.create_invoice_doc_item(item)
+									print(invoice_doc_item)
 									a.append(invoice_doc_item)
 									items.remove(item)
+									print(len(a))
+									print(len(items))
+									
+								else:
+									print(False)
 							if len(a) > 0:
 								self.create_invoice(cust, a, el[0] + " " +cust_doc.customer_name)
 								invoice_count +=1
-							
+							print("nach Separation")
+							print(len(items))	
 						i_items = [self.create_invoice_doc_item(item) for item in items]
+						
 						if len(i_items) > 0:
 							self.create_invoice(cust, i_items, "Abrechnung " + cust_doc.customer_name)	
 							invoice_count += 1
+					
 					if cust_doc.billing_mode == "per Sales Order, remaining per Item Group":
 						sales_order_items = []
-						for item in items:
+						item_list = items.copy()
+						for item in item_list:
 							if item.against_sales_order:
 								invoice_doc_item = self.create_invoice_doc_item(item)
 								sales_order_items.append(invoice_doc_item)
@@ -190,15 +213,19 @@ class AutoInvoiceGenerator(Document):
 						for el in separation_item_groups:
 							print(el[1])
 							a = []
-							for item in items:
+							it_list = items.copy()
+							for item in it_list:
 								if item.item_group in el[1]:
 									invoice_doc_item = self.create_invoice_doc_item(item)
 									a.append(invoice_doc_item)
 									items.remove(item)
-							self.create_invoice(cust, a, el[0] + " " +cust_doc.customer_name)
-			
+							if len(a) > 0:
+								self.create_invoice(cust, a, el[0] + " " +cust_doc.customer_name)
+								invoice_count += 1
 						i_items = [self.create_invoice_doc_item(item) for item in items]
-						self.create_invoice(cust, i_items, "Abrechnung " + cust_doc.customer_name)	
+						if len(i_items) > 0:
+							self.create_invoice(cust, i_items, "Abrechnung " + cust_doc.customer_name)	
+							invoice_count += 1
 		frappe.msgprint("Für " + str(cust_count)+ " Kunden wurden " + str(invoice_count) + " Rechnungen erstellt.")
 		self.date = datetime.today().strftime('%Y-%m-%d')
 		self.invoice_count = invoice_count
@@ -231,7 +258,7 @@ class AutoInvoiceGenerator(Document):
 				"items": invoice_doc_items
 				}) 
 		if len(invoice_doc_items)>0:
-			self.validate_items(invoice_doc_items)
+			
 			settings_doc = frappe.get_single("Auto Invoice Generator Settings")
 			customer_doc = frappe.get_doc("Customer", cust )
         
@@ -257,12 +284,12 @@ class AutoInvoiceGenerator(Document):
 			invoice_doc.append("taxes", new_tax)
 			invoice_doc.save()
 
-	def validate_items(self,item_list):
-		print("len(item_list):")
-		print(len(item_list))
-		print("len(set(item_list)):")
-		print(len(set(item_list)))
-		if len(item_list) == len(set(item_list)):
-			return True
-		else:
-			frappe.msgprint("Rechnungspositionen doppelt")
+	# def validate_items(self,item_list):
+	# 	print("len(item_list):")
+	# 	print(len(item_list))
+	# 	print("len(set(item_list)):")
+	# 	print(len(set(item_list)))
+	# 	if len(item_list) == len(set(item_list)):
+	# 		return True
+	# 	else:
+	# 		frappe.msgprint("Rechnungspositionen doppelt")
