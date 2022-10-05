@@ -141,6 +141,9 @@ class AutoInvoiceGenerator(Document):
 					for dn in x:
 						item_doc = frappe.get_doc("Delivery Note", dn["name"]) 
 						items = [self.create_invoice_doc_item(item) for item in item_doc.items]
+						for item in items:
+							item.delivery_note= dn["name"]
+
 						if len(items) > 0:
 							self.create_invoice(cust, items, "Abrechnung Lieferschein " + dn["name"]+ " " + cust_doc.customer_name)
 							invoice_count += 1
