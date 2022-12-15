@@ -101,13 +101,18 @@ class AutoInvoiceGenerator(Document):
 			for dn in delivery_note_list: 
 
 				item_doc = frappe.get_doc("Delivery Note", dn["name"]) 
-				for item in item_doc.items: 
-					print(item.item_group)
-					item.dn_detail= dn["name"]
-					print("item.dn_detail")
-					print(item.dn_detail)
-					items.append(item)
+				for item in item_doc.items:
+					item_in_prev_s_i = frappe.get_all("Sales Invoice Item", filters = {"dn_detail" : item.name })
+					print(len(item_in_prev_s_i))
+					if len(item_in_prev_s_i) == 0:
+						print(item.item_group)
+						item.dn_detail= dn["name"]
+						print("item.dn_detail")
+						print(item.dn_detail)
+						items.append(item)
 		return items
+	
+	
 	
 	@frappe.whitelist()
 	def get_invoice_dict(self): 
@@ -287,12 +292,4 @@ class AutoInvoiceGenerator(Document):
 			invoice_doc.append("taxes", new_tax)
 			invoice_doc.save()
 
-	# def validate_items(self,item_list):
-	# 	print("len(item_list):")
-	# 	print(len(item_list))
-	# 	print("len(set(item_list)):")
-	# 	print(len(set(item_list)))
-	# 	if len(item_list) == len(set(item_list)):
-	# 		return True
-	# 	else:
-	# 		frappe.msgprint("Rechnungspositionen doppelt")
+	
