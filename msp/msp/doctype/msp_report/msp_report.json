@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MSPREP-.#####",
+ "creation": "2022-12-14 20:33:18.124149",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "report_generation",
+  "period",
+  "report_content",
+  "report_module",
+  "customer",
+  "landscape"
+ ],
+ "fields": [
+  {
+   "fieldname": "report_generation",
+   "fieldtype": "Datetime",
+   "label": "Report Generation"
+  },
+  {
+   "fieldname": "period",
+   "fieldtype": "Data",
+   "label": "Period"
+  },
+  {
+   "fieldname": "report_content",
+   "fieldtype": "Text Editor",
+   "label": "Report Content"
+  },
+  {
+   "fieldname": "report_module",
+   "fieldtype": "Select",
+   "label": "Report Module",
+   "options": "urbackup"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "landscape",
+   "fieldtype": "Link",
+   "label": "Landscape",
+   "options": "IT Landscape"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-12-14 20:35:01.430039",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "MSP Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

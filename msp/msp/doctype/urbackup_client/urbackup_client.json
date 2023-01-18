@@ -1,0 +1,193 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "URBACKCL-.#####",
+ "creation": "2022-12-14 20:43:01.256112",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "it_object",
+  "customer",
+  "landscape",
+  "urbackup_instance",
+  "client_name",
+  "urbackup_client_data_section",
+  "client_version_string",
+  "delete_pending",
+  "file_ok",
+  "groupname",
+  "id",
+  "image_ok",
+  "ip",
+  "last_filebackup_issues",
+  "lastbackup",
+  "lastbackup_image",
+  "lastseen",
+  "online",
+  "os_simple",
+  "os_version_string",
+  "processes",
+  "client_status",
+  "image_disabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "client_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Client Name"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "landscape",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "urbackup_instance",
+   "fieldtype": "Link",
+   "label": "UrBackup Instance",
+   "options": "UrBackup Instance"
+  },
+  {
+   "fieldname": "urbackup_client_data_section",
+   "fieldtype": "Section Break",
+   "label": "UrBackup Client Data"
+  },
+  {
+   "fieldname": "client_version_string",
+   "fieldtype": "Data",
+   "label": "Client Version String"
+  },
+  {
+   "fieldname": "delete_pending",
+   "fieldtype": "Data",
+   "label": "Delete Pending"
+  },
+  {
+   "default": "0",
+   "fieldname": "file_ok",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "File OK"
+  },
+  {
+   "fieldname": "groupname",
+   "fieldtype": "Data",
+   "label": "Groupname"
+  },
+  {
+   "fieldname": "id",
+   "fieldtype": "Int",
+   "label": "ID"
+  },
+  {
+   "default": "0",
+   "fieldname": "image_ok",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Image OK"
+  },
+  {
+   "fieldname": "ip",
+   "fieldtype": "Data",
+   "label": "IP"
+  },
+  {
+   "fieldname": "last_filebackup_issues",
+   "fieldtype": "Int",
+   "label": "Last Filebackup Issues"
+  },
+  {
+   "fieldname": "lastbackup",
+   "fieldtype": "Int",
+   "label": "Lastbackup"
+  },
+  {
+   "fieldname": "lastbackup_image",
+   "fieldtype": "Int",
+   "label": "Lastbackup Image"
+  },
+  {
+   "fieldname": "lastseen",
+   "fieldtype": "Data",
+   "label": "Lastseen"
+  },
+  {
+   "fieldname": "it_object",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "IT Object",
+   "options": "IT Object"
+  },
+  {
+   "default": "0",
+   "fieldname": "online",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Online"
+  },
+  {
+   "fieldname": "os_simple",
+   "fieldtype": "Data",
+   "label": "OS Simple"
+  },
+  {
+   "fieldname": "os_version_string",
+   "fieldtype": "Data",
+   "label": "OS Version String"
+  },
+  {
+   "fieldname": "processes",
+   "fieldtype": "Long Text",
+   "label": "Processes"
+  },
+  {
+   "fieldname": "client_status",
+   "fieldtype": "Int",
+   "label": "Client Status"
+  },
+  {
+   "fieldname": "image_disabled",
+   "fieldtype": "Data",
+   "label": "Image Disabled"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-12-14 22:47:53.540884",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "UrBackup Client",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

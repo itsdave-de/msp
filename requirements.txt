@@ -1,3 +1,4 @@
 frappe
 ipaddress
 passwordgenerator
+urbackup-server-web-api-wrapper
