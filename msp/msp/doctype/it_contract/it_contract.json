@@ -7,42 +7,66 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "customer",
-  "it_landscape",
   "it_contract_type",
+  "status",
+  "column_break_3",
+  "it_landscape",
+  "customer",
+  "customer_name",
   "sla_details_section",
   "html_10",
   "reaction_time_emergeny",
   "reaction_time_urgent",
   "reaction_time_issue",
   "reaction_time_change",
-  "column_break_11"
+  "introduction_text_section",
+  "introduction_text",
+  "contained_items_section",
+  "items",
+  "billing_information_section",
+  "contract_start",
+  "contract_end",
+  "column_break_19",
+  "accounting_period",
+  "billing_active",
+  "history_section",
+  "delivery_note_list"
  ],
  "fields": [
   {
    "fieldname": "title",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Title"
   },
   {
+   "fetch_from": "it_landscape.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fieldname": "it_landscape",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "IT Landscape",
    "options": "IT Landscape"
   },
   {
    "fieldname": "it_contract_type",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "IT Contract Type",
    "options": "IT Contract Type"
   },
   {
+   "depends_on": "eval:doc.it_contract_type == \"SLA\"",
    "fieldname": "sla_details_section",
    "fieldtype": "Section Break",
    "label": "SLA Details"
@@ -73,12 +97,91 @@
    "options": "Reaktion Times May be written Hours like \"4H\"  or in Business Days Like \"1BD\""
   },
   {
-   "fieldname": "column_break_11",
+   "fieldname": "contained_items_section",
+   "fieldtype": "Section Break",
+   "label": "Contained Items"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "IT Contract Item"
+  },
+  {
+   "fieldname": "billing_information_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Information"
+  },
+  {
+   "fieldname": "contract_start",
+   "fieldtype": "Date",
+   "label": "Contract Start"
+  },
+  {
+   "fieldname": "contract_end",
+   "fieldtype": "Date",
+   "label": "Contract End"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nplaned\nactive\npaused\nexpired"
+  },
+  {
+   "fieldname": "accounting_period",
+   "fieldtype": "Select",
+   "label": "Accounting Period",
+   "options": "first of month\nlast of month\nday of month\nweekly\nquarterly\nyearly"
+  },
+  {
+   "fieldname": "history_section",
+   "fieldtype": "Section Break",
+   "label": "History"
+  },
+  {
+   "fieldname": "delivery_note_list",
+   "fieldtype": "Table",
+   "label": "Delivery Note List",
+   "options": "IT Contract Delivery Note"
+  },
+  {
+   "fieldname": "column_break_3",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "billing_active",
+   "fieldtype": "Check",
+   "label": "Billing Active"
+  },
+  {
+   "fieldname": "introduction_text_section",
+   "fieldtype": "Section Break",
+   "label": "Introduction Text"
+  },
+  {
+   "description": "Text that should appear on delivery notes and invoices. Placeholders [month] [year] [isoweek] get replaced, if used inside the text.",
+   "fieldname": "introduction_text",
+   "fieldtype": "Text Editor",
+   "label": "Introduction Text"
   }
  ],
  "links": [],
- "modified": "2022-06-17 11:19:34.968766",
+ "modified": "2023-02-22 20:09:42.111402",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Contract",

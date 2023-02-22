@@ -105,6 +105,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Documentation",
+   "link_to": "MSP Documentation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Settings",
    "link_type": "DocType",
    "onboard": 0,
@@ -129,7 +138,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-01-27 22:49:32.927072",
+ "modified": "2023-02-01 22:47:16.924689",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP",

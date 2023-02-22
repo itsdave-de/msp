@@ -16,7 +16,10 @@
   "oitc_status_unreachable_color",
   "qr_code_settings_section",
   "qr_code_dark_color",
-  "qr_code_scale"
+  "qr_code_scale",
+  "tactical_rmm_integration_section",
+  "api_url",
+  "api_key"
  ],
  "fields": [
   {
@@ -77,12 +80,27 @@
    "fieldname": "oitc_status_unreachable_color",
    "fieldtype": "Color",
    "label": "OITC Status Unreachable Color"
+  },
+  {
+   "fieldname": "tactical_rmm_integration_section",
+   "fieldtype": "Section Break",
+   "label": "Tactical RMM Integration"
+  },
+  {
+   "fieldname": "api_url",
+   "fieldtype": "Data",
+   "label": "API URL"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-07-19 12:16:04.805493",
+ "modified": "2023-02-01 22:22:53.062314",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Settings",

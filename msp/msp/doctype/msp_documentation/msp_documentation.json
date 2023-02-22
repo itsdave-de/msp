@@ -1,0 +1,87 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MSPDOC-.#####",
+ "creation": "2023-02-01 22:24:45.950665",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "landscape",
+  "customer",
+  "tactical_rmm_tenant_caption",
+  "generation_date",
+  "introduction",
+  "system_list",
+  "backup",
+  "aditional_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "landscape",
+   "fieldtype": "Link",
+   "label": "Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "introduction",
+   "fieldtype": "Markdown Editor",
+   "label": "Introduction"
+  },
+  {
+   "fieldname": "system_list",
+   "fieldtype": "Markdown Editor",
+   "label": "System List"
+  },
+  {
+   "fetch_from": "landscape.tactical_rmm_tenant_caption",
+   "fieldname": "tactical_rmm_tenant_caption",
+   "fieldtype": "Data",
+   "label": "Tactical RMM Tenant Caption"
+  },
+  {
+   "fieldname": "backup",
+   "fieldtype": "Markdown Editor",
+   "label": "Backup"
+  },
+  {
+   "fieldname": "aditional_data",
+   "fieldtype": "Text Editor",
+   "label": "Aditional Data"
+  },
+  {
+   "fieldname": "generation_date",
+   "fieldtype": "Date",
+   "label": "Generation Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-02-02 01:08:47.664035",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "MSP Documentation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
