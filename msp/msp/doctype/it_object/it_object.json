@@ -23,6 +23,8 @@
   "description_section",
   "description",
   "image",
+  "linked_objects_section",
+  "linked_objects",
   "network_config_section",
   "ip_adresses",
   "external_links_section",
@@ -164,11 +166,22 @@
    "fieldtype": "Text Editor",
    "label": "Location Full Path",
    "read_only": 1
+  },
+  {
+   "fieldname": "linked_objects_section",
+   "fieldtype": "Section Break",
+   "label": "Linked Objects"
+  },
+  {
+   "fieldname": "linked_objects",
+   "fieldtype": "Table",
+   "label": "Linked Objects",
+   "options": "IT Object Linked Object"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2022-09-06 16:18:52.084632",
+ "modified": "2023-03-02 09:58:05.589925",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
