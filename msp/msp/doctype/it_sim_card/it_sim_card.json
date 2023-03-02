@@ -16,6 +16,10 @@
   "it_object",
   "description",
   "section_break_5",
+  "security_information_section",
+  "pin",
+  "puk",
+  "tariff_info_section",
   "traffic_flat",
   "traffic_month",
   "sms_flat",
@@ -134,11 +138,31 @@
    "fieldtype": "Data",
    "in_standard_filter": 1,
    "label": "SIM ID"
+  },
+  {
+   "fieldname": "security_information_section",
+   "fieldtype": "Section Break",
+   "label": "Security Information"
+  },
+  {
+   "fieldname": "pin",
+   "fieldtype": "Data",
+   "label": "PIN"
+  },
+  {
+   "fieldname": "puk",
+   "fieldtype": "Data",
+   "label": "PUK"
+  },
+  {
+   "fieldname": "tariff_info_section",
+   "fieldtype": "Section Break",
+   "label": "Tariff Info"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-01 22:06:52.209035",
+ "modified": "2023-03-02 08:08:57.034757",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT SIM Card",
