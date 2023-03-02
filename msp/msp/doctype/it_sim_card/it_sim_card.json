@@ -11,6 +11,7 @@
   "provider",
   "landscape",
   "customer",
+  "number",
   "iccid",
   "sim_id",
   "it_object",
@@ -158,11 +159,16 @@
    "fieldname": "tariff_info_section",
    "fieldtype": "Section Break",
    "label": "Tariff Info"
+  },
+  {
+   "fieldname": "number",
+   "fieldtype": "Data",
+   "label": "Number"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-02 08:08:57.034757",
+ "modified": "2023-03-02 08:59:05.755679",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT SIM Card",
