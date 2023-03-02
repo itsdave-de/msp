@@ -6,17 +6,43 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "title"
+  "title",
+  "revision",
+  "description",
+  "depends_on",
+  "elements"
  ],
  "fields": [
   {
    "fieldname": "title",
    "fieldtype": "Data",
    "label": "Title"
+  },
+  {
+   "fieldname": "revision",
+   "fieldtype": "Int",
+   "label": "Revision"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Markdown Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "elements",
+   "fieldtype": "Table",
+   "label": "Elements",
+   "options": "IT Checklist Template Element"
+  },
+  {
+   "fieldname": "depends_on",
+   "fieldtype": "Link",
+   "label": "Depends On",
+   "options": "IT Checklist Template"
   }
  ],
  "links": [],
- "modified": "2022-06-17 11:21:13.492067",
+ "modified": "2023-03-01 22:57:37.038116",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Checklist Template",

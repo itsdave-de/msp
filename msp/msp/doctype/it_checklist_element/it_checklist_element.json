@@ -1,0 +1,70 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-03-01 22:18:31.387702",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "type",
+  "description",
+  "passed",
+  "falied",
+  "datetime",
+  "remark"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "default": "0",
+   "fieldname": "passed",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Passed"
+  },
+  {
+   "default": "0",
+   "fieldname": "falied",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Falied"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Markdown Editor",
+   "label": "Remark"
+  },
+  {
+   "fieldname": "datetime",
+   "fieldtype": "Datetime",
+   "label": "Date/Time"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-03-01 23:31:57.867241",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Checklist Element",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

@@ -53,6 +53,24 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Solutions",
+   "link_to": "IT Solution",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SIM Cards",
+   "link_to": "IT SIM Card",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Authentication",
    "link_type": "DocType",
    "onboard": 0,
@@ -138,7 +156,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-02-01 22:47:16.924689",
+ "modified": "2023-03-01 21:56:00.493767",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP",
@@ -156,6 +174,12 @@
    "doc_view": "List",
    "label": "Landscapes",
    "link_to": "IT Landscape",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Solutions",
+   "link_to": "IT Solution",
    "type": "DocType"
   }
  ]

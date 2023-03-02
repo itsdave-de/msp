@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "ITSOL-.#####",
+ "creation": "2023-03-01 20:42:24.507946",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "section_break_2",
+  "it_landscape",
+  "column_break_4",
+  "customer",
+  "section_break_6",
+  "description",
+  "linked_objects_section",
+  "linked_objects"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Title"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Markdown Editor",
+   "label": "Description"
+  },
+  {
+   "fetch_from": "landscape.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "linked_objects_section",
+   "fieldtype": "Section Break",
+   "label": "Linked Objects"
+  },
+  {
+   "fieldname": "linked_objects",
+   "fieldtype": "Table",
+   "label": "Linked Objects",
+   "options": "IT Solution Linked Object"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Landscape",
+   "options": "IT Landscape"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-03-01 23:50:47.972136",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Solution",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

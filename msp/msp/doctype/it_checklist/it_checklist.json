@@ -7,9 +7,18 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "customer",
+  "section_break_2",
   "it_landscape",
-  "completed_on"
+  "column_break_4",
+  "customer",
+  "amended_from",
+  "section_break_6",
+  "started_on",
+  "status",
+  "column_break_8",
+  "completed_on",
+  "section_break_10",
+  "it_checklist_elements"
  ],
  "fields": [
   {
@@ -18,10 +27,12 @@
    "label": "Title"
   },
   {
+   "fetch_from": "it_landscape.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fieldname": "it_landscape",
@@ -33,10 +44,59 @@
    "fieldname": "completed_on",
    "fieldtype": "Datetime",
    "label": "Completed on"
+  },
+  {
+   "fieldname": "started_on",
+   "fieldtype": "Datetime",
+   "label": "Started on"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "IT Checklist",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "it_checklist_elements",
+   "fieldtype": "Table",
+   "label": "IT Checklist Elements",
+   "options": "IT Checklist Element"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "open\nin proggress"
   }
  ],
+ "is_submittable": 1,
  "links": [],
- "modified": "2022-06-17 11:22:55.055154",
+ "modified": "2023-03-01 23:45:23.367780",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Checklist",
