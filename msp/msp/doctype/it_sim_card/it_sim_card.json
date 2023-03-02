@@ -168,7 +168,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-02 08:59:05.755679",
+ "modified": "2023-03-02 10:03:08.856132",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT SIM Card",
@@ -187,6 +187,7 @@
    "write": 1
   }
  ],
+ "search_fields": "title, number, sim_id",
  "sort_field": "modified",
  "sort_order": "DESC"
 }
