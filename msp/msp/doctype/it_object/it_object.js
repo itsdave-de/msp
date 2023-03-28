@@ -146,12 +146,46 @@ frappe.ui.form.on('IT Object', {
 		if (frm.doc.monitoring_link) {
 			frm.add_custom_button('Open Monitoring', () => frm.trigger('open_monitoring'), 'Actions');
 		};
+		if (frm.doc.link) {
+			frm.add_custom_button('Copy Main Admin Account User', () => frm.trigger('get_user'), 'Actions');
+		};
+		if (frm.doc.link) {
+			frm.add_custom_button('Copy Main Admin Account PW', () => frm.trigger('get_pw'), 'Actions');
+		};
 	},
 	open_admin_interface: function (frm) {
 		window.open(frm.doc.admin_interface_link, '_blank').focus();
 	},
 	open_monitoring: function (frm) {
 		window.open(frm.doc.monitoring_link, '_blank').focus();
+	},
+	get_pw: function(frm) {
+        frm.call('copy_pw', {
+            'user_agent': navigator.userAgent,
+            'platform': navigator.platform,
+        },
+        (r) => {
+			frm.events.CopyToClipboard(r.message)
+        }
+        );
+    },
+	get_user: function(frm) {
+        frm.call('copy_user', {
+            'user_agent': navigator.userAgent,
+            'platform': navigator.platform,
+        },
+        (r) => {
+			frm.events.CopyToClipboard(r.message)
+        }
+        );
+    },
+	CopyToClipboard: function(value) {
+		var tempInput = document.createElement("input");
+		tempInput.value = value;
+		document.body.appendChild(tempInput);
+		tempInput.select();
+		document.execCommand("copy");
+		document.body.removeChild(tempInput);
 	},
 	
 });

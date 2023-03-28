@@ -11,6 +11,18 @@ class ITObject(Document):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.set_it_object_data_in_ip_address_doctype()
+    
+    @frappe.whitelist()
+    def copy_pw(self, user_agent, platform):
+        if self.link:
+            account_doc = frappe.get_doc("IT User Account", self.link)
+        return(account_doc.get_password("password"))
+
+    @frappe.whitelist()
+    def copy_user(self, user_agent, platform):
+        if self.link:
+            account_doc = frappe.get_doc("IT User Account", self.link)
+        return(account_doc.username)
 
     def set_it_object_data_in_ip_address_doctype(self):
         if not self.main_ip:
