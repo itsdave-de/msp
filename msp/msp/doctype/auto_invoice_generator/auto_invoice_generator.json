@@ -12,6 +12,9 @@
   "invoices_from_delivery_notes_section",
   "customer",
   "get_invoice",
+  "it_contract_invoices_section",
+  "billing_month",
+  "contract_invoices",
   "statistics",
   "date",
   "invoice_count",
@@ -74,12 +77,28 @@
    "fieldname": "log",
    "fieldtype": "Small Text",
    "label": "Log"
+  },
+  {
+   "fieldname": "billing_month",
+   "fieldtype": "Data",
+   "label": "Billing Month"
+  },
+  {
+   "fieldname": "contract_invoices",
+   "fieldtype": "Button",
+   "label": "Contract Invoices",
+   "options": "get_invoices"
+  },
+  {
+   "fieldname": "it_contract_invoices_section",
+   "fieldtype": "Section Break",
+   "label": "IT Contract Invoices"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "migration_hash": "81a435d8fdde574c14c22be58f9e32ca",
- "modified": "2022-09-22 14:23:33.413375",
+ "migration_hash": "d64bd35ec0b0d442bcfc080be217f2f6",
+ "modified": "2023-05-31 11:12:52.773165",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Auto Invoice Generator",
