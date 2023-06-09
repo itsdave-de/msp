@@ -29,6 +29,7 @@
   "column_break_19",
   "accounting_period",
   "billing_active",
+  "invoicing_in_advance",
   "history_section",
   "delivery_note_list"
  ],
@@ -178,10 +179,17 @@
    "fieldname": "introduction_text",
    "fieldtype": "Text Editor",
    "label": "Introduction Text"
+  },
+  {
+   "default": "0",
+   "fieldname": "invoicing_in_advance",
+   "fieldtype": "Check",
+   "label": "Invoicing in advance"
   }
  ],
  "links": [],
- "modified": "2023-02-22 20:09:42.111402",
+ "migration_hash": "c5e40dc088dd7fd9d7d8cc905833c3f8",
+ "modified": "2023-05-31 11:06:24.441274",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Contract",
