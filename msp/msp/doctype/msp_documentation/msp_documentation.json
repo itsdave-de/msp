@@ -12,6 +12,8 @@
   "tactical_rmm_tenant_caption",
   "generation_date",
   "introduction",
+  "server_list",
+  "workstation_list",
   "system_list",
   "backup",
   "aditional_data"
@@ -59,11 +61,21 @@
    "fieldname": "generation_date",
    "fieldtype": "Date",
    "label": "Generation Date"
+  },
+  {
+   "fieldname": "server_list",
+   "fieldtype": "Markdown Editor",
+   "label": "Server List"
+  },
+  {
+   "fieldname": "workstation_list",
+   "fieldtype": "Markdown Editor",
+   "label": "Workstation List"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-02-02 01:08:47.664035",
+ "modified": "2023-06-08 21:12:01.615350",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Documentation",

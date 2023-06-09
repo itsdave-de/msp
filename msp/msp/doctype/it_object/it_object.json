@@ -28,10 +28,15 @@
   "linked_objects",
   "network_config_section",
   "ip_adresses",
+  "rmm_data_section",
+  "rmm_specs",
+  "rmm_software",
   "external_links_section",
   "admin_interface_link",
   "monitoring_link",
-  "oitc_host_uuid"
+  "oitc_host_uuid",
+  "rmm_agent_id",
+  "rmm_instance"
  ],
  "fields": [
   {
@@ -183,11 +188,38 @@
    "fieldname": "serial_number",
    "fieldtype": "Data",
    "label": "Serial Number"
+  },
+  {
+   "fieldname": "rmm_agent_id",
+   "fieldtype": "Data",
+   "label": "RMM Agent ID"
+  },
+  {
+   "fieldname": "rmm_instance",
+   "fieldtype": "Link",
+   "label": "RMM Instance",
+   "options": "RMM Instance"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "rmm_data_section",
+   "fieldtype": "Section Break",
+   "label": "RMM Data"
+  },
+  {
+   "fieldname": "rmm_specs",
+   "fieldtype": "Markdown Editor",
+   "label": "RMM Specs"
+  },
+  {
+   "fieldname": "rmm_software",
+   "fieldtype": "Markdown Editor",
+   "label": "RMM Software"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2023-03-02 10:10:07.173113",
+ "modified": "2023-06-08 23:00:31.338542",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",

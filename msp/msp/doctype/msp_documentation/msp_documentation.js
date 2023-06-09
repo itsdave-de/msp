@@ -14,6 +14,16 @@ frappe.ui.form.on('MSP Documentation', {
                     }
                 });
             }, 'Workflow');
+            frm.add_custom_button('2. office suche', function(){
+                frappe.call({ 
+                    method: 'msp.tactical-rmm.search_office', 
+                    args: { documentation: frm.doc.name },
+                    callback:function(r){
+                        console.log(r.message)
+                        frm.reload_doc()
+                    }
+                });
+            }, 'Workflow');
 	}
 });
 
