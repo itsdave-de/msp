@@ -9,6 +9,7 @@
  "field_order": [
   "landscape",
   "customer",
+  "customer_name",
   "tactical_rmm_tenant_caption",
   "generation_date",
   "introduction",
@@ -26,10 +27,12 @@
    "options": "IT Landscape"
   },
   {
+   "fetch_from": "landscape.customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
-   "options": "Customer"
+   "options": "Customer",
+   "read_only": 1
   },
   {
    "fieldname": "introduction",
@@ -71,11 +74,18 @@
    "fieldname": "workstation_list",
    "fieldtype": "Markdown Editor",
    "label": "Workstation List"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-08 21:12:01.615350",
+ "modified": "2023-06-09 07:14:25.256192",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Documentation",
