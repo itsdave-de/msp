@@ -91,7 +91,7 @@ doctype_js = {"Location" : "public/js/location.js"}
 
 doc_events = {
 	"Location": {
-		"before_save": "msp.tools.hooks_methods.build_full_location_path"
+		"before_save": "msp.hooked_methods.build_full_location_path"
 	}
 }
 
