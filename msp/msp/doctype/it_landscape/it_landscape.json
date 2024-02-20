@@ -21,7 +21,8 @@
   "landscape_image",
   "monitoring_link",
   "ticket_system_link",
-  "tactical_rmm_tenant_caption"
+  "tactical_rmm_tenant_caption",
+  "rmm_instance"
  ],
  "fields": [
   {
@@ -112,11 +113,17 @@
    "fieldtype": "Link",
    "label": "IT Contract",
    "options": "IT Contract"
+  },
+  {
+   "fieldname": "rmm_instance",
+   "fieldtype": "Link",
+   "label": "RMM Instance",
+   "options": "RMM Instance"
   }
  ],
  "image_field": "landscape_image",
  "links": [],
- "modified": "2023-02-22 20:02:46.515700",
+ "modified": "2023-06-08 23:20:35.777651",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Landscape",

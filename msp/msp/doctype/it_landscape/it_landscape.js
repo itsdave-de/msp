@@ -9,6 +9,9 @@ frappe.ui.form.on('IT Landscape', {
 			};
 			if (frm.doc.monitoring_link) {
 				frm.add_custom_button('Open Monitoring', () => frm.trigger('open_monitoring'), 'Actions');
+			};
+			if (frm.doc.rmm_instance) {
+				frm.add_custom_button('Get Agents From RMM', () => frm.trigger('rmm_get_agents'), 'RMM');
 			}
 		},
 	open_ticket_system: function(frm) {
@@ -17,6 +20,21 @@ frappe.ui.form.on('IT Landscape', {
 	open_monitoring: function(frm) {
 		window.open(frm.doc.monitoring_link, '_blank').focus();
 	},
+	rmm_get_agents: function(frm) {
+		frappe.call({
+			"method": "msp.tactical-rmm.get_agents",
+			args: {
+				"it_landscape": frm.doc.name,
+				"rmm_instance": frm.doc.rmm_instance,
+				"tactical_rmm_tenant_caption": frm.doc.tactical_rmm_tenant_caption		
+			},
+			callback: (response) => {
+					frappe.msgprint(__(response.message));
+			} 
+
+		})
+	},
+
 
 	copy_ssh_keys: function(frm) {
 		frappe.call({

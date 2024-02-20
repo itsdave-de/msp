@@ -91,7 +91,7 @@ doctype_js = {"Location" : "public/js/location.js"}
 
 doc_events = {
 	"Location": {
-		"before_save": "msp.tools.hooks_methods.build_full_location_path"
+		"before_save": "msp.hooked_methods.build_full_location_path"
 	}
 }
 
@@ -138,3 +138,7 @@ doc_events = {
 override_doctype_class = {
     "Location": "msp.overrides.location.CustomLocation.CustomLocation"
 }
+
+fixtures = [
+    {"doctype": "Print Format", "filters": {"name": "Standard IT Landscape Documentation"}}
+]
