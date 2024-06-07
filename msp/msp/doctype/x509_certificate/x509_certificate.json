@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:certificate-{certificate_name}-{###}",
+ "creation": "2024-06-04 14:19:04.168850",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "certificate_name",
+  "attach_cert",
+  "attach_key",
+  "certificate_data",
+  "private_key",
+  "not_valid_before",
+  "not_valid_after",
+  "certificate_information"
+ ],
+ "fields": [
+  {
+   "fieldname": "certificate_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certificate Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "certificate_data",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Certificate Data"
+  },
+  {
+   "fieldname": "private_key",
+   "fieldtype": "Long Text",
+   "in_list_view": 1,
+   "label": "Private Key"
+  },
+  {
+   "fieldname": "not_valid_before",
+   "fieldtype": "Datetime",
+   "label": "Not Valid Before",
+   "read_only": 1
+  },
+  {
+   "fieldname": "not_valid_after",
+   "fieldtype": "Datetime",
+   "label": "Not Valid After",
+   "read_only": 1
+  },
+  {
+   "fieldname": "certificate_information",
+   "fieldtype": "Long Text",
+   "label": "Certificate Information",
+   "read_only": 1
+  },
+  {
+   "description": "Upload Certificate in PEM or P12 Format",
+   "fieldname": "attach_cert",
+   "fieldtype": "Attach",
+   "label": "Attach Certificate"
+  },
+  {
+   "description": "Upload Key for PEM format Certificate",
+   "fieldname": "attach_key",
+   "fieldtype": "Attach",
+   "label": "Attach Key"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-06-05 12:37:40.951738",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "x509_certificate",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
