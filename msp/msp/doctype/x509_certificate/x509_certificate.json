@@ -1,39 +1,44 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:certificate-{certificate_name}-{###}",
  "creation": "2024-06-04 14:19:04.168850",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "certificate_name",
-  "attach_cert",
+  "attach_zip",
+  "attach_certificate_copy",
   "attach_key",
   "certificate_data",
   "private_key",
+  "private_key_verification",
+  "ca_label_content",
+  "ca_verification",
   "not_valid_before",
   "not_valid_after",
-  "certificate_information"
+  "certificate_information",
+  "ca_information"
  ],
  "fields": [
   {
    "fieldname": "certificate_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Certificate Name",
-   "reqd": 1
+   "label": "Certificate Name"
   },
   {
    "fieldname": "certificate_data",
    "fieldtype": "Long Text",
    "in_list_view": 1,
-   "label": "Certificate Data"
+   "label": "Certificate Data",
+   "read_only_depends_on": "eval:doc.attach_certificate_copy"
   },
   {
    "fieldname": "private_key",
    "fieldtype": "Long Text",
    "in_list_view": 1,
-   "label": "Private Key"
+   "label": "Private Key",
+   "read_only_depends_on": "eval:doc.attach_key"
   },
   {
    "fieldname": "not_valid_before",
@@ -54,21 +59,55 @@
    "read_only": 1
   },
   {
-   "description": "Upload Certificate in PEM or P12 Format",
-   "fieldname": "attach_cert",
-   "fieldtype": "Attach",
-   "label": "Attach Certificate"
-  },
-  {
    "description": "Upload Key for PEM format Certificate",
    "fieldname": "attach_key",
    "fieldtype": "Attach",
-   "label": "Attach Key"
+   "label": "Attach Key",
+   "read_only_depends_on": "eval:doc.attach_zip"
+  },
+  {
+   "description": "Upload Certificate in PEM or P12 Format",
+   "fieldname": "attach_certificate_copy",
+   "fieldtype": "Attach",
+   "label": "Attach Certificate Copy",
+   "read_only_depends_on": "eval:doc.attach_zip"
+  },
+  {
+   "fieldname": "attach_zip",
+   "fieldtype": "Attach",
+   "label": "zip"
+  },
+  {
+   "fieldname": "private_key_verification",
+   "fieldtype": "Data",
+   "label": "Private Key Verification",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.ca_label_content",
+   "fieldname": "ca_information",
+   "fieldtype": "Long Text",
+   "label": "CA Information",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.attach_zip",
+   "fieldname": "ca_label_content",
+   "fieldtype": "Long Text",
+   "label": "Certificate Authority",
+   "read_only_depends_on": "eval:doc.attach_zip"
+  },
+  {
+   "depends_on": "eval:doc.ca_label_content",
+   "fieldname": "ca_verification",
+   "fieldtype": "Data",
+   "label": "CA Verification",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-06-05 12:37:40.951738",
+ "modified": "2024-06-14 10:50:44.471107",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "x509_certificate",

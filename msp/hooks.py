@@ -92,6 +92,10 @@ doctype_js = {"Location" : "public/js/location.js"}
 doc_events = {
 	"Location": {
 		"before_save": "msp.hooked_methods.build_full_location_path"
+	},
+    "x509_certificate": {
+        "before_save": "msp.certificate_methods.process_certficate_data",
+        "after_insert": "msp.certificate_methods.set_doctype_name"
 	}
 }
 
