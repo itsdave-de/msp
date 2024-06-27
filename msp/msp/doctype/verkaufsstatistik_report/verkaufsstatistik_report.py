@@ -176,7 +176,8 @@ class VerkaufsstatistikReport(Document):
 			df= self.add_total_row(df)
 		if df.empty:
 			frappe.throw('Für die angegebene Periode sind keine Daten vorhanden')
-		self.report_ausgabe = self.get_styler(df).render()
+		self.report_ausgabe = self.get_styler(df).to_html()
+		#self.report_ausgabe = self.get_styler(df).render()
 		self.save()
 
 	def add_total_row(self,df):
@@ -185,20 +186,37 @@ class VerkaufsstatistikReport(Document):
 		df.loc['SUM']  = sum_row
 		
 		return df
-	def get_styler(self,df):	
+	
+	def get_styler(self, df):
+
 		styles = [
-        dict(props=[("border-collapse", "collapse"), ("width", "100%")]),
+        dict(selector="table", props=[("border-collapse", "collapse"), ("width", "100%")]),
         dict(selector="th, td", props=[("padding", ".75rem"), ("border-top", "1px solid #dee2e6")]),
         dict(selector=".col_heading", props=[('text-align', 'right')]),
         dict(selector=".col_heading.col0", props=[('text-align', 'left')]),
         dict(selector=".data", props=[("text-align", "right")]),
-        #dict(selector=".col0", props=[("text-align", "left")]), # first column
+        # dict(selector=".col0", props=[("text-align", "left")]), # first column
         dict(selector="tbody tr:nth-of-type(odd)", props=[("background-color", "rgba(0,0,0,.05)")]), # stripes
 		]
 		if self.summenzeile == 1:
 			a = dict(selector="tr:nth-last-child(1)", props=[("font-weight", "bold")])
 			styles.append(a)
 		return df.style.format('{:.2f}').set_table_styles(styles)
+
+	# def get_styler(self,df):	
+	# 	styles = [
+    #     dict(props=[("border-collapse", "collapse"), ("width", "100%")]),
+    #     dict(selector="th, td", props=[("padding", ".75rem"), ("border-top", "1px solid #dee2e6")]),
+    #     dict(selector=".col_heading", props=[('text-align', 'right')]),
+    #     dict(selector=".col_heading.col0", props=[('text-align', 'left')]),
+    #     dict(selector=".data", props=[("text-align", "right")]),
+    #     #dict(selector=".col0", props=[("text-align", "left")]), # first column
+    #     dict(selector="tbody tr:nth-of-type(odd)", props=[("background-color", "rgba(0,0,0,.05)")]), # stripes
+	# 	]
+	# 	if self.summenzeile == 1:
+	# 		a = dict(selector="tr:nth-last-child(1)", props=[("font-weight", "bold")])
+	# 		styles.append(a)
+	# 	return df.style.format('{:.2f}').set_table_styles(styles)
 	
 	@frappe.whitelist()
 	def generate_excel_sheet(self):
