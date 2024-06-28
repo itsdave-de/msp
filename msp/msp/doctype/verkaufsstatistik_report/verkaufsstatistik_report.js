@@ -8,17 +8,43 @@ frappe.ui.form.on('Verkaufsstatistik Report', {
         
         frm.add_custom_button('Generate Excel Sheet', () => frm.trigger('generate_excel_sheet'));
         frm.add_custom_button('Generate Report', () => frm.trigger('generate_report'));
-		},
-		generate_report: function(frm) {
-			frm.call('generate_report', {}, () => frm.reload_doc());
-        
+
+            },
+            generate_report: function(frm) {
+                
+                frm.call({
+                    method: 'msp.msp.doctype.verkaufsstatistik_report.verkaufsstatistik_report.generate_report',
+                    args: { doc_name: frm.doc.name },
+                    freeze: true,
+                    freeze_message: __("Report wird erstellt ..."),
+                    callback: function() {
+                        
+                        frm.reload_doc();
+                    },
+                   
+                });
+            },
+            generate_excel_sheet: function(frm) {
+                frm.call('generate_excel_sheet', {}, () => frm.reload_doc());
             
-		},
-		generate_excel_sheet: function(frm) {
-			frm.call('generate_excel_sheet', {}, () => frm.reload_doc());
+            
+            },
         
         
-        },
+    
+        // generate_report: function(frm) {
+        //     frappe.show_progress('Report wird generiert...', 50, 100, 'Dieser Vorgang kann ein paar Minuten dauern.')
+        //     frm.call('generate_report', {}, () => frm.reload_doc());
+        //     frappe.hide_progress();
+        
+   
+        // },
+            
+		// generate_excel_sheet: function(frm) {
+		// 	frm.call('generate_excel_sheet', {}, () => frm.reload_doc());
+        
+        
+        // },
     // setup: function(frm) {
     //     frm.set_query("artikel",function(){
     //         return {

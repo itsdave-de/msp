@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 from os import replace
 import frappe
-from datetime import datetime as dt
+import datetime as dt
 from pprint import pprint
 import pandas as pd
 import numpy as np
@@ -107,9 +107,30 @@ class VerkaufsstatistikReport(Document):
 		df['Monat'] = df['Date'].dt.to_period('M')
 		print(df['Month'].tolist())
 		#df['Monat'] = df['Date'].dt.strftime("%m.%Y")
-		from_date_dt = dt. strptime(self.from_date, '%Y-%m-%d')
+
+    	# Debugging-Ausgaben hinzufügen
+		print("self.from_date:", self.from_date)
+		print("Type of self.from_date:", type(self.from_date))
+
+		if isinstance(self.from_date, str):
+			from_date_dt = dt.datetime.strptime(self.from_date, '%Y-%m-%d').date()
+		elif isinstance(self.from_date, dt.date):
+			from_date_dt = self.from_date
+		else:
+			frappe.throw('Ungültiges Datumsformat für from_date: {}'.format(self.from_date))
+
 		from_date_st = from_date_dt.strftime('%d.%m.%Y')
-		to_date_dt = dt. strptime(self.to_date, '%Y-%m-%d')
+
+		print("self.to_date:", self.to_date)
+		print("Type of self.to_date:", type(self.to_date))
+
+		if isinstance(self.to_date, str):
+			to_date_dt = dt.datetime.strptime(self.to_date, '%Y-%m-%d').date()
+		elif isinstance(self.to_date, dt.date):
+			to_date_dt = self.to_date
+		else:
+			frappe.throw('Ungültiges Datumsformat für to_date: {}'.format(self.to_date))
+
 		to_date_st = to_date_dt.strftime('%d.%m.%Y')
 		df['Periode'] = from_date_st+ " bis " + to_date_st
 		
@@ -169,16 +190,8 @@ class VerkaufsstatistikReport(Document):
 		if item_list == []:
 			self.report_ausgabe = '<p>' + ("Für die angegebene Periode sind keine Daten vorhanden") + '</p>'
 		return a
-	@frappe.whitelist()
-	def generate_report(self):
-		df = self.do_report()
-		if self.summenzeile == 1:
-			df= self.add_total_row(df)
-		if df.empty:
-			frappe.throw('Für die angegebene Periode sind keine Daten vorhanden')
-		self.report_ausgabe = self.get_styler(df).to_html()
-		#self.report_ausgabe = self.get_styler(df).render()
-		self.save()
+	
+	
 
 	def add_total_row(self,df):
 		
@@ -246,3 +259,26 @@ class VerkaufsstatistikReport(Document):
 		
 		filename = name + '.xlsx'
 		save_file(filename, content, doctype, name, None, False, 1)
+
+@frappe.whitelist()
+def generate_report(doc_name):
+    doc = frappe.get_doc('Verkaufsstatistik Report', doc_name)
+    df = doc.do_report()
+    if doc.summenzeile == 1:
+        df = doc.add_total_row(df)
+    if df.empty:
+        frappe.throw('Für die angegebene Periode sind keine Daten vorhanden')
+    doc.report_ausgabe = doc.get_styler(df).to_html()
+    doc.save()
+
+# @frappe.whitelist()
+# def generate_report(self):
+# 	df = self.do_report()
+# 	if self.summenzeile == 1:
+# 		df= self.add_total_row(df)
+# 	if df.empty:
+# 		frappe.throw('Für die angegebene Periode sind keine Daten vorhanden')
+# 	self.report_ausgabe = self.get_styler(df).to_html()
+# 	#self.report_ausgabe = self.get_styler(df).render()
+# 	self.save()
+
