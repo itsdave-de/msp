@@ -41,7 +41,7 @@ def get_hours_from_service_reports(employee, from_date, to_date):
     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
 
     result = get_service_report_work(employee)
-    print(result)
+    #print(result)
 
     hours_dict = {}
 
@@ -57,8 +57,8 @@ def get_hours_from_service_reports(employee, from_date, to_date):
     else:
         hours_sum = 0
     sorted_hours_dict = dict(sorted(hours_dict.items()))
-    print(hours_sum)
-    print(hours_dict)
+    #print(hours_sum)
+    #print(hours_dict)
     return sorted_hours_dict,hours_sum
 
 def get_service_report_work(employee):
@@ -132,7 +132,7 @@ def get_holidays_list(from_date, to_date):
         holidays_li = [h.holiday_date for h in hol_doc.holidays]
         holidays_list.extend(holidays_li)
     
-    print(holidays_list)
+    #print(holidays_list)
     
     # holidays_list = [datetime.strptime(holiday, '%Y-%m-%d').date() for holiday in holidays[0]["holidays"]]
     return holidays_list
