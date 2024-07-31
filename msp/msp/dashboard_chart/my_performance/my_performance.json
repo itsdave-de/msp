@@ -1,0 +1,44 @@
+{
+ "based_on": "",
+ "chart_name": "My Performance",
+ "chart_type": "Custom",
+ "creation": "2024-07-29 23:47:15.150259",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "",
+ "dynamic_filters_json": "{\"from_date\":\"frappe.datetime.add_days(frappe.datetime.now_date(), -14)\",\"to_date\":\"frappe.datetime.now_date()\"}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2024-07-30 07:25:59.956576",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "My Performance",
+ "number_of_groups": 0,
+ "owner": "D.Malinowski@itsdave.de",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "ITSDoc Techniker"
+  },
+  {
+   "role": "Tech Support"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "HR Manager"
+  }
+ ],
+ "source": "Employee Hours Performance",
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}
