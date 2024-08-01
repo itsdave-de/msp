@@ -12,6 +12,7 @@
   "invoices_from_delivery_notes_section",
   "customer",
   "get_invoice",
+  "inv_without_draft",
   "it_contract_invoices_section",
   "billing_month",
   "contract_invoices",
@@ -48,7 +49,7 @@
    "fieldname": "get_invoice",
    "fieldtype": "Button",
    "label": "Get Invoice",
-   "options": "get_invoice_dict"
+   "options": "generate_invoices"
   },
   {
    "fieldname": "date",
@@ -93,15 +94,22 @@
    "fieldname": "it_contract_invoices_section",
    "fieldtype": "Section Break",
    "label": "IT Contract Invoices"
+  },
+  {
+   "description": "Rechnungserstellung f\u00fcr Kunden, f\u00fcr die rechnungen im Entwurfstatus existeren",
+   "fieldname": "inv_without_draft",
+   "fieldtype": "Button",
+   "label": "Invoice without draft article ",
+   "options": "generate_invoices_without_draft_items"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "migration_hash": "d64bd35ec0b0d442bcfc080be217f2f6",
- "modified": "2023-05-31 11:12:52.773165",
+ "modified": "2024-07-31 11:37:09.454442",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "Auto Invoice Generator",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -119,5 +127,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
 }
