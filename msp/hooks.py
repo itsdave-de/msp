@@ -18,11 +18,11 @@ app_license = "GPLv3"
 # app_include_css = "/assets/msp/css/msp.css"
 app_include_js = "/assets/msp/js/customer_quick_entry.js"
 
-jenv = {
+jinja = {
 	"methods": [
-		"jinja_get_item_price:msp.things.get_item_price_for_label",
-		"jinja_get_epc_code:msp.things.get_epc_inline",
-		"jinja_get_qr_code:msp.things.get_qr_code_inline"
+		"msp.things.get_item_price_for_label",
+		"msp.things.get_epc_inline",
+		"msp.things.get_qr_code_inline"
 	]
 }
 

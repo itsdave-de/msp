@@ -1,0 +1,93 @@
+{
+ "charts": [
+  {
+   "chart_name": "My Performance",
+   "label": "Meine Performance"
+  }
+ ],
+ "content": "[{\"id\":\"HEmp649Etq\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Technik</span>\",\"col\":12}},{\"id\":\"AW8p3HUvHt\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Meine Performance\",\"col\":12}},{\"id\":\"vBNumIecsh\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"zJ7GHiOCcI\",\"type\":\"card\",\"data\":{\"card_name\":\"MSP\",\"col\":5}},{\"id\":\"XNPhytxMcq\",\"type\":\"card\",\"data\":{\"card_name\":\"Service Reports\",\"col\":5}},{\"id\":\"ylnuD9q8fE\",\"type\":\"spacer\",\"data\":{\"col\":12}}]",
+ "creation": "2024-06-25 14:11:39.269749",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 1,
+ "icon": "tool",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Technik",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Reports",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Report",
+   "link_count": 0,
+   "link_to": "Service Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "MSP",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "IT Objects",
+   "link_count": 0,
+   "link_to": "IT Object",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "IT Landscapes",
+   "link_count": 0,
+   "link_to": "IT Landscape",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "MSP Documentation",
+   "link_count": 0,
+   "link_to": "MSP Documentation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2024-07-30 07:36:09.918509",
+ "modified_by": "D.Malinowski@itsdave.de",
+ "module": "MSP",
+ "name": "Technik",
+ "number_cards": [],
+ "owner": "D.Malinowski@itsdave.de",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 2.0,
+ "shortcuts": [],
+ "title": "Technik"
+}

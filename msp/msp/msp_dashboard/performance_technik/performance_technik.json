@@ -1,0 +1,21 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "chart": "My Performance",
+   "width": "Full"
+  }
+ ],
+ "creation": "2024-07-29 23:16:38.781648",
+ "dashboard_name": "Performance Technik",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2024-07-30 00:11:48.277123",
+ "modified_by": "D.Malinowski@itsdave.de",
+ "module": "MSP",
+ "name": "Performance Technik",
+ "owner": "D.Malinowski@itsdave.de"
+}

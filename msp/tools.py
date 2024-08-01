@@ -197,7 +197,7 @@ def get_holidays_list(from_date, to_date):
         holidays_li = [h.holiday_date for h in hol_doc.holidays]
         holidays_list.extend(holidays_li)
     
-    print(holidays_list)
+    #print(holidays_list)
     
     return holidays_list
 

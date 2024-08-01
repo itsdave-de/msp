@@ -1,0 +1,13 @@
+{
+ "creation": "2024-07-29 22:56:38.521578",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart Source",
+ "idx": 0,
+ "modified": "2024-07-29 22:56:38.521578",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Employee Hours Performance",
+ "owner": "Administrator",
+ "source_name": "Employee Hours Performance",
+ "timeseries": 0
+}
