@@ -345,13 +345,14 @@ class AutoInvoiceGenerator(Document):
 		deliveries = self.get_delivery_notes_for_customer(customer, delivery_notes)
 		for delivery in deliveries:
 			delivery_doc = frappe.get_doc("Delivery Note", delivery["name"])
-			items = items or [self.create_invoice_doc_item(delivery_item) for delivery_item in delivery_doc.items]
+			items = [self.create_invoice_doc_item(delivery_item) for delivery_item in delivery_doc.items]
 			for item in items:
 				item.delivery_note = delivery["name"]
 			if items:
 				self.create_invoice(customer, items, f"Invoice for Delivery Note {delivery['name']} {customer_doc.customer_name}")
 				invoice_count += 1
 		return invoice_count
+	
 
 	def process_collective_billing(self, customer, items, customer_doc):
 		invoice_items = [self.create_invoice_doc_item(item) for item in items]
