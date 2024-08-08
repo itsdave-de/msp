@@ -96,8 +96,14 @@ doc_events = {
     "x509_certificate": {
         "before_save": "msp.certificate_methods.process_certficate_data",
         "after_insert": "msp.certificate_methods.set_doctype_name"
-	}
+	},
+    'Service Report': {
+        'before_save': 'msp.tools.save_backlinks',
+        'on_cancel': 'msp.tools.handle_backlinks',
+        'on_trash': 'msp.tools.handle_backlinks'
+    }
 }
+
 
 # Scheduled Tasks
 # ---------------

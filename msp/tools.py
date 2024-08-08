@@ -83,44 +83,155 @@ def get_service_report_work(employee, from_date, to_date):
 
     return result
 
+# def get_ticket_work_hours(employee, from_date, to_date):
+#     if isinstance(from_date, str):
+#         from_date = datetime.strptime(from_date, "%Y-%m-%d")
+#     if isinstance(to_date, str):
+#         to_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+#     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
+
+#     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
+#     if not user:
+#         return []
+#     user_id = user[0].id
+#     print(user_id)
+
+#     result = frappe.db.sql("""
+#     SELECT `create_time`, `time_unit`
+#     FROM `tabOTRSConnect Article` 
+#     WHERE 
+#         create_time BETWEEN %s AND %s
+#         AND create_by = %s;
+# """, (from_date, to_date, user_id), as_dict=True)
+    
+#     # List for saving the processed ticket data
+#     ticket_hours = []
+
+#     for item in result:
+
+#         # Calculate the hours and working times (15 minutes equals 0.25 hours)
+#         qty = float(item['time_unit']) / 4.0
+#         work_begin = item['create_time'] - timedelta(hours=qty)
+
+#         # Create the work item dictionary
+#         work_item = {
+#             "employee": employee,
+#             "begin": work_begin,
+#             "end": item['create_time'],
+#             "hours": qty
+#         }
+
+       
+#         ticket_hours.append(work_item)
+
+#     return ticket_hours
+
+
+# def get_ticket_work_hours(employee, from_date, to_date):
+#     if isinstance(from_date, str):
+#         from_date = datetime.strptime(from_date, "%Y-%m-%d")
+#     if isinstance(to_date, str):
+#         to_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+#     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
+
+#     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
+#     if not user:
+#         return []
+#     user_id = user[0].id
+#     print(user_id)
+
+#     # Fetch all article IDs that are already considered in service reports within the given date range
+#     considered_articles = frappe.db.sql("""
+#     SELECT otrs_article
+#     FROM `tabService Report Work`
+#     WHERE otrs_article IS NOT NULL AND `begin` BETWEEN %s AND %s
+#     """, (from_date, to_date), as_list=True)
+
+#     # Flatten the list of considered article IDs
+#     considered_article_ids = [article[0] for article in considered_articles]
+
+#     # Fetch OTRSConnect Articles, excluding those already in service reports
+#     result = frappe.db.sql("""
+#     SELECT `id`, `create_time`, `time_unit`
+#     FROM `tabOTRSConnect Article` 
+#     WHERE 
+#         create_time BETWEEN %s AND %s
+#         AND create_by = %s
+#         AND id NOT IN %s;
+#     """, (from_date, to_date, user_id, tuple(considered_article_ids)), as_dict=True)
+    
+#     # List for saving the processed ticket data
+#     ticket_hours = []
+
+#     for item in result:
+#         # Calculate the hours and working times (15 minutes equals 0.25 hours)
+#         qty = float(item['time_unit']) / 4.0
+#         work_begin = item['create_time'] - timedelta(hours=qty)
+
+#         # Create the work item dictionary
+#         work_item = {
+#             "employee": employee,
+#             "begin": work_begin,
+#             "end": item['create_time'],
+#             "hours": qty
+#         }
+
+#         ticket_hours.append(work_item)
+
+#     return ticket_hours
+from datetime import datetime, timedelta
+import frappe
+
 def get_ticket_work_hours(employee, from_date, to_date):
+    if isinstance(from_date, str):
+        from_date = datetime.strptime(from_date, "%Y-%m-%d")
+    if isinstance(to_date, str):
+        to_date = datetime.strptime(to_date, "%Y-%m-%d")
 
-    # Get the OTRSConnect settings
-    settings = frappe.get_doc("OTRSConnect Settings")
-    otrsdb = get_db(host=settings.otrs_host, user=settings.db_user, password=settings.db_password)
-    otrsdb.connect()
-    otrsdb.use(settings.db_name)
+    to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
 
-    # Get the OTRSConnect user via the LinkField erpnext_employee
     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
     if not user:
         return []
     user_id = user[0].id
+    print(user_id)
 
-    # Define SQL query
-    sql = """
-        SELECT 
-            ticket.id, ticket.user_id, ticket.create_time, 
-            time_accounting.time_unit
-        FROM 
-            ticket
-        LEFT JOIN 
-            time_accounting ON time_accounting.ticket_id = ticket.id
-        WHERE 
-            ticket.ticket_state_id = 4
-            AND time_accounting.time_unit > 0
-            AND ticket.create_time BETWEEN %(from_date)s AND %(to_date)s
-            AND ticket.user_id = %(user_id)s;
+    # Fetch all article IDs that are already considered in service reports within the given date range
+    considered_articles = frappe.db.sql("""
+    SELECT otrs_article
+    FROM `tabService Report Work`
+    WHERE otrs_article IS NOT NULL AND `begin` BETWEEN %s AND %s
+    """, (from_date, to_date), as_list=True)
+
+    # Flatten the list of considered article IDs
+    considered_article_ids = [article[0] for article in considered_articles]
+
+    # Build the SQL query for OTRSConnect Articles
+    sql_query = """
+    SELECT `id`, `create_time`, `time_unit`
+    FROM `tabOTRSConnect Article` 
+    WHERE 
+        create_time BETWEEN %s AND %s
+        AND create_by = %s
     """
+    
+    # Add the NOT IN condition if there are considered_article_ids
+    if considered_article_ids:
+        sql_query += " AND id NOT IN %s"
 
-    # Execute the query with parameter transfer
-    ticket_entries = otrsdb.sql(sql, {'from_date': from_date, 'to_date': to_date, 'user_id': user_id}, as_dict=True)
-
+    # Execute the query
+    result = frappe.db.sql(
+        sql_query,
+        (from_date, to_date, user_id) + (tuple(considered_article_ids),) if considered_article_ids else (from_date, to_date, user_id),
+        as_dict=True
+    )
+    
     # List for saving the processed ticket data
     ticket_hours = []
 
-    for item in ticket_entries:
-
+    for item in result:
         # Calculate the hours and working times (15 minutes equals 0.25 hours)
         qty = float(item['time_unit']) / 4.0
         work_begin = item['create_time'] - timedelta(hours=qty)
@@ -133,10 +244,11 @@ def get_ticket_work_hours(employee, from_date, to_date):
             "hours": qty
         }
 
-       
         ticket_hours.append(work_item)
 
     return ticket_hours
+
+
 
 
 
@@ -280,6 +392,217 @@ def get_act_stock(name):
     # <i class="fa fa-cube" style="color: var(--text-on-green);"></i>
     return result
 
+def get_otrsdb_connection():
+    settings = frappe.get_doc("OTRSConnect Settings")
+    otrsdb = get_db(host=settings.otrs_host, user=settings.db_user, password=settings.db_password)
+    otrsdb.connect()
+    otrsdb.use(settings.db_name)
+    return otrsdb, settings
+
+def get_tickets_from_otrsdb(otrsdb, condition):
+    sql = f"""
+        SELECT DISTINCT ticket.id, ticket.tn, ticket.title, 
+            ticket.queue_id, ticket.user_id, ticket.responsible_user_id, 
+            ticket.ticket_priority_id, ticket.customer_id, ticket.customer_user_id, 
+            ticket.ticket_state_id, ticket.create_time, ticket.create_by, 
+            ticket.change_time, ticket.change_by 
+        FROM ticket 
+        LEFT JOIN users ON ticket.user_id=users.id 
+        LEFT JOIN customer_company ON customer_company.customer_id=ticket.customer_id 
+        LEFT JOIN time_accounting ON time_accounting.ticket_id=ticket.id 
+        WHERE time_accounting.time_unit > 0 
+        AND {condition}
+    """
+    return otrsdb.sql(sql, as_dict=1)
+
+def get_articles_from_otrsdb(otrsdb, last_article_id):
+    sql = f"""
+        SELECT article.id, article.ticket_id, article.create_time, 
+            article.create_by, article_data_mime.a_from, article_data_mime.a_to, 
+            article_data_mime.a_subject, article_data_mime.a_body, 
+            time_accounting.time_unit 
+        FROM article 
+        LEFT JOIN article_data_mime ON article.id=article_data_mime.id 
+        LEFT JOIN time_accounting time_accounting ON article.id=time_accounting.article_id 
+        WHERE time_accounting.time_unit > 0 
+        AND article.id > {last_article_id}
+    """
+    return otrsdb.sql(sql, as_dict=1)
+
+@frappe.whitelist()
+def update_tickets_and_articles():
+    otrsdb, settings = get_otrsdb_connection()
+    sync_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Ensure settings.last_ticket_sync has a default value
+    last_ticket_sync = settings.last_ticket_sync or '2024-07-01T00:00:00'
+    
+    new_tickets = get_tickets_from_otrsdb(otrsdb, f"ticket.id > {int(settings.last_ticket_id)}")
+    print(len(new_tickets))
+    updated_tickets = get_tickets_from_otrsdb(otrsdb, f"ticket.change_time > '{last_ticket_sync}'")
+    print(len(updated_tickets))
+    articles = get_articles_from_otrsdb(otrsdb, int(settings.last_article_id))
+    print(len(articles))
+
+    messages = []
+    if new_tickets:
+        messages.append(f"Found {len(new_tickets)} new tickets.")
+    else:
+        messages.append("No new tickets found.")
+        
+    if updated_tickets:
+        messages.append(f"Found {len(updated_tickets)} updated tickets.")
+    else:
+        messages.append("No updated tickets found.")
+        
+    if articles:
+        messages.append(f"Found {len(articles)} new articles.")
+    else:
+        messages.append("No new articles found.")
+    
+    # Display messages to the user
+    for message in messages:
+        frappe.msgprint(message)
+
+    # Process and store new and updated tickets
+    for ticket in new_tickets + updated_tickets:
+        process_ticket(ticket)
+    frappe.db.commit()
+    # Update last_ticket_id and last_ticket_sync based on the processed tickets
+    if new_tickets:
+        settings.last_ticket_id = max([int(t['id']) for t in new_tickets] + [int(settings.last_ticket_id)])
+    settings.last_ticket_sync = sync_time
+    
+    # Process and store articles
+    for article in articles:
+        process_article(article)
+    frappe.db.commit()
+    # Update last_article_id based on the processed articles
+    if articles:
+        settings.last_article_id = max([int(a['id']) for a in articles] + [int(settings.last_article_id)])
+        
+    settings.last_article_sync = sync_time
+
+    settings.save()
+    frappe.db.commit()
+
+def process_ticket(ticket):
+    ERPNext_tickets = frappe.get_all("OTRSConnect Ticket", filters={"id": ticket["id"]})
+    
+    if not ERPNext_tickets:
+        frappe_doctype_dict = {"doctype": "OTRSConnect Ticket", "status": "fetched"}
+        ticket["id"] = str(ticket["id"])
+        frappe_doctype_dict.update(ticket)
+        ticket_doc = frappe.get_doc(frappe_doctype_dict)
+        ticket_doc.insert()
+        link_ERPNext_OTRS_Ticket(ticket_doc)
+    else:
+        existing_ticket = frappe.get_doc("OTRSConnect Ticket", ERPNext_tickets[0].name)
+        read_only_fields = {"create_time", "create_by"}
+        for key, value in ticket.items():
+            if key not in read_only_fields:
+                setattr(existing_ticket, key, value)
+        existing_ticket.save(ignore_permissions=True, ignore_version=True)
+
+def process_article(article):
+    # Ensure the referenced ticket exists
+    ticket_exists = frappe.db.exists("OTRSConnect Ticket", {"id": article["ticket_id"]})
+    
+    if not ticket_exists:
+        # Fetch the ticket from OTRS and insert it into ERPNext
+        otrsdb, _ = get_otrsdb_connection()
+        ticket = get_tickets_from_otrsdb(otrsdb, f"ticket.id = {article['ticket_id']}")
+        if ticket:
+            process_ticket(ticket[0])
+    
+    # Check again if the ticket now exists
+    ticket_exists = frappe.db.exists("OTRSConnect Ticket", {"id": article["ticket_id"]})
+    if ticket_exists:
+        ERPNext_articles = frappe.get_all("OTRSConnect Article", filters={"id": article["id"]})
+        
+        if not ERPNext_articles:
+            # Article doesn't exist, create a new one
+            frappe_doctype_dict = {"doctype": "OTRSConnect Article"}
+            article["id"] = str(article["id"])
+            article["ticket_id"] = str(article["ticket_id"])
+            frappe_doctype_dict.update(article)
+            article_doc = frappe.get_doc(frappe_doctype_dict)
+            article_doc.insert()
+    else:
+        print(f"Warning: Referenced ticket ID {article['ticket_id']} does not exist in ERPNext.")
+
+def link_ERPNext_OTRS_Ticket(OTRSConnect_Ticket):
+
+    if OTRSConnect_Ticket.customer_id == None:
+        frappe.msgprint("Keine Kundenummer vorhanden für: " + str(OTRSConnect_Ticket.title) + "<br>" + str(OTRSConnect_Ticket.tn))
+        return False
+
+    if OTRSConnect_Ticket.customer_id == "":
+        frappe.msgprint("Kundennummerzuweisung nicht eindeutig möglich für: " + str(OTRSConnect_Ticket.title) + "<br>" + str(OTRSConnect_Ticket.id))
+        return False
+    naming_series = "CUST-" + str(OTRSConnect_Ticket.customer_id)
+    customers_for_customer_id = frappe.get_all("Customer", filters={"naming_series": naming_series})
+    if len(customers_for_customer_id) == 1:
+        OTRSConnect_Ticket.erpnext_customer = naming_series
+        OTRSConnect_Ticket.save()
+    else:
+        frappe.msgprint("Kundennummerzuweisung nicht eindeutig möglich für: " + str(OTRSConnect_Ticket.customer_id) + "<br>" + str(OTRSConnect_Ticket.title) + "<br>" + str(OTRSConnect_Ticket.id))
+
+@frappe.whitelist()
+def save_backlinks(doc, method):
+    service_report = doc 
+    
+    if hasattr(service_report, 'work'):
+        for item in service_report.work:
+            if hasattr(item, 'otrs_article'):
+                service_report_article = item.name
+                article_name = item.otrs_article
+                articles = frappe.get_all('OTRSConnect Article', filters={'name': article_name}, fields=['name'])
+                
+                for article in articles:
+                    article_doc = frappe.get_doc('OTRSConnect Article', article.name)
+                    updated = False
+                    
+                    if not article_doc.service_report:
+                        article_doc.service_report = service_report.name
+                        updated = True
+                    
+                    if not article_doc.service_report_work_item:
+                        article_doc.service_report_work_item = service_report_article
+                        updated = True
+                    
+                    if updated:
+                        article_doc.save()
+                        frappe.db.commit()
+
+def handle_backlinks(doc, method):
+    if method == "on_trash":
+        clear_backlinks(doc)
+    elif method == "on_cancel":
+        clear_backlinks(doc)
+
+def clear_backlinks(doc):
+    if hasattr(doc, 'work'):
+        for item in doc.work:
+            if hasattr(item, 'otrs_article'):
+                article_name = item.otrs_article
+                articles = frappe.get_all('OTRSConnect Article', filters={'name': article_name, 'service_report': doc.name}, fields=['name'])
+                
+                for article in articles:
+                    article_doc = frappe.get_doc('OTRSConnect Article', article.name)
+                    updated = False
+                    
+                    if article_doc.service_report == doc.name:
+                        article_doc.service_report = None
+                        updated = True
+                        
+                    if article_doc.service_report_work_item == item.name:
+                        article_doc.service_report_work_item = None
+                        updated = True
+                    
+                    if updated:
+                        article_doc.save()
+                        frappe.db.commit()
 
 
 
