@@ -181,8 +181,7 @@ def get_service_report_work(employee, from_date, to_date):
 #         ticket_hours.append(work_item)
 
 #     return ticket_hours
-from datetime import datetime, timedelta
-import frappe
+
 
 def get_ticket_work_hours(employee, from_date, to_date):
     if isinstance(from_date, str):
@@ -498,11 +497,12 @@ def process_ticket(ticket):
         link_ERPNext_OTRS_Ticket(ticket_doc)
     else:
         existing_ticket = frappe.get_doc("OTRSConnect Ticket", ERPNext_tickets[0].name)
-        read_only_fields = {"create_time", "create_by"}
-        for key, value in ticket.items():
-            if key not in read_only_fields:
-                setattr(existing_ticket, key, value)
-        existing_ticket.save(ignore_permissions=True, ignore_version=True)
+        if existing_ticket.docstatus == 0 and existing_ticket.status != "delivered":
+            read_only_fields = {"create_time", "create_by"}
+            for key, value in ticket.items():
+                if key not in read_only_fields:
+                    setattr(existing_ticket, key, value)
+            existing_ticket.save(ignore_permissions=True, ignore_version=True)
 
 def process_article(article):
     # Ensure the referenced ticket exists
@@ -603,6 +603,19 @@ def clear_backlinks(doc):
                     if updated:
                         article_doc.save()
                         frappe.db.commit()
+
+def get_status_from_ticket():
+    # Abrufen von maximal 100 Datensätzen aus der "OTRSConnect Article"-Dokumentation
+    ERPNext_articles = frappe.get_all("OTRSConnect Ticket", fields=["*"], limit=100)
+    
+    # Ausgabe der Statusinformationen
+    for article in ERPNext_articles:
+        for field, value in article.items():
+            print(f"{field}: {value}")
+        print("---")
+
+
+
 
 
 
