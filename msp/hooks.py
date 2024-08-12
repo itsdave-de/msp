@@ -108,6 +108,14 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
+scheduler_events = {
+    "cron": {
+        "*/5 * * * *": [
+            "msp.tools.update_tickets_and_articles"
+        ]
+    }
+}
+
 # scheduler_events = {
 # 	"all": [
 # 		"msp.tasks.all"

@@ -435,10 +435,15 @@ def update_tickets_and_articles():
 
     # Ensure settings.last_ticket_sync has a default value
     last_ticket_sync = settings.last_ticket_sync or '2024-07-01T00:00:00'
+
+    # Add a buffer of 15 minutes to the last_ticket_sync time
+    last_ticket_sync_time = datetime.strptime(last_ticket_sync, "%Y-%m-%d %H:%M:%S")
+    last_ticket_sync_with_buffer = (last_ticket_sync_time - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S")
+    
     
     new_tickets = get_tickets_from_otrsdb(otrsdb, f"ticket.id > {int(settings.last_ticket_id)}")
     print(len(new_tickets))
-    updated_tickets = get_tickets_from_otrsdb(otrsdb, f"ticket.change_time > '{last_ticket_sync}'")
+    updated_tickets = get_tickets_from_otrsdb(otrsdb, f"ticket.change_time > '{last_ticket_sync_with_buffer}'")
     print(len(updated_tickets))
     articles = get_articles_from_otrsdb(otrsdb, int(settings.last_article_id))
     print(len(articles))
