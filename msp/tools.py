@@ -393,7 +393,8 @@ def get_act_stock(name):
 
 def get_otrsdb_connection():
     settings = frappe.get_doc("OTRSConnect Settings")
-    otrsdb = get_db(host=settings.otrs_host, user=settings.db_user, password=settings.db_password)
+    password = settings.get_password("db_password")
+    otrsdb = get_db(host=settings.otrs_host, user=settings.db_user, password=password)
     otrsdb.connect()
     otrsdb.use(settings.db_name)
     return otrsdb, settings
