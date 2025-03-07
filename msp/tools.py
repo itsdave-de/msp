@@ -1,6 +1,7 @@
 import frappe
 import json
 from datetime import datetime, date, timedelta
+import math
 from frappe.database import get_db
 from erpnext.stock.utils import get_stock_balance
 
@@ -43,147 +44,78 @@ def get_hours_from_ticket_service_reports(employee, from_date, to_date):
 
     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
 
-    # Hours from the service reports
-    service_report_hours = get_service_report_work(employee,from_date, to_date)
-
-    # Hours from the tickets with status open
+    # Stunden aus Service Reports und Tickets abrufen
+    service_report_hours = get_service_report_work(employee, from_date, to_date)
     ticket_hours = get_ticket_work_hours(employee, from_date, to_date)
 
-    # Combine the results
     combined_hours = service_report_hours + ticket_hours
 
     hours_dict = {}
+    detailed_entries = []  # Liste für Kalendereinträge
 
     if combined_hours:
         for entry in combined_hours:
             if entry['end'] and entry['begin'] and entry['end'] >= from_date and entry['begin'] <= to_date:
-                date_key = entry['begin'].date()
-                if date_key not in hours_dict:
-                    hours_dict[date_key] = 0
-                hours_dict[date_key] += entry['hours']
-        hours_sum = sum([x['hours'] for x in combined_hours if x['end'] and x['begin'] and x['end'] >= from_date and x['begin'] <= to_date])
+                current_time = entry['begin']
+                
+                while current_time < entry['end']:
+                    date_key = current_time.date()
+                    next_day = (current_time + timedelta(days=1)).replace(hour=0, minute=0, second=0)
+
+                    if date_key not in hours_dict:
+                        hours_dict[date_key] = 0
+                    
+                    # Bestimme die tatsächliche Endzeit für diesen Tag
+                    actual_end = min(entry['end'], next_day)
+                    
+                    # Berechne die Stunden für diesen Zeitraum
+                    work_hours = (actual_end - current_time).total_seconds() / 3600
+                    
+                    # Runde auf Viertelstunden
+                    work_hours = math.ceil(work_hours * 4) / 4  
+
+                    hours_dict[date_key] += work_hours
+                    
+                    # Kalendereintrag hinzufügen
+                    detailed_entries.append({
+                        "employee": employee,
+                        "begin": current_time,
+                        "end": actual_end,
+                        "hours": work_hours,
+                        "customer": entry.get("customer", "Unbekannt"),
+                        "description": entry.get("description", "Keine Beschreibung")
+                    })
+                    
+                    current_time = next_day  # Zum nächsten Tag übergehen
+
+        # Gesamtstunden berechnen (nach Rundung)
+        hours_sum = sum(hours_dict.values())
     else:
         hours_sum = 0
 
     sorted_hours_dict = dict(sorted(hours_dict.items()))
-    print(hours_sum)
-    print(hours_dict)
-    return sorted_hours_dict, hours_sum
+    print(sorted_hours_dict)
+    
+    return sorted_hours_dict, hours_sum, detailed_entries
 
 
 def get_service_report_work(employee, from_date, to_date):
     result = frappe.db.sql("""
-        SELECT `begin`, `end`, `hours`
-        FROM `tabService Report Work` 
-        WHERE parenttype = 'Service Report'
-        AND parent IN (SELECT name FROM `tabService Report` 
-                       WHERE employee = %s 
-                       AND (`begin` BETWEEN %s AND %s OR `end` BETWEEN %s AND %s))
+        SELECT srw.`begin`, srw.`end`, srw.`hours`, sr.customer, srw.description
+        FROM `tabService Report Work` srw
+        JOIN `tabService Report` sr ON sr.name = srw.parent
+        WHERE sr.employee = %s
+        AND (srw.`begin` BETWEEN %s AND %s OR srw.`end` BETWEEN %s AND %s)
+       
+       
     """, (employee, from_date, to_date, from_date, to_date), as_dict=True)
 
     return result
 
-# def get_ticket_work_hours(employee, from_date, to_date):
-#     if isinstance(from_date, str):
-#         from_date = datetime.strptime(from_date, "%Y-%m-%d")
-#     if isinstance(to_date, str):
-#         to_date = datetime.strptime(to_date, "%Y-%m-%d")
-
-#     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
-
-#     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
-#     if not user:
-#         return []
-#     user_id = user[0].id
-#     print(user_id)
-
-#     result = frappe.db.sql("""
-#     SELECT `create_time`, `time_unit`
-#     FROM `tabOTRSConnect Article` 
-#     WHERE 
-#         create_time BETWEEN %s AND %s
-#         AND create_by = %s;
-# """, (from_date, to_date, user_id), as_dict=True)
-    
-#     # List for saving the processed ticket data
-#     ticket_hours = []
-
-#     for item in result:
-
-#         # Calculate the hours and working times (15 minutes equals 0.25 hours)
-#         qty = float(item['time_unit']) / 4.0
-#         work_begin = item['create_time'] - timedelta(hours=qty)
-
-#         # Create the work item dictionary
-#         work_item = {
-#             "employee": employee,
-#             "begin": work_begin,
-#             "end": item['create_time'],
-#             "hours": qty
-#         }
-
-       
-#         ticket_hours.append(work_item)
-
-#     return ticket_hours
-
-
-# def get_ticket_work_hours(employee, from_date, to_date):
-#     if isinstance(from_date, str):
-#         from_date = datetime.strptime(from_date, "%Y-%m-%d")
-#     if isinstance(to_date, str):
-#         to_date = datetime.strptime(to_date, "%Y-%m-%d")
-
-#     to_date = to_date + timedelta(days=1) - timedelta(seconds=1)
-
-#     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
-#     if not user:
-#         return []
-#     user_id = user[0].id
-#     print(user_id)
-
-#     # Fetch all article IDs that are already considered in service reports within the given date range
-#     considered_articles = frappe.db.sql("""
-#     SELECT otrs_article
-#     FROM `tabService Report Work`
-#     WHERE otrs_article IS NOT NULL AND `begin` BETWEEN %s AND %s
-#     """, (from_date, to_date), as_list=True)
-
-#     # Flatten the list of considered article IDs
-#     considered_article_ids = [article[0] for article in considered_articles]
-
-#     # Fetch OTRSConnect Articles, excluding those already in service reports
-#     result = frappe.db.sql("""
-#     SELECT `id`, `create_time`, `time_unit`
-#     FROM `tabOTRSConnect Article` 
-#     WHERE 
-#         create_time BETWEEN %s AND %s
-#         AND create_by = %s
-#         AND id NOT IN %s;
-#     """, (from_date, to_date, user_id, tuple(considered_article_ids)), as_dict=True)
-    
-#     # List for saving the processed ticket data
-#     ticket_hours = []
-
-#     for item in result:
-#         # Calculate the hours and working times (15 minutes equals 0.25 hours)
-#         qty = float(item['time_unit']) / 4.0
-#         work_begin = item['create_time'] - timedelta(hours=qty)
-
-#         # Create the work item dictionary
-#         work_item = {
-#             "employee": employee,
-#             "begin": work_begin,
-#             "end": item['create_time'],
-#             "hours": qty
-#         }
-
-#         ticket_hours.append(work_item)
-
-#     return ticket_hours
-
 
 def get_ticket_work_hours(employee, from_date, to_date):
+    print(f"DEBUG: Start get_ticket_work_hours for employee {employee}, from {from_date} to {to_date}")
+
     if isinstance(from_date, str):
         from_date = datetime.strptime(from_date, "%Y-%m-%d")
     if isinstance(to_date, str):
@@ -193,62 +125,63 @@ def get_ticket_work_hours(employee, from_date, to_date):
 
     user = frappe.get_all("OTRSConnect User", filters={"erpnext_employee": employee}, fields=["id"])
     if not user:
+        print("DEBUG: No OTRSConnect User found for this employee.")
         return []
-    user_id = user[0].id
-    print(user_id)
 
-    # Fetch all article IDs that are already considered in service reports within the given date range
+    user_id = user[0].id
+
     considered_articles = frappe.db.sql("""
     SELECT otrs_article
     FROM `tabService Report Work`
     WHERE otrs_article IS NOT NULL AND `begin` BETWEEN %s AND %s
     """, (from_date, to_date), as_list=True)
 
-    # Flatten the list of considered article IDs
     considered_article_ids = [article[0] for article in considered_articles]
 
-    # Build the SQL query for OTRSConnect Articles
     sql_query = """
-    SELECT `id`, `create_time`, `time_unit`
-    FROM `tabOTRSConnect Article` 
+    SELECT 
+        a.`id`, 
+        a.`create_time`, 
+        a.`time_unit`, 
+        a.`a_body` AS description,  
+        t.`erpnext_customer` AS customer
+    FROM `tabOTRSConnect Article` a
+    LEFT JOIN `tabOTRSConnect Ticket` t ON a.`ticket_id` = t.`name`
     WHERE 
-        create_time BETWEEN %s AND %s
-        AND create_by = %s
+        a.create_time BETWEEN %s AND %s
+        AND a.create_by = %s
+        AND a.docstatus IN (0, 1)
     """
-    
-    # Add the NOT IN condition if there are considered_article_ids
-    if considered_article_ids:
-        sql_query += " AND id NOT IN %s"
 
-    # Execute the query
-    result = frappe.db.sql(
-        sql_query,
-        (from_date, to_date, user_id) + (tuple(considered_article_ids),) if considered_article_ids else (from_date, to_date, user_id),
-        as_dict=True
-    )
-    
-    # List for saving the processed ticket data
+    params = (from_date, to_date, user_id)
+    if considered_article_ids:
+        sql_query += " AND a.id NOT IN %s"
+        params += (tuple(considered_article_ids),)
+
+    result = frappe.db.sql(sql_query, params, as_dict=True)
+
+    if not result:
+        print("DEBUG: No articles found in `tabOTRSConnect Article` for the given conditions.")
+        return []
+
     ticket_hours = []
 
     for item in result:
-        # Calculate the hours and working times (15 minutes equals 0.25 hours)
         qty = float(item['time_unit']) / 4.0
         work_begin = item['create_time'] - timedelta(hours=qty)
 
-        # Create the work item dictionary
         work_item = {
             "employee": employee,
             "begin": work_begin,
             "end": item['create_time'],
-            "hours": qty
+            "hours": qty,
+            "customer": item.get("customer", "Unbekannt"),
+            "description": item.get("description", "Keine Beschreibung")
         }
-
+        
         ticket_hours.append(work_item)
 
     return ticket_hours
-
-
-
 
 
 @frappe.whitelist()
@@ -338,7 +271,8 @@ def compare_hours(employee, from_date, to_date):
 
     
     # Working hours
-    service_hours, service_hours_sum = get_hours_from_ticket_service_reports(employee, from_date, to_date)
+    service_hours, service_hours_sum, detailed_entries = get_hours_from_ticket_service_reports(employee, from_date, to_date)
+    print(service_hours, service_hours_sum, detailed_entries)
 
     # Agreed hours
     target_hours = get_target_hours(employee, from_date, to_date)
@@ -367,7 +301,11 @@ def compare_hours(employee, from_date, to_date):
 
         current_date += timedelta(days=1)
 
-    return {"daily_dict": daily_dict, "period_dict": period_dict}
+    return {
+        "daily_dict": daily_dict,
+        "period_dict": period_dict,
+        "detailed_entries": detailed_entries  
+        }
 
 
 @frappe.whitelist()
@@ -620,7 +558,7 @@ def get_status_from_ticket():
             print(f"{field}: {value}")
         print("---")
 
-
+ 
 
 
 
