@@ -620,6 +620,217 @@ def get_status_from_ticket():
             print(f"{field}: {value}")
         print("---")
 
+def render_card_html(items, item_type):
+    """
+    Generate formatted HTML cards for displaying IT objects or RMM agents.
+    
+    Args:
+        items: List of dictionaries containing item data
+        item_type: Type of items ("it_object", "tactical", or "agent")
+        
+    Returns:
+        Formatted HTML string with cards
+    """
+    html = '''
+    <style>
+        /* Base card styles with more specific selectors */
+        div.card {
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            padding: 15px !important;
+            margin-bottom: 15px !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            page-break-inside: avoid !important;
+            display: block !important;
+            width: 100% !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        /* Header styles */
+        div.card h3 {
+            margin: 0 0 10px 0 !important;
+            color: #000000 !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        }
+        
+        /* Metadata container */
+        div.card div.metadata {
+            margin: 10px 0 !important;
+        }
+        
+        /* Individual metadata items */
+        div.card div.metadata-item {
+            margin-bottom: 5px !important;
+            font-size: 12px !important;
+            line-height: 1.4 !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+        }
+        
+        /* Metadata labels */
+        div.card span.metadata-label {
+            color: #666666 !important;
+            font-weight: 600 !important;
+            min-width: 120px !important;
+            display: inline-block !important;
+            margin-right: 10px !important;
+        }
+        
+        /* Status badges */
+        div.card span.status-badge {
+            display: inline-block !important;
+            padding: 2px 8px !important;
+            border-radius: 12px !important;
+            font-size: 11px !important;
+            font-weight: bold !important;
+            margin-left: 8px !important;
+        }
+        
+        /* Horizontal rule */
+        div.card hr {
+            margin: 10px 0 !important;
+            border: none !important;
+            border-top: 1px solid #eee !important;
+            height: 1px !important;
+        }
+        
+        /* Section headers */
+        div.section-break h3 {
+            margin: 20px 0 10px 0 !important;
+            color: #333333 !important;
+            font-size: 16px !important;
+            font-weight: bold !important;
+            border-bottom: 2px solid #eee !important;
+            padding-bottom: 5px !important;
+        }
+        
+        @media print {
+            div.card {
+                border: 1px solid #000000 !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+    '''
+
+    # Group items by type if needed
+    if item_type == "tactical":
+        server_items = [i for i in items if i.get('type', '').lower() == 'server']
+        workstation_items = [i for i in items if i.get('type', '').lower() == 'workstation']
+        
+        html += '<div class="section-break" data-label="Systems from RMM">'
+        if server_items:
+            html += '<h3>Server Systems</h3>'
+            html += ''.join(render_single_card(item) for item in server_items)
+            
+        if workstation_items:
+            html += '<h3>Workstation Systems</h3>'
+            html += ''.join(render_single_card(item) for item in workstation_items)
+        html += '</div>'
+    else:
+        html += ''.join(render_single_card(item) for item in items)
+
+    return html
+
+def render_single_card(item):
+    """
+    Generate HTML for a single card.
+    
+    Args:
+        item: Dictionary containing item data
+        
+    Returns:
+        HTML string for a single card
+    """
+    # Get the basic information
+    title = item.get('title', '')
+    type_value = item.get('type', '').capitalize()
+    ip = item.get('ip', '') or item.get('metadata', {}).get('IP', '') or item.get('metadata', {}).get('Local IPs', '')
+    location = item.get('location', '')
+
+    # Create a header that matches the previous style
+    header = f"{title}"
+    if type_value:
+        header += f" ({type_value})"
+    if ip:
+        header += f" - {ip}"
+
+    html = f'''
+    <div class="card">
+        <h3>{header}</h3>
+        <hr>
+        <div class="metadata">
+            <div class="metadata-item">
+                <span class="metadata-label">Location:</span>
+                <span>{location}</span>
+            </div>
+    '''
+    
+    # Add all metadata fields if they exist
+    if 'metadata' in item:
+        for key, value in item['metadata'].items():
+            if value and key.lower() != 'ip' and key.lower() != 'local ips' and key.lower() != 'type':  # Skip IP and Type as they're already in the header
+                html += f'''
+                <div class="metadata-item">
+                    <span class="metadata-label">{key}:</span>
+                    <span>{value}</span>
+                </div>
+                '''
+    
+    # Add description if it exists
+    description = item.get('description', '') or item.get('documentation_text', '')
+    if description:
+        html += f'''
+        <div class="metadata-item">
+            <span class="metadata-label">Description:</span>
+            <span>{description}</span>
+        </div>
+        '''
+        
+    html += '</div></div>'
+    return html
+
+@frappe.whitelist()
+def get_documentation_html(it_landscape):
+    """Generate formatted HTML cards for all IT objects in a landscape that are marked for documentation."""
+    
+    it_objects = frappe.get_all(
+        "IT Object",
+        filters={
+            "visible_in_documentation": 1,
+            "it_landscape": it_landscape
+        },
+        fields=[
+            "title", "type", "location", "location_full_path",
+            "status", "main_ip", "image", "documentation_text"
+        ]
+    )
+
+    if not it_objects:
+        return "<p>No documented IT objects found in this landscape.</p>"
+
+    # Prepare items for card rendering
+    items = []
+    for obj in it_objects:
+        items.append({
+            'title': obj.title,
+            'type': obj.type,
+            'ip': obj.main_ip,
+            'location': obj.location_full_path or obj.location,
+            'status': obj.status,
+            'metadata': {
+                'Type': obj.type,
+                'Status': obj.status
+            },
+            'description': obj.documentation_text
+        })
+
+    return render_card_html(items, "it_object")
+
 
 
 
