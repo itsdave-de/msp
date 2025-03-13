@@ -406,14 +406,54 @@ class AutoInvoiceGenerator(Document):
 		return invoice_count
 
 	def separate_items_by_group(self, items, group_filter):
+		print("Original Items:", [item.name for item in items])
+		
 		group_items = []
 		remaining_items = items.copy()
+
+		# Verarbeite nur die Arbeitsartikel
 		for item in remaining_items:
-			if item.item_group in group_filter:
+			print("Processing Item:", item.name)
+			
+			# Füge nur Artikel aus der gewünschten Gruppe hinzu
+			if item.item_group in group_filter and not item.custom_created_from_service_report_item:
 				group_items.append(self.create_invoice_doc_item(item))
+				print(f"Added {item.name} to group_items")
 				items.remove(item)
+
+				# Finde die zugehörigen Zuschläge für diesen Artikel und füge sie direkt hinzu
+				related_surcharges = [s for s in items if s.custom_created_from_service_report_item == item.name]
+				for surcharge_item in related_surcharges:
+					group_items.append(self.create_invoice_doc_item(surcharge_item))
+					print(f"Added surcharge {surcharge_item.name} directly after {item.name}")
+					items.remove(surcharge_item)
+		
+		print("Final Group Items:", [item.name if item else "None" for item in group_items])
+		print(group_items)
+		print("Remaining Items after removal:", [item.name for item in items])
+
 		return group_items, items
 
+
+
+
+	# def separate_items_by_group(self, items, group_filter):
+	# 	print(items)
+	# 	print(group_filter)
+	# 	print("Original Items:", [item.name for item in items])
+	# 	group_items = []
+	# 	remaining_items = items.copy()
+	# 	for item in remaining_items:
+	# 		print("Processing Item:", item.name)
+	# 		if item.item_group in group_filter:
+	# 			group_items.append(self.create_invoice_doc_item(item))
+	# 			print(f"Added {item.name} to group_items")
+	# 			items.remove(item)
+	# 	print(group_items)
+	# 	print(items)
+	# 	return group_items, items
+
+	
 	def separate_sales_order_items(self, items):
 		sales_order_items = [self.create_invoice_doc_item(item) for item in items if item.against_sales_order]
 		remaining_items = [item for item in items if not item.against_sales_order]
