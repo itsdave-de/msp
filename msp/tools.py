@@ -778,9 +778,6 @@ def get_documentation_html(it_landscape):
     return render_card_html(items, "it_object")
 
 
-import frappe
-import re
-from datetime import datetime
 
 def get_datetime(date_str):
     try:
