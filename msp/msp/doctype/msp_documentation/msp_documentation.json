@@ -11,11 +11,12 @@
   "customer",
   "customer_name",
   "tactical_rmm_tenant_caption",
+  "tactical_rmm_site_name",
   "generation_date",
-  "introduction",
+  "introduction_text",
+  "it_objects",
   "server_list",
   "workstation_list",
-  "system_list",
   "backup",
   "aditional_data"
  ],
@@ -35,16 +36,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "introduction",
-   "fieldtype": "Markdown Editor",
-   "label": "Introduction"
-  },
-  {
-   "fieldname": "system_list",
-   "fieldtype": "Markdown Editor",
-   "label": "System List"
-  },
-  {
    "fetch_from": "landscape.tactical_rmm_tenant_caption",
    "fieldname": "tactical_rmm_tenant_caption",
    "fieldtype": "Data",
@@ -52,7 +43,7 @@
   },
   {
    "fieldname": "backup",
-   "fieldtype": "Markdown Editor",
+   "fieldtype": "Text Editor",
    "label": "Backup"
   },
   {
@@ -67,12 +58,12 @@
   },
   {
    "fieldname": "server_list",
-   "fieldtype": "Markdown Editor",
+   "fieldtype": "Text Editor",
    "label": "Server List"
   },
   {
    "fieldname": "workstation_list",
-   "fieldtype": "Markdown Editor",
+   "fieldtype": "Text Editor",
    "label": "Workstation List"
   },
   {
@@ -81,11 +72,27 @@
    "fieldtype": "Data",
    "label": "Customer Name",
    "read_only": 1
+  },
+  {
+   "description": "Explain: What is the target of this particular Documentation? Give an over the solution you are describing.",
+   "fieldname": "introduction_text",
+   "fieldtype": "Text Editor",
+   "label": "Introduction Text"
+  },
+  {
+   "fieldname": "it_objects",
+   "fieldtype": "Text Editor",
+   "label": "IT Objects"
+  },
+  {
+   "fieldname": "tactical_rmm_site_name",
+   "fieldtype": "Data",
+   "label": "Tactical RMM Site Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-09 07:14:25.256192",
+ "modified": "2025-03-11 08:06:34.303790",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Documentation",
@@ -105,5 +112,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

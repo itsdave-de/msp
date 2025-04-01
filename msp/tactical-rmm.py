@@ -5,6 +5,7 @@ import requests
 import json
 from pprint import pprint
 import re
+from .tools import render_card_html, render_single_card
 
 @frappe.whitelist()
 def get_agents(it_landscape, rmm_instance = None, tactical_rmm_tenant_caption = None):
@@ -88,36 +89,70 @@ def get_agents_pretty(documentation):
     documentation_doc = frappe.get_doc("MSP Documentation", documentation)
 
     if not documentation_doc.tactical_rmm_tenant_caption:
-        frappe.throw("Tennant Caption missing")
+        frappe.throw("Tenant Caption missing")
 
     client_name = documentation_doc.tactical_rmm_tenant_caption
-
+    site_name = documentation_doc.tactical_rmm_site_name
     agents = get_all_agents()
-    print(agents)
-    agent_list = []
-    workstation_list = []
-    server_list = []
-    #if not agent_list:
-    #    frappe.throw("API Abfrage hat keine Agents geliefert.")
-
-
-    for agent in agents:
-        if agent["client_name"] == client_name:
-            agent_list.append(agent)
-            if agent["monitoring_type"] == "workstation":
-                workstation_list.append(agent)
-            if agent["monitoring_type"] == "server":
-                server_list.append(agent)
-            pprint(agent)
     
-    output = make_agent_md_output(agent_list)
-    output_workstation = make_agent_md_output(workstation_list)
-    output_server = make_agent_md_output(server_list)
+    # Filter and organize agents
+    agent_list = []
+    for agent in agents:
+        # Filter by client_name and optionally by site_name if provided
+        if agent["client_name"] == client_name and (not site_name or agent["site_name"] == site_name):
+            # Format agent data for card rendering
+            agent_item = {
+                'title': agent['hostname'],  # Using hostname as title
+                'type': agent['monitoring_type'],  # workstation/server
+                'ip': agent['local_ips'],
+                'location': agent['site_name'],
+                'metadata': {
+                    'Operating System': agent['operating_system'],
+                    'Hardware Model': render_model(agent['make_model']),
+                    'Serial Number': agent.get('serial_number', ''),
+                    'CPU': ", ".join(agent['cpu_model']) if isinstance(agent['cpu_model'], list) else agent['cpu_model'],
+                    'Graphics': agent['graphics'],
+                    'Storage': ", ".join(agent['physical_disks']) if isinstance(agent['physical_disks'], list) else agent['physical_disks'],
+                    'Public IP': agent['public_ip'],
+                    'Last Seen': agent['last_seen'],
+                    'Last User': agent['logged_username']
+                },
+                'description': agent.get('description', '')
+            }
+            agent_list.append(agent_item)
 
-    documentation_doc.system_list = output
-    documentation_doc.workstation_list = output_workstation
-    documentation_doc.server_list = output_server
+    # Check if any agents were found
+    if not agent_list:
+        no_agents_message = f"<div class='alert alert-warning'>No agents found for client '{client_name}'"
+        if site_name:
+            no_agents_message += f" at site '{site_name}'"
+        no_agents_message += ".</div>"
+        
+        # Update the documentation with the message
+        documentation_doc.system_list = no_agents_message
+        documentation_doc.workstation_list = no_agents_message
+        documentation_doc.server_list = no_agents_message
+        documentation_doc.save()
+        
+        return []
+
+    # Generate HTML using the shared render_card_html function from tools.py
+    all_agents_html = render_card_html(agent_list, "tactical")
+    
+    # Filter lists for workstations and servers
+    workstation_list = [a for a in agent_list if a['type'].lower() == 'workstation']
+    server_list = [a for a in agent_list if a['type'].lower() == 'server']
+    
+    # Generate separate HTML for workstations and servers
+    workstation_html = render_card_html(workstation_list, "tactical")
+    server_html = render_card_html(server_list, "tactical")
+
+    # Update the documentation
+    documentation_doc.system_list = all_agents_html
+    documentation_doc.workstation_list = workstation_html
+    documentation_doc.server_list = server_html
     documentation_doc.save()
+    
     return agent_list
 
 
@@ -179,29 +214,32 @@ def get_patches_for_agent(agent_id=None):
 
 
 def make_agent_md_output(agents):
-    md_output = ""
+    # Prepare items for card rendering
+    items = []
     for agent in agents:
-        md_output += f'''
-#### {agent["hostname"]}
-- OS:  {agent["operating_system"]}
-- CPU: {agent["cpu_model"]}
-- GPU: {agent["graphics"]}
-- Disks: {agent["physical_disks"]}
-- Model: {render_model(agent["make_model"])}
-- Serial Number: {agent["serial_number"]}
-- Type: {agent["monitoring_type"]}
-- Site: {agent["site_name"]}
-- Local IPs: {agent["local_ips"]}
-- Public IP: {agent["public_ip"]}
-- Last Seen: {agent["last_seen"]}
-- Last User: {agent["logged_username"]}
-'''
-    if agent["description"]:
-         md_output += f'''Description: 
-{agent["description"]}
-'''
+        items.append({
+            'title': agent['hostname'],
+            'type': agent['monitoring_type'],
+            'ip': agent['local_ips'],
+            'location': agent['site_name'],
+            'status': agent['status'],
+            'metadata': {
+                'OS': agent['operating_system'],
+                'CPU': ", ".join(agent['cpu_model']) if isinstance(agent['cpu_model'], list) else agent['cpu_model'],
+                'GPU': agent['graphics'],
+                'Disks': ", ".join(agent['physical_disks']) if isinstance(agent['physical_disks'], list) else agent['physical_disks'],
+                'Model': render_model(agent['make_model']),
+                'Serial Number': agent.get('serial_number'),
+                'Type': agent['monitoring_type'],
+                'Site': agent['site_name'],
+                'Public IP': agent['public_ip'],
+                'Last Seen': agent['last_seen'],
+                'Last User': agent['logged_username']
+            },
+            'description': agent.get('description')
+        })
 
-    return md_output
+    return render_card_html(items, "agent")
 
 
 def render_model(model):

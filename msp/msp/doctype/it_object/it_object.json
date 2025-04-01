@@ -36,7 +36,10 @@
   "monitoring_link",
   "oitc_host_uuid",
   "rmm_agent_id",
-  "rmm_instance"
+  "rmm_instance",
+  "documentation_section",
+  "visible_in_documentation",
+  "documentation_text"
  ],
  "fields": [
   {
@@ -215,14 +218,35 @@
    "fieldname": "rmm_software",
    "fieldtype": "Markdown Editor",
    "label": "RMM Software"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval: !doc.documentation_text",
+   "fieldname": "documentation_section",
+   "fieldtype": "Section Break",
+   "label": "Documentation"
+  },
+  {
+   "description": "This will be visible on the on the MSP Documentation",
+   "fieldname": "documentation_text",
+   "fieldtype": "Text Editor",
+   "label": "Documentation Text"
+  },
+  {
+   "default": "0",
+   "description": "If checked, this object will be selected when creating a MSP Documentation.",
+   "fieldname": "visible_in_documentation",
+   "fieldtype": "Check",
+   "label": "visible in Documentation"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2023-06-08 23:00:31.338542",
+ "modified": "2025-03-10 14:55:30.929828",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -265,6 +289,7 @@
  "search_fields": "title, main_ip, item",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "title",
  "track_changes": 1,
  "track_views": 1
