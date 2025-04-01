@@ -4,6 +4,10 @@ from datetime import datetime, date, timedelta
 import math
 from frappe.database import get_db
 from erpnext.stock.utils import get_stock_balance
+import pandas as pd
+import requests
+from io import StringIO
+from requests.auth import HTTPBasicAuth
 
 @frappe.whitelist()
 def checklist_fetch_from_template(values, name):
@@ -558,8 +562,207 @@ def get_status_from_ticket():
             print(f"{field}: {value}")
         print("---")
 
+# import frappe
+# import re
+# from frappe.utils import get_datetime
+# import pprint
+
+# @frappe.whitelist()
+# def sort_invoice_items(invoice_name):
+#     invoice = frappe.get_doc("Sales Invoice", invoice_name)
+#     item_list = [item.name for item in invoice.items]
+#     print(item_list)
+
+#     def extract_datetime(description):
+#         match = re.search(r"(\d{2}\.\d{2}\.\d{4} \d{2}:\d{2})", description)
+#         if match:
+#             return get_datetime(match.group(1))
+#         return None  # Falls kein Datum gefunden wird.
+
+#     # 1️⃣ Ursprüngliche Reihenfolge ausgeben
+#     debug_output = ["🔍 Ursprüngliche Reihenfolge:"]
+#     for item in invoice.items:
+#         debug_output.append(f"IDX: {item.idx}, Name: {item.name}")
+
+#     # Listen für sortierbare und unsortierbare Items
+#     items_with_date = []
+#     items_without_date = []
+
+#     for item in invoice.items:
+#         item_date = extract_datetime(item.description) if item.description else None
+#         if item_date:
+#             items_with_date.append((item_date, item))
+#         else:
+#             items_without_date.append(item)
+
+#     # 2️⃣ Debug: Extrahierte Datumswerte ausgeben
+#     debug_output.append("\n📅 Extrahierte Datumswerte:")
+#     for date, item in items_with_date:
+#         debug_output.append(f"Beschreibung: {item.description} → {date}")
+
+#     # Sortiere die Items mit Datum nach Datum
+#     sorted_items_with_date = sorted(items_with_date, key=lambda x: x[0])
+
+#     # Kombiniere sortierte mit unsortierten Items
+#     sorted_items = [item for _, item in sorted_items_with_date] + items_without_date
+
+#     # 3️⃣ Debug: Geplante Sortierung ausgeben
+#     debug_output.append("\n🔄 Neue geplante Reihenfolge:")
+#     for idx, item in enumerate(sorted_items, start=1):
+#         debug_output.append(f"Neuer IDX: {idx}, Beschreibung: {item.description}")
+
+#     # **Direkt neue idx-Werte setzen**
+#     for new_idx, item in enumerate(sorted_items, start=1):
+#         item.idx = new_idx
+
+#     invoice.save()
+#     frappe.db.commit()
+
+#     # 4️⃣ Debug: Finale Reihenfolge nach Speicherung ausgeben
+#     debug_output.append("\n✅ Finale Reihenfolge nach Speicherung:")
+#     updated_invoice = frappe.get_doc("Sales Invoice", invoice_name)
+#     for item in updated_invoice.items:
+#         debug_output.append(f"IDX: {item.idx}, Beschreibung: {item.description}")
+
+#     print(debug_output)
+    
+#     return "Sortierung abgeschlossen. Überprüfe das Log für Details."
+
+import frappe
+import re
+from datetime import datetime
+
+def get_datetime(date_str):
+    try:
+        # Explizit das Format Tag.Monat.Jahr Stunde:Minute angeben
+        return datetime.strptime(date_str, "%d.%m.%Y %H:%M")
+    except ValueError:
+        return None
  
 
+@frappe.whitelist()
+def sort_invoice_items(invoice_name):
+    invoice = frappe.get_doc("Sales Invoice", invoice_name)
+
+    def extract_datetime(description):
+        """
+        Sucht nach einem Datum-Zeit-Muster in der Description.
+        Beispiel: "25.06.2024 15:15 - 25.06.2024 15:25 Uhr"
+        """
+        match = re.search(r"(\d{2}\.\d{2}\.\d{4} \d{2}:\d{2})", description)
+        if match:
+            return get_datetime(match.group(1))
+        return None  # Falls kein Datum gefunden wird, None zurückgeben.
+
+    # Trennen der Items in zwei Gruppen: Mit Datum und Ohne Datum
+    items_with_date = []
+    items_without_date = []
+
+    for item in invoice.items:
+        item_date = extract_datetime(item.description) if item.description else None
+        if item_date:
+            items_with_date.append((item_date, item))
+        else:
+            items_without_date.append(item)
+
+    # Sortiere nur die Items mit Datum
+    sorted_items_with_date = sorted(items_with_date, key=lambda x: x[0])
+
+    # Neue Reihenfolge setzen: Erst sortierte, dann unsortierte
+    final_sorted_items = [item for _, item in sorted_items_with_date] + items_without_date
+
+    # Aktualisiere die Indexe (idx)
+    for idx, item in enumerate(final_sorted_items, start=1):
+        item.idx = idx
+
+    invoice.save()
+    return True
+
+
+# @frappe.whitelist()
+# def sort_invoice_items(invoice_name):
+#     # Hole die Rechnung
+#     invoice = frappe.get_doc("Sales Invoice", invoice_name)
+
+#     # Liste der Item-Namen zur späteren Referenz (falls benötigt)
+#     item_list = [item.name for item in invoice.items]
+#     print(item_list)
+
+#     def extract_datetime(description):
+#         print(f"Beschreibung: {description}")  # Debug-Ausgabe der Beschreibung
+#         match = re.search(r"(\d{2}\.\d{2}\.\d{4} \d{2}:\d{2})", description)
+#         if match:
+#             print(f"Gefundenes Datum: {match.group(1)}")  # Zeige das gefundene Datum an
+#             print(get_datetime(match.group(1)))
+#             return get_datetime(match.group(1))
+#         return None
+
+
+#     # 1️⃣ Debug: Ursprüngliche Reihenfolge der Items mit zusätzlicher Information
+#     debug_output = ["🔍 Ursprüngliche Reihenfolge:"]
+#     for item in invoice.items:
+#         item_date = extract_datetime(item.description) if item.description else None
+#         debug_output.append(f"Name: {item.name}, Ursprünglicher IDX: {item.idx}, Extrahiertes Datum: {item_date}")
+#     print(debug_output)    
+
+#     # Listen für Items mit und ohne Datum
+#     items_with_date = []
+#     items_without_date = []
+
+#     # Trenne Items mit und ohne Datum
+#     for item in invoice.items:
+#         item_date = extract_datetime(item.description) if item.description else None
+#         if item_date:
+#             items_with_date.append((item_date, item.name,item.idx))
+#         else:
+#             items_without_date.append(item.name, item.idx)
+#     print("items unsortiert")
+#     print(items_with_date)
+#     sorted_items_with_date = sorted(items_with_date, key=lambda x: x[0])
+#     print("items sortiert")
+    print(sorted_items_with_date)
+
+    
+
+
+
+    
+
+    # # 2️⃣ Debug: Zeige extrahierte Datumswerte
+    # debug_output.append("\n📅 Extrahierte Datumswerte:")
+    # for date, item in items_with_date:
+    #     debug_output.append(f"Beschreibung: {item.description} → {date}")
+
+    # # Sortiere die Items mit Datum nach dem Datum
+    # sorted_items_with_date = sorted(items_with_date, key=lambda x: x[0])
+
+    # # Kombiniere die sortierten Items mit den unsortierten Items
+    # sorted_items = [item for _, item in sorted_items_with_date] + items_without_date
+
+    # # 3️⃣ Debug: Zeige die geplante neue Reihenfolge
+    # debug_output.append("\n🔄 Neue geplante Reihenfolge (mit neuen Index):")
+    # for new_idx, item in enumerate(sorted_items, start=1):
+    #     item_date = extract_datetime(item.description) if item.description else None
+    #     debug_output.append(f"Name: {item.name}, Ursprünglicher IDX: {item.idx}, Extrahiertes Datum: {item_date}, Neuer IDX: {new_idx}")
+
+    # # Setze die neuen idx-Werte auf die Items
+    # for new_idx, item in enumerate(sorted_items, start=1):
+    #     item.idx = new_idx
+
+    # # Speichere die Rechnung und committe die Änderung in der Datenbank
+    # invoice.save()
+    # frappe.db.commit()
+
+    # # 4️⃣ Debug: Zeige finale Reihenfolge nach Speicherung
+    # debug_output.append("\n✅ Finale Reihenfolge nach Speicherung:")
+    # updated_invoice = frappe.get_doc("Sales Invoice", invoice_name)
+    # for item in updated_invoice.items:
+    #     debug_output.append(f"IDX: {item.idx}, Beschreibung: {item.description}")
+
+    # # Debug-Log ausgeben
+    # print(debug_output)
+    
+    # return "Sortierung abgeschlossen. Überprüfe das Log für Details."
 
 
 
