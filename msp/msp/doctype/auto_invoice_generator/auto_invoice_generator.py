@@ -111,6 +111,55 @@ class AutoInvoiceGenerator(Document):
 						print(item.dn_detail)
 						items.append(item)
 		return items
+
+	# def get_invoicing_items_for_customer(self, cust):
+	# 	del_not = self.get_delivery_notes_for_invoicing()
+	# 	cust_doc = frappe.get_doc("Customer", cust)    
+	# 	delivery_note_list = self.get_delivery_notes_for_customer(cust, del_not) 
+
+	# 	if len(delivery_note_list) < 1:
+	# 		frappe.msgprint("Keine abrechenbaren Lieferscheine vorhanden")
+	# 		return []
+
+	# 	items = []
+	# 	surcharge_items = []
+
+	# 	for dn in delivery_note_list: 
+	# 		item_doc = frappe.get_doc("Delivery Note", dn["name"]) 
+	# 		for item in item_doc.items:
+	# 			item_in_prev_s_i = frappe.get_all("Sales Invoice Item", filters={"dn_detail": item.name})
+
+	# 			if len(item_in_prev_s_i) == 0:
+	# 				item.dn_detail = dn["name"]
+
+	# 				# Falls es ein Surcharge-Item ist, separat speichern
+	# 				if hasattr(item, 'custom_created_from_service_report_item') and item.custom_created_from_service_report_item:
+	# 					surcharge_items.append(item)
+	# 				else:
+	# 					items.append(item)
+
+	# 	# Sortiere die Service-Report-Items nach service_report_item_begin
+	# 	service_items_sorted = sorted(
+	# 		[item for item in items if hasattr(item, 'service_report_item_begin') and item.service_report_item_begin], 
+	# 		key=lambda x: x.service_report_item_begin
+	# 	)
+
+	# 	# Füge die restlichen Items hinten an
+	# 	other_items = [item for item in items if not (hasattr(item, 'service_report_item_begin') and item.service_report_item_begin)]
+
+	# 	# Jetzt ordnen wir die Surcharge-Items passend ein
+	# 	final_items = []
+	# 	for service_item in service_items_sorted:
+	# 		final_items.append(service_item)
+	# 		# Alle zugehörigen Surcharge-Items direkt nach dem Service-Item einfügen
+	# 		related_surcharges = [si for si in surcharge_items if si.custom_created_from_service_report_item == service_item.name]
+	# 		final_items.extend(related_surcharges)
+
+	# 	# Am Ende noch die nicht-servicebezogenen Items hinzufügen
+	# 	final_items.extend(other_items)
+
+	# 	return final_items
+
 	
 	
 	
@@ -477,6 +526,7 @@ class AutoInvoiceGenerator(Document):
 			"uom": item.uom,
 			"rate": item.rate,
 			"sales_order": item.against_sales_order,
+			"so_detail":item.so_detail,
 			"dn_detail": item.name,
 			"parent": "delivery_note",
 			"delivery_note": item.dn_detail
@@ -647,5 +697,221 @@ class AutoInvoiceGenerator(Document):
 				log_list.append("Für Kunde"+ " "+ cust + " wurden keine Rechnungen erstellt, da noch nicht berechnete Rechnungen in Draft vorhanden") 
 
 
+
+# -------------------------
+# Helpers
+# -------------------------
+def _safe_set_status(so):
+    """Robust gegen unterschiedliche ERP/Fork-Signaturen."""
+    for attempt in (
+        lambda: so.run_method("update_status"),
+        lambda: so.run_method("update_status", status=so.status),
+        lambda: so.run_method("set_status"),
+        lambda: so.run_method("set_status", status=so.status),
+    ):
+        try:
+            attempt()
+            return
+        except TypeError:
+            continue
+        except Exception:
+            break
+
+# -------------------------
+# Schritt 1: fehlende so_detail fixen
+# -------------------------
+def fix_missing_so_detail_invoices(limit=10, dry_run=True, fix_delivery_note=True, restrict_to_open_so=True):
+    """
+    Korrigiert Sales Invoice Items, bei denen 'sales_order' gesetzt ist, aber 'so_detail' fehlt.
+    - Holt 'so_detail' sauber vom Delivery Note Item (dn_detail).
+    - Optional korrigiert es 'delivery_note'.
+    - Gibt die betroffenen Sales Orders zurück (für Schritt 2).
+
+    Args:
+        limit (int): max. Anzahl Rechnungen.
+        dry_run (bool): nur anzeigen, nichts speichern.
+        fix_delivery_note (bool): DN-Referenz (Header) mit korrigieren.
+        restrict_to_open_so (bool): nur SIs berücksichtigen, deren SO offen/teiloffen ist.
+    """
+    open_status = ('To Bill','To Deliver','To Deliver and Bill','Partly Billed','Overdue')
+
+    sql = """
+        SELECT DISTINCT sii.parent
+        FROM `tabSales Invoice Item` sii
+        JOIN `tabSales Invoice` si ON si.name = sii.parent AND si.docstatus = 1
+        {join_so}
+        WHERE (sii.so_detail IS NULL OR sii.so_detail = '')
+          AND sii.sales_order IS NOT NULL
+        {so_filter}
+        LIMIT %s
+    """
+    join_so = "JOIN `tabSales Order` so ON so.name = sii.sales_order AND so.docstatus = 1" if restrict_to_open_so else ""
+    so_filter = f"AND so.status IN {open_status}" if restrict_to_open_so else ""
+
+    invoice_names = frappe.db.sql(sql.format(join_so=join_so, so_filter=so_filter), (limit,), as_list=True)
+    invoice_names = [r[0] for r in invoice_names]
+
+    invoices_changed = 0
+    touched_sos = set()
+
+    for si_name in invoice_names:
+        si = frappe.get_doc("Sales Invoice", si_name)
+        changed = False
+        sos_for_this_si = set()
+
+        for it in si.items:
+            if it.sales_order and not it.so_detail and it.dn_detail:
+                so_detail, dn_parent = frappe.db.get_value(
+                    "Delivery Note Item", it.dn_detail, ["so_detail", "parent"]
+                )
+                if so_detail and not it.so_detail:
+                    it.so_detail = so_detail
+                    changed = True
+                    sos_for_this_si.add(it.sales_order)
+                if fix_delivery_note and dn_parent and (not it.delivery_note or "-" not in str(it.delivery_note)):
+                    it.delivery_note = dn_parent
+                    changed = True
+
+        if changed:
+            invoices_changed += 1
+            if not dry_run:
+                si.flags.ignore_validate_update_after_submit = True
+                si.save()
+            touched_sos.update(sos_for_this_si)
+
+    if not dry_run:
+        frappe.db.commit()
+
+    return {
+        "picked_invoices": invoice_names,
+        "invoices_changed": invoices_changed,
+        "sales_orders_touched": sorted(touched_sos),
+        "dry_run": dry_run,
+    }
+
+# -------------------------
+# Schritt 2: SO neu berechnen (Billing + optional Delivery) & Status setzen
+# -------------------------
+def recompute_so_billing_and_delivery(so_names, recalc_delivery=True):
+    """
+    Rekalkuliert billed_amt je SO-Item aus gebuchten Sales Invoices (inkl. Returns),
+    setzt per_billed, optional delivered_qty/per_delivered aus Delivery Notes, und setzt Status.
+    """
+    # zur Laufzeit prüfen, ob DN Item ein Feld 'sales_order' besitzt
+    dn_item_meta = frappe.get_meta("Delivery Note Item")
+    has_dn_sales_order = dn_item_meta.has_field("sales_order")
+
+    results = []
+    for so_name in so_names:
+        so = frappe.get_doc("Sales Order", so_name)
+
+        # Billing neu berechnen (über so_detail)
+        billed_by_so_item = {}
+        rows = frappe.db.sql("""
+            SELECT sii.so_detail, COALESCE(SUM(sii.base_amount),0) AS billed
+            FROM `tabSales Invoice Item` sii
+            JOIN `tabSales Invoice` si ON si.name = sii.parent AND si.docstatus = 1
+            WHERE sii.sales_order = %s
+              AND sii.so_detail IS NOT NULL AND sii.so_detail!=''
+            GROUP BY sii.so_detail
+        """, (so.name,), as_dict=True)
+        for r in rows:
+            billed_by_so_item[r.so_detail] = r.billed or 0
+
+        delivered_by_so_item = {}
+        if recalc_delivery:
+            if has_dn_sales_order:
+                dsql = """
+                    SELECT dni.so_detail, COALESCE(SUM(dni.qty),0) AS delivered_qty
+                    FROM `tabDelivery Note Item` dni
+                    JOIN `tabDelivery Note` dn ON dn.name = dni.parent AND dn.docstatus = 1
+                    WHERE (dni.against_sales_order = %s OR dni.sales_order = %s)
+                      AND dni.so_detail IS NOT NULL AND dni.so_detail!=''
+                    GROUP BY dni.so_detail
+                """
+                dparams = (so.name, so.name)
+            else:
+                dsql = """
+                    SELECT dni.so_detail, COALESCE(SUM(dni.qty),0) AS delivered_qty
+                    FROM `tabDelivery Note Item` dni
+                    JOIN `tabDelivery Note` dn ON dn.name = dni.parent AND dn.docstatus = 1
+                    WHERE dni.against_sales_order = %s
+                      AND dni.so_detail IS NOT NULL AND dni.so_detail!=''
+                    GROUP BY dni.so_detail
+                """
+                dparams = (so.name,)
+
+            drows = frappe.db.sql(dsql, dparams, as_dict=True)
+            for r in drows:
+                delivered_by_so_item[r.so_detail] = r.delivered_qty or 0
+
+        total_base_amount, total_billed = 0, 0
+        for it in so.items:
+            base_amt = getattr(it, "base_amount", None)
+            if base_amt is None:
+                base_amt = (it.net_rate or it.rate or 0) * (it.qty or 0) * (so.conversion_rate or 1)
+            total_base_amount += base_amt
+
+            billed_amt = billed_by_so_item.get(it.name, 0)
+            if getattr(it, "billed_amt", None) != billed_amt:
+                it.db_set("billed_amt", billed_amt, update_modified=False)
+            total_billed += billed_amt
+
+            if recalc_delivery and hasattr(it, "delivered_qty"):
+                new_delivered = delivered_by_so_item.get(it.name, 0)
+                if it.delivered_qty != new_delivered:
+                    it.db_set("delivered_qty", new_delivered, update_modified=False)
+
+        per_billed = round((total_billed / total_base_amount) * 100, 6) if total_base_amount else 0.0
+        so.db_set("per_billed", per_billed, update_modified=False)
+
+        if recalc_delivery:
+            total_qty = sum([(i.qty or 0) for i in so.items])
+            total_delivered = sum([getattr(i, "delivered_qty", 0) or 0 for i in so.items])
+            if hasattr(so, "per_delivered"):
+                per_delivered = round((total_delivered / total_qty) * 100, 6) if total_qty else 0.0
+                so.db_set("per_delivered", per_delivered, update_modified=False)
+
+        _safe_set_status(so)
+        so.reload()
+        results.append({
+            "so": so.name,
+            "status": so.status,
+            "per_billed": getattr(so, "per_billed", None),
+            "per_delivered": getattr(so, "per_delivered", None)
+        })
+
+    frappe.db.commit()
+    return results
+
+# -------------------------
+# Orchestrator: beides in einem Rutsch
+# -------------------------
+def fix_and_recompute(limit=10, dry_run=True, fix_delivery_note=True, restrict_to_open_so=True, recalc_delivery=True):
+    """
+    1) Fix fehlende so_detail in bis zu 'limit' Rechnungen.
+    2) Wenn nicht Dry-Run: Rekalkuliere Billing/Delivery/Status für die betroffenen SOs.
+
+    Returns:
+        dict mit Details zu gefixten Invoices und rekalkulierten SOs.
+    """
+    fix_res = fix_missing_so_detail_invoices(
+        limit=limit,
+        dry_run=dry_run,
+        fix_delivery_note=fix_delivery_note,
+        restrict_to_open_so=restrict_to_open_so
+    )
+
+    recompute_res = []
+    if not dry_run and fix_res.get("sales_orders_touched"):
+        recompute_res = recompute_so_billing_and_delivery(
+            so_names=fix_res["sales_orders_touched"],
+            recalc_delivery=recalc_delivery
+        )
+
+    return {
+        "fix_result": fix_res,
+        "recompute_result": recompute_res
+    }
 
 		
