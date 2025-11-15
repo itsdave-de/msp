@@ -29,8 +29,10 @@
   "network_config_section",
   "ip_adresses",
   "rmm_data_section",
+  "hardware_attributes",
   "rmm_specs",
   "rmm_software",
+  "created_from_rmm",
   "external_links_section",
   "admin_interface_link",
   "monitoring_link",
@@ -238,11 +240,23 @@
    "fieldname": "visible_in_documentation",
    "fieldtype": "Check",
    "label": "visible in Documentation"
+  },
+  {
+   "default": "0",
+   "fieldname": "created_from_rmm",
+   "fieldtype": "Check",
+   "label": "Created From RMM"
+  },
+  {
+   "fieldname": "hardware_attributes",
+   "fieldtype": "Table",
+   "label": "Hardware Attributes",
+   "options": "IT Object Hardware Attribute"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2025-03-10 14:55:30.929828",
+ "modified": "2025-07-31 16:07:20.612702",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",

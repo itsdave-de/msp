@@ -18,7 +18,19 @@
   "server_list",
   "workstation_list",
   "backup",
-  "aditional_data"
+  "aditional_data",
+  "data_acquisition_section",
+  "credentials_for_ldap_acquisistion",
+  "domain_controller_for_ldap_acquisition",
+  "column_break_ydaj",
+  "upn",
+  "ip_address",
+  "json_data_section",
+  "rmm_data_json",
+  "ad_computer_data_json",
+  "ad_user_data_json",
+  "output",
+  "windows_11_check_output"
  ],
  "fields": [
   {
@@ -88,14 +100,78 @@
    "fieldname": "tactical_rmm_site_name",
    "fieldtype": "Data",
    "label": "Tactical RMM Site Name"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "json_data_section",
+   "fieldtype": "Section Break",
+   "label": "JSON Data"
+  },
+  {
+   "fieldname": "rmm_data_json",
+   "fieldtype": "Long Text",
+   "label": "RMM Data JSON"
+  },
+  {
+   "fieldname": "ad_computer_data_json",
+   "fieldtype": "Long Text",
+   "label": "AD Computer Data JSON"
+  },
+  {
+   "fieldname": "ad_user_data_json",
+   "fieldtype": "Long Text",
+   "label": "AD User Data JSON"
+  },
+  {
+   "fieldname": "data_acquisition_section",
+   "fieldtype": "Section Break",
+   "label": "Data Acquisition"
+  },
+  {
+   "fieldname": "credentials_for_ldap_acquisistion",
+   "fieldtype": "Link",
+   "label": "Credentials for LDAP Acquisistion",
+   "options": "IT User Account"
+  },
+  {
+   "fieldname": "domain_controller_for_ldap_acquisition",
+   "fieldtype": "Link",
+   "label": "Domain Controller for LDAP Acquisition",
+   "options": "IT Object"
+  },
+  {
+   "fieldname": "column_break_ydaj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "upn",
+   "fieldtype": "Data",
+   "label": "UPN"
+  },
+  {
+   "fieldname": "ip_address",
+   "fieldtype": "Data",
+   "label": "IP Address"
+  },
+  {
+   "fieldname": "output",
+   "fieldtype": "Text Editor",
+   "label": "Output",
+   "read_only": 1
+  },
+  {
+   "fieldname": "windows_11_check_output",
+   "fieldtype": "HTML",
+   "label": "Windows 11 Check Output"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-11 08:06:34.303790",
+ "modified": "2025-07-31 18:45:31.838030",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP Documentation",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
