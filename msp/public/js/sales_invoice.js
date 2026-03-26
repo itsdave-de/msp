@@ -204,9 +204,16 @@ function show_ohne_berechnung_dialog(frm) {
 }
 
 function apply_ohne_berechnung(frm, selected_items) {
+    // Werte direkt auf den Doc-Objekten setzen (ohne einzelne set_value-Events)
     selected_items.forEach(item => {
+        const doc_item = locals[item.doctype][item.name];
+        if (!doc_item) return;
+
         // 100% Rabatt setzen
-        frappe.model.set_value(item.doctype, item.name, 'discount_percentage', 100);
+        doc_item.discount_percentage = 100;
+        doc_item.discount_amount = 0;
+        doc_item.rate = 0;
+        doc_item.amount = 0;
 
         // Beschreibung bereinigen und "ohne Berechnung" genau einmal anhängen
         let desc = item.description || '';
@@ -225,10 +232,13 @@ function apply_ohne_berechnung(frm, selected_items) {
 
         // Standard-Zeile einmal anhängen
         const stamp = '<p><strong>ohne Berechnung</strong></p>';
-        desc = (desc ? desc + stamp : stamp);
-
-        frappe.model.set_value(item.doctype, item.name, 'description', desc);
+        doc_item.description = (desc ? desc + stamp : stamp);
     });
+
+    // Einmalig Formular neu berechnen und aktualisieren
+    frm.dirty();
+    frm.script_manager.trigger('calculate_taxes_and_totals');
+    frm.refresh_fields();
 
     frappe.show_alert({
         message: __("{0} Artikel wurden auf 'ohne Berechnung' gesetzt.", [selected_items.length]),
