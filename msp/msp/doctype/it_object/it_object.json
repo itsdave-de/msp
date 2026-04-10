@@ -64,7 +64,12 @@
   "oitc_host_uuid",
   "documentation_section",
   "visible_in_documentation",
-  "documentation_text"
+  "documentation_text",
+  "git_section",
+  "git_remote_url",
+  "git_branch",
+  "git_column_break",
+  "git_path_on_host"
  ],
  "fields": [
   {
@@ -413,11 +418,40 @@
    "fieldtype": "Datetime",
    "label": "Last AD Sync",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.type === 'Git Repository'",
+   "fieldname": "git_section",
+   "fieldtype": "Section Break",
+   "label": "Git Repository"
+  },
+  {
+   "depends_on": "eval:doc.type === 'Git Repository'",
+   "fieldname": "git_remote_url",
+   "fieldtype": "Data",
+   "label": "Git Remote URL"
+  },
+  {
+   "depends_on": "eval:doc.type === 'Git Repository'",
+   "fieldname": "git_branch",
+   "fieldtype": "Data",
+   "label": "Default Branch"
+  },
+  {
+   "fieldname": "git_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.type === 'Git Repository'",
+   "fieldname": "git_path_on_host",
+   "fieldtype": "Data",
+   "label": "Path on Host"
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2026-01-22 10:00:00.000000",
+ "modified": "2026-04-09 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "IT Object",

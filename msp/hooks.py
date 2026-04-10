@@ -98,10 +98,6 @@ doc_events = {
 	"Location": {
 		"before_save": "msp.hooked_methods.build_full_location_path"
 	},
-    "x509_certificate": {
-        "before_save": "msp.certificate_methods.process_certficate_data",
-        "after_insert": "msp.certificate_methods.set_doctype_name"
-	},
     'Service Report': {
         'before_save': 'msp.tools.save_backlinks',
         'on_cancel': 'msp.tools.handle_backlinks',
@@ -166,5 +162,6 @@ override_doctype_class = {
 }
 
 fixtures = [
-    {"doctype": "Print Format", "filters": {"name": "Standard IT Landscape Documentation"}}
+    {"doctype": "Print Format", "filters": {"name": "Standard IT Landscape Documentation"}},
+    {"doctype": "Custom Field", "filters": {"module": "MSP"}},
 ]

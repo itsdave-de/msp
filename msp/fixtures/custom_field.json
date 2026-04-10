@@ -1,0 +1,38 @@
+[
+ {
+  "name": "Contact-teams_user_id",
+  "doctype": "Custom Field",
+  "dt": "Contact",
+  "module": "MSP",
+  "fieldname": "teams_user_id",
+  "fieldtype": "Data",
+  "label": "Teams User ID",
+  "description": "MS Graph User-ID fuer Chat-Zuordnung",
+  "insert_after": "department"
+ },
+ {
+  "name": "Contact-is_external_contractor",
+  "doctype": "Custom Field",
+  "dt": "Contact",
+  "module": "MSP",
+  "fieldname": "is_external_contractor",
+  "fieldtype": "Check",
+  "label": "Is External Contractor",
+  "description": "Dienstleister (z.B. Solutions Factory)",
+  "default": "0",
+  "insert_after": "teams_user_id"
+ },
+ {
+  "name": "Contact-contractor_for",
+  "doctype": "Custom Field",
+  "dt": "Contact",
+  "module": "MSP",
+  "fieldname": "contractor_for",
+  "fieldtype": "Link",
+  "label": "Contractor For",
+  "options": "Customer",
+  "description": "Deren Arbeit zaehlt als Kundenzeit",
+  "depends_on": "eval:doc.is_external_contractor",
+  "insert_after": "is_external_contractor"
+ }
+]

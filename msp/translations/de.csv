@@ -1,0 +1,116 @@
+SSL Certificate,SSL-Zertifikat
+SSL Certificate Domain,SSL-Zertifikat Domain
+SSL Certificate Installation,SSL-Zertifikat Installation
+Certificate Name,Zertifikatsname
+Common Name (CN),Common Name (CN)
+Certificate Type,Zertifikatstyp
+Is Wildcard,Ist Wildcard
+Not Valid Before,Gültig ab
+Not Valid After,Gültig bis
+Certificate ZIP,Zertifikat-ZIP
+Certificate (PEM),Zertifikat (PEM)
+CA Chain (PEM),CA-Kette (PEM)
+Private Key (PEM),Privater Schlüssel (PEM)
+CSR (PEM),CSR (PEM)
+Private Key Match,Schlüssel-Übereinstimmung
+CA Chain Valid,CA-Kette gültig
+Certificate Details,Zertifikat-Details
+Certificate Information,Zertifikat-Informationen
+CA Information,CA-Informationen
+PEM Data,PEM-Daten
+Renewal,Verlängerung
+Auto Renew,Automatische Verlängerung
+Renewal Method,Verlängerungsmethode
+SAN Domains,SAN-Domains
+Installations,Installationen
+IT Domain,IT-Domain
+Domain Type,Domain-Typ
+Is Email Domain,Ist E-Mail-Domain
+Is Hosting Domain,Ist Hosting-Domain
+Registrar & DNS,Registrar & DNS
+Registration Date,Registrierungsdatum
+Expiry Date,Ablaufdatum
+DNS Provider,DNS-Anbieter
+Nameservers,Nameserver
+Registry Handles,Registry-Handles
+Handle Holder,Handle Inhaber
+Handle Admin-c,Handle Admin-c
+Handle Tech-c,Handle Tech-c
+Handle Zone-c,Handle Zone-c
+Registrant,Registrant
+Registrant Name,Name des Inhabers
+Registrant Email,E-Mail des Inhabers
+Registrant Address,Adresse des Inhabers
+Resolved Info,Aufgelöste Informationen
+IP Address,IP-Adresse
+MX Records,MX-Einträge
+Website Title,Website-Titel
+SSL Issuer,SSL-Aussteller
+SSL Expiry,SSL-Ablaufdatum
+Last Enriched,Zuletzt angereichert
+Hosted On,Gehostet auf
+IT Contract,IT-Vertrag
+Domain,Domain
+Customer,Kunde
+IT Landscape,IT-Landschaft
+Worklog Mapping,Worklog-Zuordnung
+Source Type,Quelltyp
+Work Tracker Project,Work-Tracker-Projekt
+Local Directory,Lokales Verzeichnis
+Chat Participant,Chat-Teilnehmer
+Pattern,Muster
+Employee,Mitarbeiter
+Note,Notiz
+Notes,Notizen
+Nicht zugeordnet,Nicht zugeordnet
+Abgelaufen,Abgelaufen
+Läuft bald ab,Läuft bald ab
+Active,Aktiv
+Expired,Abgelaufen
+Revoked,Widerrufen
+Pending,Ausstehend
+Primary,Primär
+Alias,Alias
+Internal,Intern
+Self-hosted,Selbst gehostet
+Kein MX,Kein MX
+Extern,Extern
+Domain Import Wizard,Domain-Import-Assistent
+Kunden zuordnen,Kunden zuordnen
+Alle anreichern (DNS/HTTP),Alle anreichern (DNS/HTTP)
+Hetzner Domain CSV,Hetzner Domain-CSV
+Hetzner Handle CSV,Hetzner Handle-CSV
+Importieren,Importieren
+Schliessen,Schließen
+Weiter zur Kundenzuordnung,Weiter zur Kundenzuordnung
+Domain-CSV,Domain-CSV
+Handle-CSV (optional),Handle-CSV (optional)
+DomainReselling.de Zugangsdaten,DomainReselling.de Zugangsdaten
+Alle sicheren Vorschlaege zuweisen,Alle sicheren Vorschläge zuweisen
+Kunde waehlen,Kunde wählen
+Zuweisen,Zuweisen
+Zugewiesen,Zugewiesen
+Ueberspringen,Überspringen
+Domain / Inhaber,Domain / Inhaber
+Kunde,Kunde
+Match,Übereinstimmung
+Enrich (DNS/HTTP/SSL),Anreichern (DNS/HTTP/SSL)
+Download,Herunterladen
+Copy to Clipboard,In Zwischenablage kopieren
+Certificate,Zertifikat
+Private Key,Privater Schlüssel
+Fullchain,Vollständige Kette
+Cert + Key,Zertifikat + Schlüssel
+CA Chain,CA-Kette
+In Zwischenablage kopiert,In Zwischenablage kopiert
+heruntergeladen,heruntergeladen
+Nicht vorhanden,Nicht vorhanden
+Saved,Gespeichert
+Import,Import
+Hosting,Hosting
+Verification,Überprüfung
+Status,Status
+IT Object,IT-Objekt
+Service,Dienst
+Path,Pfad
+Domain Name,Domainname
