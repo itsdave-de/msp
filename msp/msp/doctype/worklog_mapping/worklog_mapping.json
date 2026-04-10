@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "autoname": "hash",
+ "creation": "2026-04-09 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer",
+  "source_type",
+  "column_break_main",
+  "pattern",
+  "employee",
+  "note_section",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Source Type",
+   "options": "Work Tracker Project\nLocal Directory\nChat Participant",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Glob-Pattern oder exakter Name, z.B. baecktrade* oder /Users/dave/Dev/baeckt/**",
+   "fieldname": "pattern",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pattern",
+   "reqd": 1
+  },
+  {
+   "description": "Fuer nutzerspezifische Pfade oder Projekte",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "note_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  }
+ ],
+ "links": [],
+ "modified": "2026-04-09 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Worklog Mapping",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "pattern",
+ "track_changes": 1
+}
