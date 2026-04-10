@@ -1,0 +1,349 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:domain",
+ "creation": "2026-04-09 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "domain",
+  "customer",
+  "it_landscape",
+  "column_break_main",
+  "domain_type",
+  "dns_hosting",
+  "mail_routing",
+  "is_email_domain",
+  "is_hosting_domain",
+  "registrar_section",
+  "registrar",
+  "registration_date",
+  "expiry_date",
+  "column_break_registrar",
+  "auto_renew",
+  "dns_provider",
+  "nameservers",
+  "dns_section",
+  "resolved_ip",
+  "mx_records",
+  "column_break_dns",
+  "website_title",
+  "ssl_issuer",
+  "ssl_expiry",
+  "last_enriched",
+  "registrant_section",
+  "registrant_name",
+  "registrant_email",
+  "column_break_registrant",
+  "registrant_address",
+  "handles_section",
+  "handle_holder",
+  "handle_admin_c",
+  "column_break_handles",
+  "handle_tech_c",
+  "handle_zone_c",
+  "hosting_section",
+  "hosted_on",
+  "it_contract",
+  "notes_section",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "domain",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Domain",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Primary",
+   "fieldname": "domain_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Domain Type",
+   "options": "Primary\nAlias\nInternal\nDev"
+  },
+  {
+   "fieldname": "dns_hosting",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "DNS",
+   "options": "\nitsdave\nCloudflare\nHetzner\nINWX\nExtern",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mail_routing",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "MX",
+   "options": "\nHornetsecurity\nMicrosoft 365\nGoogle\nSelf-hosted\nKein MX",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "Domain wird fuer E-Mail-Zuordnung bei der Arbeitszeitermittlung genutzt",
+   "fieldname": "is_email_domain",
+   "fieldtype": "Check",
+   "label": "Is Email Domain"
+  },
+  {
+   "default": "0",
+   "description": "Domain wird fuer Hosting-Abrechnung genutzt",
+   "fieldname": "is_hosting_domain",
+   "fieldtype": "Check",
+   "label": "Is Hosting Domain"
+  },
+  {
+   "fieldname": "registrar_section",
+   "fieldtype": "Section Break",
+   "label": "Registrar & DNS"
+  },
+  {
+   "fieldname": "registrar",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Registrar"
+  },
+  {
+   "fieldname": "registration_date",
+   "fieldtype": "Date",
+   "label": "Registration Date"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_registrar",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_renew",
+   "fieldtype": "Check",
+   "label": "Auto Renew"
+  },
+  {
+   "fieldname": "dns_provider",
+   "fieldtype": "Data",
+   "label": "DNS Provider"
+  },
+  {
+   "fieldname": "nameservers",
+   "fieldtype": "Small Text",
+   "label": "Nameservers",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.resolved_ip || doc.website_title",
+   "fieldname": "dns_section",
+   "fieldtype": "Section Break",
+   "label": "Resolved Info"
+  },
+  {
+   "fieldname": "resolved_ip",
+   "fieldtype": "Data",
+   "label": "IP Address",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mx_records",
+   "fieldtype": "Small Text",
+   "label": "MX Records",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_dns",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "website_title",
+   "fieldtype": "Data",
+   "label": "Website Title",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ssl_issuer",
+   "fieldtype": "Data",
+   "label": "SSL Issuer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ssl_expiry",
+   "fieldtype": "Data",
+   "label": "SSL Expiry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_enriched",
+   "fieldtype": "Datetime",
+   "label": "Last Enriched",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.registrant_name",
+   "fieldname": "registrant_section",
+   "fieldtype": "Section Break",
+   "label": "Registrant"
+  },
+  {
+   "fieldname": "registrant_name",
+   "fieldtype": "Data",
+   "label": "Registrant Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "registrant_email",
+   "fieldtype": "Data",
+   "label": "Registrant Email",
+   "options": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_registrant",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "registrant_address",
+   "fieldtype": "Small Text",
+   "label": "Registrant Address",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "handles_section",
+   "fieldtype": "Section Break",
+   "label": "Registry Handles"
+  },
+  {
+   "description": "Registrant / Domain-Inhaber — dient zur Kunden-Gruppierung",
+   "fieldname": "handle_holder",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Handle Holder"
+  },
+  {
+   "fieldname": "handle_admin_c",
+   "fieldtype": "Data",
+   "label": "Handle Admin-c"
+  },
+  {
+   "fieldname": "column_break_handles",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "handle_tech_c",
+   "fieldtype": "Data",
+   "label": "Handle Tech-c"
+  },
+  {
+   "fieldname": "handle_zone_c",
+   "fieldtype": "Data",
+   "label": "Handle Zone-c"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "hosting_section",
+   "fieldtype": "Section Break",
+   "label": "Hosting"
+  },
+  {
+   "fieldname": "hosted_on",
+   "fieldtype": "Link",
+   "label": "Hosted On",
+   "options": "IT Object"
+  },
+  {
+   "fieldname": "it_contract",
+   "fieldtype": "Link",
+   "label": "IT Contract",
+   "options": "IT Contract"
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "links": [],
+ "modified": "2026-04-09 23:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "IT Domain",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "customer,domain_type,handle_holder",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "domain",
+ "track_changes": 1
+}
