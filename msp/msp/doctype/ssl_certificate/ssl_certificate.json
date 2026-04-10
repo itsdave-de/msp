@@ -1,0 +1,330 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-06-04 14:19:04.168850",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "certificate_name",
+  "customer",
+  "it_landscape",
+  "column_break_meta",
+  "common_name",
+  "issuer",
+  "certificate_type",
+  "is_wildcard",
+  "status",
+  "validity_section",
+  "not_valid_before",
+  "column_break_validity",
+  "not_valid_after",
+  "renewal_section",
+  "auto_renew",
+  "renewal_method",
+  "import_section",
+  "attach_zip",
+  "import_html",
+  "certificate_pem_section",
+  "certificate_data",
+  "ca_chain",
+  "column_break_pem",
+  "private_key",
+  "csr_data",
+  "verification_section",
+  "private_key_verification",
+  "column_break_verify",
+  "ca_verification",
+  "certificate_info_section",
+  "certificate_information",
+  "column_break_info",
+  "ca_information",
+  "downloads_section",
+  "downloads_html",
+  "domains_section",
+  "domains",
+  "installations_section",
+  "installations"
+ ],
+ "fields": [
+  {
+   "fieldname": "certificate_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certificate Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "it_landscape",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "IT Landscape",
+   "options": "IT Landscape"
+  },
+  {
+   "fieldname": "column_break_meta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "common_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Common Name (CN)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "issuer",
+   "fieldtype": "Data",
+   "label": "Issuer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "certificate_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Certificate Type",
+   "options": "\nDV\nOV\nEV\nSelf-Signed\nInternal CA"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_wildcard",
+   "fieldtype": "Check",
+   "label": "Is Wildcard",
+   "read_only": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nExpired\nRevoked\nPending"
+  },
+  {
+   "fieldname": "validity_section",
+   "fieldtype": "Section Break",
+   "label": "Validity"
+  },
+  {
+   "fieldname": "not_valid_before",
+   "fieldtype": "Datetime",
+   "label": "Not Valid Before",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_validity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "not_valid_after",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Not Valid After",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "renewal_section",
+   "fieldtype": "Section Break",
+   "label": "Renewal"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_renew",
+   "fieldtype": "Check",
+   "label": "Auto Renew"
+  },
+  {
+   "fieldname": "renewal_method",
+   "fieldtype": "Select",
+   "label": "Renewal Method",
+   "options": "\nACME\nManual\nManaged"
+  },
+  {
+   "fieldname": "import_section",
+   "fieldtype": "Section Break",
+   "label": "Import"
+  },
+  {
+   "description": "ZIP-Datei mit .crt.pem, .key.pem, .ca.pem, .csr.pem, .fullchain.pem hochladen",
+   "fieldname": "attach_zip",
+   "fieldtype": "Attach",
+   "label": "Certificate ZIP"
+  },
+  {
+   "fieldname": "import_html",
+   "fieldtype": "HTML"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:!doc.certificate_data",
+   "fieldname": "certificate_pem_section",
+   "fieldtype": "Section Break",
+   "label": "PEM Data"
+  },
+  {
+   "fieldname": "certificate_data",
+   "fieldtype": "Code",
+   "label": "Certificate (PEM)",
+   "options": "PEM"
+  },
+  {
+   "fieldname": "ca_chain",
+   "fieldtype": "Code",
+   "label": "CA Chain (PEM)",
+   "options": "PEM"
+  },
+  {
+   "fieldname": "column_break_pem",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "private_key",
+   "fieldtype": "Password",
+   "label": "Private Key (PEM)"
+  },
+  {
+   "fieldname": "csr_data",
+   "fieldtype": "Code",
+   "label": "CSR (PEM)",
+   "options": "PEM"
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.certificate_data",
+   "fieldname": "verification_section",
+   "fieldtype": "Section Break",
+   "label": "Verification"
+  },
+  {
+   "fieldname": "private_key_verification",
+   "fieldtype": "Data",
+   "label": "Private Key Match",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_verify",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ca_verification",
+   "fieldtype": "Data",
+   "label": "CA Chain Valid",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.certificate_data",
+   "fieldname": "certificate_info_section",
+   "fieldtype": "Section Break",
+   "label": "Certificate Details"
+  },
+  {
+   "fieldname": "certificate_information",
+   "fieldtype": "HTML",
+   "label": "Certificate Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_info",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.ca_chain",
+   "fieldname": "ca_information",
+   "fieldtype": "HTML",
+   "label": "CA Information",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.certificate_data",
+   "fieldname": "downloads_section",
+   "fieldtype": "Section Break",
+   "label": "Downloads"
+  },
+  {
+   "fieldname": "downloads_html",
+   "fieldtype": "HTML",
+   "label": "Downloads"
+  },
+  {
+   "fieldname": "domains_section",
+   "fieldtype": "Section Break",
+   "label": "SAN Domains"
+  },
+  {
+   "fieldname": "domains",
+   "fieldtype": "Table",
+   "label": "Domains",
+   "options": "SSL Certificate Domain"
+  },
+  {
+   "fieldname": "installations_section",
+   "fieldtype": "Section Break",
+   "label": "Installations"
+  },
+  {
+   "fieldname": "installations",
+   "fieldtype": "Table",
+   "label": "Installations",
+   "options": "SSL Certificate Installation"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-10 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "SSL Certificate",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MSP Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "common_name",
+ "show_title_field_in_link": 1
+}

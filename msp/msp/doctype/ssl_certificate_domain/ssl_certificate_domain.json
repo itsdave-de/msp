@@ -1,0 +1,36 @@
+{
+ "actions": [],
+ "creation": "2026-04-09 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "domain",
+  "domain_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "domain",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "IT Domain",
+   "options": "IT Domain"
+  },
+  {
+   "description": "Fallback fuer externe Domains ohne IT Domain-Eintrag",
+   "fieldname": "domain_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Domain Name"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-04-09 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "SSL Certificate Domain",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
