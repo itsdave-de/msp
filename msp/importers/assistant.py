@@ -1,9 +1,13 @@
-"""HTTP-Endpoints für die Import-Dropzone-Page.
+"""HTTP-Endpoints für die Import-Dropzone- und Assistent-Pages.
 
-Drei whitelisted Methoden:
+Whitelisted Methoden:
     - analyze_file(file_url): Detect handler + DB-freie Vorschau
     - process_file(file_url, handler_key, config): Führt den Import aus
     - list_handlers(): Metadaten aller registrierten Handler (für manuelle Auswahl)
+    - run_documents(run_name): erzeugte Zieldokumente eines Runs (gruppiert)
+    - dashboard_stats(): Statistiken + letzte Runs für die Dropzone-Page
+    - customer_context(customer_refs): pro-Kunde-Kontext (bekannt/neu, Coverage, letzter Run)
+    - run_summary(run_name): aggregierte Top-Kunden-Summen eines Runs
 """
 
 from __future__ import annotations
@@ -146,6 +150,171 @@ def process_file(file_url: str, handler_key: str,
 		"error_count": result.error_count,
 		"skipped_count": result.skipped_count,
 		"message": result.message,
+	}
+
+
+@frappe.whitelist()
+def dashboard_stats(months: int = 1, recent_count: int = 6) -> dict:
+	"""Kennzahlen für die Dropzone-Startseite.
+
+	Liefert eine Aktivitäts-Zusammenfassung der letzten ``months`` Monate plus
+	die letzten ``recent_count`` Import-Runs inklusive Kurzstatistik.
+	"""
+	from_date = frappe.utils.add_months(frappe.utils.nowdate(), -int(months))
+
+	totals_row = frappe.db.sql(
+		"""
+		SELECT
+			COUNT(*) AS total_runs,
+			SUM(CASE WHEN status = 'Succeeded' THEN 1 ELSE 0 END) AS succeeded,
+			SUM(CASE WHEN status = 'Partial' THEN 1 ELSE 0 END) AS partial,
+			SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) AS failed,
+			COALESCE(SUM(document_count), 0) AS total_documents,
+			COALESCE(SUM(line_count), 0) AS total_lines,
+			COALESCE(SUM(error_count), 0) AS total_errors
+		FROM `tabSupplier Import Run`
+		WHERE creation >= %(from_date)s
+		""",
+		{"from_date": from_date},
+		as_dict=True,
+	)
+	totals = totals_row[0] if totals_row else {}
+
+	subs_row = frappe.db.sql(
+		"""SELECT COUNT(*) AS active, COALESCE(SUM(qty_current), 0) AS total_qty
+		   FROM `tabSupply Subscription` WHERE status = 'Active'""",
+		as_dict=True,
+	)
+	subs = subs_row[0] if subs_row else {}
+
+	recent = frappe.db.sql(
+		"""
+		SELECT name, profile, status, creation, finished_at,
+		       line_count, document_count, error_count
+		FROM `tabSupplier Import Run`
+		ORDER BY creation DESC
+		LIMIT %(limit)s
+		""",
+		{"limit": int(recent_count)},
+		as_dict=True,
+	)
+
+	return {
+		"window": {"months": int(months), "from_date": str(from_date)},
+		"totals": {
+			"runs": int(totals.get("total_runs") or 0),
+			"succeeded": int(totals.get("succeeded") or 0),
+			"partial": int(totals.get("partial") or 0),
+			"failed": int(totals.get("failed") or 0),
+			"documents": int(totals.get("total_documents") or 0),
+			"lines": int(totals.get("total_lines") or 0),
+			"errors": int(totals.get("total_errors") or 0),
+		},
+		"subscriptions": {
+			"active": int(subs.get("active") or 0),
+			"total_qty": int(subs.get("total_qty") or 0),
+		},
+		"recent_runs": recent,
+	}
+
+
+@frappe.whitelist()
+def customer_context(customer_refs: str | list) -> list[dict]:
+	"""Kundenkontext für den Wizard Schritt 1.
+
+	Für jeden Kunden-Ref: hat er Supply Subscriptions (bekannt?), hat er eine
+	aktive License Coverage, wie viele Runs waren's bisher?
+	"""
+	if isinstance(customer_refs, str):
+		customer_refs = json.loads(customer_refs or "[]")
+	refs = [c for c in (customer_refs or []) if c]
+	if not refs:
+		return []
+
+	subs = frappe.db.sql(
+		"""
+		SELECT customer, COUNT(*) AS n_subscriptions,
+		       COALESCE(SUM(qty_current), 0) AS qty_total
+		FROM `tabSupply Subscription`
+		WHERE customer IN %(refs)s
+		GROUP BY customer
+		""",
+		{"refs": tuple(refs)},
+		as_dict=True,
+	)
+	subs_map = {r["customer"]: r for r in subs}
+
+	coverage = frappe.db.sql(
+		"""
+		SELECT c.customer, COUNT(DISTINCT c.name) AS n_coverages,
+		       COALESCE(SUM(ci.qty), 0) AS covered_qty
+		FROM `tabLicense Coverage` c
+		LEFT JOIN `tabLicense Coverage Item` ci ON ci.parent = c.name
+		WHERE c.enabled = 1 AND c.customer IN %(refs)s
+		GROUP BY c.customer
+		""",
+		{"refs": tuple(refs)},
+		as_dict=True,
+	)
+	cov_map = {r["customer"]: r for r in coverage}
+
+	customers_exist = set(frappe.db.sql_list(
+		"SELECT name FROM tabCustomer WHERE name IN %(refs)s",
+		{"refs": tuple(refs)},
+	))
+
+	rows = []
+	for ref in refs:
+		s = subs_map.get(ref, {})
+		c = cov_map.get(ref, {})
+		rows.append({
+			"customer": ref,
+			"exists": ref in customers_exist,
+			"subscriptions": int(s.get("n_subscriptions") or 0),
+			"subscription_qty": int(s.get("qty_total") or 0),
+			"coverages": int(c.get("n_coverages") or 0),
+			"covered_qty": int(c.get("covered_qty") or 0),
+		})
+	return rows
+
+
+@frappe.whitelist()
+def run_summary(run_name: str, top_n: int = 5) -> dict:
+	"""Aggregierte Zusammenfassung eines Runs: Totals + Top-N-Kunden."""
+	if not run_name:
+		return {}
+	totals = frappe.db.sql(
+		"""
+		SELECT COUNT(DISTINCT customer) AS customers,
+		       COUNT(DISTINCT target_doc_name) AS documents,
+		       COALESCE(SUM(CASE WHEN line_status = 'Created' THEN amount END), 0) AS total_created,
+		       SUM(CASE WHEN line_status = 'Created' THEN 1 ELSE 0 END) AS lines_created,
+		       SUM(CASE WHEN line_status = 'Skipped' THEN 1 ELSE 0 END) AS lines_skipped,
+		       SUM(CASE WHEN line_status = 'Error' THEN 1 ELSE 0 END) AS lines_error
+		FROM `tabSupplier Import Line`
+		WHERE parent = %(run)s
+		""",
+		{"run": run_name},
+		as_dict=True,
+	)
+	top = frappe.db.sql(
+		"""
+		SELECT customer,
+		       COUNT(DISTINCT target_doc_name) AS documents,
+		       COUNT(*) AS line_count,
+		       COALESCE(SUM(amount), 0) AS total_amount
+		FROM `tabSupplier Import Line`
+		WHERE parent = %(run)s AND line_status = 'Created'
+		GROUP BY customer
+		ORDER BY total_amount DESC
+		LIMIT %(limit)s
+		""",
+		{"run": run_name, "limit": int(top_n)},
+		as_dict=True,
+	)
+	return {
+		"totals": totals[0] if totals else {},
+		"top_customers": top,
 	}
 
 
