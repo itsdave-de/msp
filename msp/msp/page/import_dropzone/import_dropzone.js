@@ -1,9 +1,9 @@
 /**
  * Frappe-Page „Lieferanten-Import" — Drag-&-Drop-Dropzone mit Dashboard.
  *
- * Layout-Konzept: Editorial Data. Große Zahlen als visueller Anker,
- * klare Typografie-Hierarchie, Grautöne für Struktur, ERPNext-Blau als
- * Primär, itsdave-Rot als sparsam eingesetzter Akzent.
+ * Nutzt durchgehend Frappé-CSS-Variablen (--text-color, --card-bg, --primary,
+ * --red-500, --green-500 …), damit Dark Mode und Theme-Switch out-of-the-box
+ * funktionieren. Horizontale Seitenpaddings per var(--padding-lg).
  */
 
 frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
@@ -32,7 +32,9 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 
 			<section class="msp-dropzone" tabindex="0">
 				<div class="msp-dropzone__inner">
-					<div class="msp-dropzone__orb" aria-hidden="true"></div>
+					<div class="msp-dropzone__orb" aria-hidden="true">
+						${ICON.upload}
+					</div>
 					<div class="msp-dropzone__copy">
 						<div class="msp-dropzone__label">
 							${__("Dateien ablegen")}
@@ -104,12 +106,8 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 	);
 	els.dz.addEventListener("drop", (e) => handle_files(e.dataTransfer.files));
 	els.dz.addEventListener("click", (e) => {
-		if (e.target.classList.contains("msp-dropzone__browse") ||
-			e.target.closest(".msp-dropzone__inner") === e.currentTarget.querySelector(".msp-dropzone__inner")) {
-			if (e.target.tagName !== "BUTTON" && !e.target.classList.contains("msp-dropzone__browse")) {
-				// Klick auf die Zone selbst → File-Dialog
-				els.fileInput.click();
-			}
+		if (e.target.tagName !== "BUTTON" && !e.target.classList.contains("msp-dropzone__browse")) {
+			els.fileInput.click();
 		}
 	});
 	root.querySelector(".msp-dropzone__browse").addEventListener("click", (e) => {
@@ -129,16 +127,34 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 		const t = data.totals || {};
 		const s = data.subscriptions || {};
 		const stats = [
-			{ label: __("Läufe (30 Tage)"), value: t.runs || 0,
-			  sub: build_status_strip(t), accent: "primary" },
-			{ label: __("Erzeugte Belege"), value: t.documents || 0,
-			  sub: fmt_line(t.lines, __("Zeilen verarbeitet")), accent: "neutral" },
-			{ label: __("Fehler"), value: t.errors || 0,
-			  sub: t.errors ? __("bitte prüfen") : __("keine auffälligen"),
-			  accent: t.errors ? "danger" : "neutral" },
-			{ label: __("Aktive Subscriptions"), value: s.active || 0,
-			  sub: `${s.total_qty || 0} ${__("Slots insgesamt")}`,
-			  accent: "accent" },
+			{
+				label: __("Läufe (30 Tage)"),
+				value: t.runs || 0,
+				sub: build_status_strip(t),
+				tone: "primary",
+				icon: ICON.stack,
+			},
+			{
+				label: __("Erzeugte Belege"),
+				value: t.documents || 0,
+				sub: fmt_line(t.lines, __("Zeilen verarbeitet")),
+				tone: "success",
+				icon: ICON.doc,
+			},
+			{
+				label: __("Fehler"),
+				value: t.errors || 0,
+				sub: t.errors ? __("bitte prüfen") : __("keine auffälligen"),
+				tone: t.errors ? "danger" : "neutral",
+				icon: t.errors ? ICON.warning : ICON.check,
+			},
+			{
+				label: __("Aktive Subscriptions"),
+				value: s.active || 0,
+				sub: `${format_int(s.total_qty || 0)} ${__("Slots insgesamt")}`,
+				tone: "accent",
+				icon: ICON.users,
+			},
 		];
 		els.stats.innerHTML = stats.map(render_stat).join("");
 
@@ -150,9 +166,12 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 
 	function render_stat(s) {
 		return `
-			<div class="msp-stat msp-stat--${s.accent}">
+			<div class="msp-stat msp-stat--${s.tone}">
+				<div class="msp-stat__head">
+					<span class="msp-stat__icon">${s.icon || ""}</span>
+					<span class="msp-stat__label">${s.label}</span>
+				</div>
 				<div class="msp-stat__value">${format_int(s.value)}</div>
-				<div class="msp-stat__label">${s.label}</div>
 				<div class="msp-stat__sub">${s.sub || ""}</div>
 			</div>
 		`;
@@ -412,150 +431,185 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 
 	function icon_for(filename) {
 		const name = (filename || "").toLowerCase();
-		if (name.endsWith(".zip")) return "<svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='1.6'><rect x='4' y='3' width='16' height='18' rx='2'/><path d='M10 3v4h4V3'/><path d='M10 9v2h4v2h-4v2h4v2h-4'/></svg>";
-		if (name.endsWith(".csv")) return "<svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z'/><path d='M15 3v4h4'/><path d='M8 14h2M12 14h2M16 14h1'/><path d='M8 18h2M12 18h2M16 18h1'/></svg>";
-		return "<svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><path d='M14 2v6h6'/></svg>";
+		if (name.endsWith(".zip")) return ICON.zip;
+		if (name.endsWith(".csv")) return ICON.csv;
+		return ICON.file;
 	}
 };
 
 
 // ---------------------------------------------------------------------------
-// Styles
+// Icon-Set — schlanke 1.6er-Stroke-SVGs, erben currentColor
+// ---------------------------------------------------------------------------
+
+const ICON = {
+	upload: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M6 10l6-6 6 6"/><path d="M4 20h16"/></svg>`,
+	stack: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>`,
+	doc: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>`,
+	warning: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+	check: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>`,
+	users: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>`,
+	zip: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 3v4h4V3"/><path d="M10 9v2h4v2h-4v2h4v2h-4"/></svg>`,
+	csv: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M15 3v4h4"/><path d="M8 14h2M12 14h2M16 14h1"/><path d="M8 18h2M12 18h2M16 18h1"/></svg>`,
+	file: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>`,
+};
+
+
+// ---------------------------------------------------------------------------
+// Styles — nutzen Frappé-Design-Tokens (--text-color, --card-bg, --primary,
+// --red-500/--green-500/--yellow-500/--blue-500, --padding-*)
 // ---------------------------------------------------------------------------
 
 function inject_style(root) {
 	const style = document.createElement("style");
 	style.textContent = `
 		.msp-importer {
-			--ink: #0f172a;
-			--ink-soft: #475569;
-			--mute: #94a3b8;
-			--line: #e2e8f0;
-			--surface: #ffffff;
-			--surface-alt: #f8fafc;
-			--primary: var(--primary, #2490ef);
-			--primary-ink: #0b4a8a;
-			--accent: #e73249;        /* itsdave rot */
-			--ok: #047857;
-			--warn: #b45309;
-			--danger: #b91c1c;
-			--muted-bg: #f1f5f9;
+			--msp-accent: #e73249; /* itsdave-Rot — sparsam als Signal */
+			--msp-radius: 10px;
+			--msp-shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
 
-			max-width: 1080px;
+			max-width: 1120px;
 			margin: 0 auto;
-			padding: 4px 4px 40px;
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-				"Helvetica Neue", Arial, sans-serif;
-			color: var(--ink);
+			padding: var(--padding-sm) var(--padding-lg) var(--padding-2xl);
+			color: var(--text-color);
+			font-family: inherit;
+		}
+		@media (max-width: 640px) {
+			.msp-importer { padding: var(--padding-xs) var(--padding-md) var(--padding-xl); }
 		}
 
+		/* ---------- Hero + Stats ---------- */
 		.msp-hero {
 			display: grid;
 			grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-			gap: 40px;
+			gap: var(--padding-2xl);
 			align-items: end;
-			padding: 36px 0 28px;
-			border-bottom: 1px solid var(--line);
-			margin-bottom: 28px;
+			padding: var(--padding-xl) 0 var(--padding-lg);
+			border-bottom: 1px solid var(--border-color);
+			margin-bottom: var(--padding-xl);
 		}
-		@media (max-width: 880px) { .msp-hero { grid-template-columns: 1fr; gap: 24px; } }
+		@media (max-width: 900px) {
+			.msp-hero { grid-template-columns: 1fr; gap: var(--padding-lg); align-items: start; }
+		}
 
 		.msp-eyebrow {
 			font-size: 11px;
 			text-transform: uppercase;
 			letter-spacing: .14em;
-			color: var(--mute);
+			color: var(--text-muted);
 			margin: 0 0 10px 0;
 			font-weight: 600;
 		}
 		.msp-title {
-			font-size: 34px;
-			font-weight: 600;
-			line-height: 1.15;
+			font-size: 28px;
+			font-weight: 700;
+			line-height: 1.2;
 			letter-spacing: -0.015em;
-			margin: 0 0 12px 0;
-			color: var(--ink);
+			margin: 0 0 10px 0;
+			color: var(--heading-color);
 		}
 		.msp-sub {
-			font-size: 14.5px;
+			font-size: 14px;
 			line-height: 1.55;
-			color: var(--ink-soft);
-			max-width: 46ch;
+			color: var(--text-muted);
+			max-width: 48ch;
 			margin: 0;
 		}
 
 		.msp-stats {
 			display: grid;
 			grid-template-columns: repeat(4, 1fr);
-			gap: 12px;
+			gap: var(--padding-sm);
 		}
-		@media (max-width: 640px) { .msp-stats { grid-template-columns: repeat(2, 1fr); } }
+		@media (max-width: 720px) { .msp-stats { grid-template-columns: repeat(2, 1fr); } }
 
 		.msp-stat {
-			background: var(--surface);
-			border: 1px solid var(--line);
-			border-radius: 10px;
-			padding: 14px 14px 12px;
+			position: relative;
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: var(--msp-radius);
+			padding: var(--padding-md);
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
-			position: relative;
+			gap: 4px;
 			overflow: hidden;
+			box-shadow: var(--msp-shadow-card);
 			animation: msp-fade-in .4s ease both;
 		}
 		.msp-stat::before {
-			content: "";
-			position: absolute;
-			left: 0; top: 0; bottom: 0;
-			width: 3px;
+			content: ""; position: absolute;
+			left: 0; top: 0; bottom: 0; width: 3px;
+			background: var(--border-color);
 		}
 		.msp-stat--primary::before { background: var(--primary); }
-		.msp-stat--accent::before { background: var(--accent); }
-		.msp-stat--neutral::before { background: var(--line); }
-		.msp-stat--danger::before { background: var(--danger); }
-		.msp-stat--skeleton {
-			background: linear-gradient(90deg, var(--muted-bg) 0%, #e8eef5 50%, var(--muted-bg) 100%);
-			background-size: 200% 100%;
-			animation: msp-shimmer 1.2s linear infinite;
-			min-height: 92px;
+		.msp-stat--success::before { background: var(--green-500); }
+		.msp-stat--danger::before  { background: var(--red-500); }
+		.msp-stat--accent::before  { background: var(--msp-accent); }
+		.msp-stat--neutral::before { background: var(--border-color); }
+
+		.msp-stat__head {
+			display: flex; align-items: center; gap: 8px;
+			color: var(--text-muted);
 		}
-		.msp-stat__value {
-			font-size: 30px;
-			font-weight: 600;
-			line-height: 1;
-			font-variant-numeric: tabular-nums;
-			letter-spacing: -0.02em;
-			color: var(--ink);
+		.msp-stat__icon {
+			display: inline-flex; align-items: center; justify-content: center;
+			width: 24px; height: 24px; border-radius: 6px;
+			background: var(--subtle-fg);
+			color: var(--text-muted);
+			flex: none;
 		}
+		.msp-stat--primary .msp-stat__icon { background: var(--alert-bg-info); color: var(--alert-text-info); }
+		.msp-stat--success .msp-stat__icon { background: var(--alert-bg-success); color: var(--alert-text-success); }
+		.msp-stat--danger  .msp-stat__icon { background: var(--alert-bg-danger); color: var(--alert-text-danger); }
+		.msp-stat--accent  .msp-stat__icon { background: var(--alert-bg-info); color: var(--alert-text-info); }
+
 		.msp-stat__label {
 			font-size: 11px;
 			text-transform: uppercase;
-			letter-spacing: .1em;
-			color: var(--mute);
+			letter-spacing: .08em;
+			color: var(--text-muted);
 			font-weight: 600;
 		}
-		.msp-stat__sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+		.msp-stat__value {
+			font-size: 28px; font-weight: 700; line-height: 1;
+			color: var(--heading-color);
+			font-variant-numeric: tabular-nums;
+			letter-spacing: -0.02em;
+			margin-top: 4px;
+		}
+		.msp-stat--danger .msp-stat__value { color: var(--red-600, var(--red-500)); }
+		.msp-stat__sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; min-height: 18px; }
 
+		.msp-stat--skeleton {
+			background: linear-gradient(90deg, var(--subtle-fg) 0%, var(--fg-hover-color) 50%, var(--subtle-fg) 100%);
+			background-size: 200% 100%;
+			animation: msp-shimmer 1.2s linear infinite;
+			min-height: 104px;
+		}
+		.msp-stat--skeleton::before { display: none; }
+
+		/* ---------- Pills ---------- */
 		.pill {
 			display: inline-block;
-			padding: 2px 7px;
+			padding: 2px 8px;
 			border-radius: 999px;
 			font-size: 11px;
 			font-weight: 600;
 			line-height: 1.5;
 			margin-right: 4px;
 		}
-		.pill--ok { background: #dcfce7; color: #14532d; }
-		.pill--warn { background: #fef3c7; color: #92400e; }
-		.pill--danger { background: #fee2e2; color: #991b1b; }
-		.pill--muted { background: var(--muted-bg); color: var(--mute); }
+		.pill--ok     { background: var(--alert-bg-success); color: var(--alert-text-success); }
+		.pill--warn   { background: var(--alert-bg-warning); color: var(--alert-text-warning); }
+		.pill--danger { background: var(--alert-bg-danger); color: var(--alert-text-danger); }
+		.pill--muted  { background: var(--subtle-fg); color: var(--text-muted); }
 
+		/* ---------- Dropzone ---------- */
 		.msp-dropzone {
 			position: relative;
-			background: var(--surface);
-			border: 1.5px dashed #cbd5e1;
-			border-radius: 14px;
-			padding: 36px 28px;
+			background: var(--card-bg);
+			border: 1.5px dashed var(--dark-border-color, var(--border-color));
+			border-radius: var(--msp-radius);
+			padding: var(--padding-2xl) var(--padding-lg);
 			text-align: center;
 			cursor: pointer;
 			transition: background-color .18s, border-color .18s, transform .18s;
@@ -565,12 +619,13 @@ function inject_style(root) {
 		.msp-dropzone::before {
 			content: "";
 			position: absolute; inset: 0;
-			background: radial-gradient(circle at 50% -10%, rgba(36, 144, 239, 0.06), transparent 55%);
+			background: radial-gradient(circle at 50% -10%, var(--alert-bg-info), transparent 55%);
+			opacity: .6;
 			pointer-events: none;
 		}
 		.msp-dropzone.is-dragover {
 			border-color: var(--primary);
-			background: rgba(36, 144, 239, 0.04);
+			background: var(--alert-bg-info);
 			transform: translateY(-1px);
 		}
 		.msp-dropzone__inner {
@@ -578,95 +633,86 @@ function inject_style(root) {
 			position: relative; z-index: 1;
 		}
 		.msp-dropzone__orb {
-			width: 46px; height: 46px; border-radius: 50%;
-			background: linear-gradient(145deg, var(--primary) 0%, var(--primary-ink) 100%);
-			position: relative;
-			box-shadow: 0 4px 14px rgba(36, 144, 239, 0.25);
-		}
-		.msp-dropzone__orb::after {
-			content: "";
-			position: absolute;
-			left: 50%; top: 50%;
-			transform: translate(-50%, -50%);
-			width: 14px; height: 14px;
-			border-top: 2.5px solid #fff; border-left: 2.5px solid #fff;
-			border-radius: 2px;
-			transform-origin: center;
-			transform: translate(-50%, -44%) rotate(45deg);
+			width: 54px; height: 54px; border-radius: 14px;
+			display: inline-flex; align-items: center; justify-content: center;
+			background: var(--primary);
+			color: var(--neutral-white, #fff);
+			box-shadow: 0 6px 18px rgba(36, 144, 239, 0.25);
 		}
 		.msp-dropzone__copy { display: flex; flex-direction: column; gap: 4px; }
 		.msp-dropzone__label {
-			font-size: 18px; font-weight: 600; color: var(--ink);
+			font-size: 18px; font-weight: 600; color: var(--heading-color);
 			letter-spacing: -0.01em;
 		}
-		.msp-dropzone__hint { font-size: 13px; color: var(--ink-soft); }
-		.msp-dropzone__browse {
-			margin-top: 6px;
-			font-weight: 500;
-		}
+		.msp-dropzone__hint { font-size: 13px; color: var(--text-muted); }
+		.msp-dropzone__browse { margin-top: 8px; font-weight: 500; }
 
+		/* ---------- Upload-Cards ---------- */
 		.msp-cards {
-			display: flex; flex-direction: column; gap: 10px;
-			margin-top: 18px;
+			display: flex; flex-direction: column; gap: var(--padding-sm);
+			margin-top: var(--padding-md);
 		}
-
 		.msp-card {
 			position: relative;
 			display: grid;
-			grid-template-columns: 40px 1fr;
+			grid-template-columns: 44px 1fr;
 			gap: 14px;
-			padding: 16px 18px;
-			background: var(--surface);
-			border: 1px solid var(--line);
-			border-radius: 10px;
+			padding: var(--padding-md);
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: var(--msp-radius);
+			box-shadow: var(--msp-shadow-card);
 			animation: msp-fade-in .3s ease both;
 		}
 		.msp-card__badge {
-			width: 40px; height: 40px;
+			width: 44px; height: 44px;
 			display: flex; align-items: center; justify-content: center;
-			background: var(--muted-bg);
+			background: var(--subtle-fg);
+			color: var(--text-muted);
 			border-radius: 8px;
-			color: var(--ink-soft);
 			flex: none;
 		}
 		.msp-card__head {
 			display: flex; gap: 8px; align-items: baseline;
 			margin-bottom: 6px;
 		}
-		.msp-card__name { font-size: 15px; font-weight: 600; margin: 0; color: var(--ink); letter-spacing: -0.01em; }
-		.msp-card__size { font-size: 12px; color: var(--mute); }
-		.msp-card__state { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+		.msp-card__name { font-size: 15px; font-weight: 600; margin: 0; color: var(--heading-color); letter-spacing: -0.01em; }
+		.msp-card__size { font-size: 12px; color: var(--text-muted); }
+		.msp-card__state { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
 		.msp-card__state .spinner {
 			width: 10px; height: 10px; border-radius: 50%;
-			border: 1.5px solid var(--line);
+			border: 1.5px solid var(--border-color);
 			border-top-color: var(--primary);
 			animation: msp-spin .8s linear infinite;
 			display: inline-block;
 		}
-		.msp-card__state em { font-style: normal; color: var(--mute); }
-		.msp-card__state strong { font-weight: 600; color: var(--ink); }
+		.msp-card__state em { font-style: normal; color: var(--text-muted); }
+		.msp-card__state strong { font-weight: 600; color: var(--text-color); }
 		.msp-card__state .check {
 			color: #fff;
-			background: var(--ok);
+			background: var(--green-500);
 			width: 16px; height: 16px;
 			border-radius: 50%;
 			display: inline-flex; align-items: center; justify-content: center;
 			font-size: 10px;
 		}
 		.msp-card__state .cross {
-			color: var(--danger);
+			color: var(--red-600, var(--red-500));
 			width: 16px; height: 16px;
 			border-radius: 50%;
 			display: inline-flex; align-items: center; justify-content: center;
-			background: #fee2e2;
+			background: var(--alert-bg-danger);
 			font-size: 11px;
 			font-weight: 700;
 		}
-		.msp-card__state .cross--warn { color: var(--warn); background: #fef3c7; }
+		.msp-card__state .cross--warn {
+			color: var(--alert-text-warning);
+			background: var(--alert-bg-warning);
+		}
 
-		.msp-card--matched { border-left: 3px solid var(--ok); padding-left: 16px; }
-		.msp-card--unmatched { border-left: 3px solid var(--warn); padding-left: 16px; }
-		.msp-card--error { border-left: 3px solid var(--danger); padding-left: 16px; }
+		.msp-card--matched   { border-left: 3px solid var(--green-500); padding-left: 14px; }
+		.msp-card--unmatched { border-left: 3px solid var(--yellow-500); padding-left: 14px; }
+		.msp-card--error     { border-left: 3px solid var(--red-500); padding-left: 14px; }
 
 		.msp-card__stats {
 			display: flex; flex-wrap: wrap; gap: 6px;
@@ -675,28 +721,28 @@ function inject_style(root) {
 		.msp-chip {
 			display: inline-flex; gap: 6px; align-items: baseline;
 			padding: 4px 10px;
-			background: var(--muted-bg);
+			background: var(--subtle-fg);
 			border-radius: 7px;
 			font-size: 12.5px;
 		}
-		.msp-chip__label { color: var(--mute); text-transform: lowercase; }
-		.msp-chip__value { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
-		.msp-chip--warn { background: #fef3c7; }
+		.msp-chip__label { color: var(--text-muted); text-transform: lowercase; }
+		.msp-chip__value { color: var(--text-color); font-weight: 600; font-variant-numeric: tabular-nums; }
+		.msp-chip--warn { background: var(--alert-bg-warning); }
 		.msp-chip--warn .msp-chip__label,
-		.msp-chip--warn .msp-chip__value { color: #92400e; }
+		.msp-chip--warn .msp-chip__value { color: var(--alert-text-warning); }
 
 		.msp-card__warn {
 			font-size: 12.5px;
-			color: var(--warn);
-			background: #fffbeb;
+			color: var(--alert-text-warning);
+			background: var(--alert-bg-warning);
 			padding: 8px 10px;
 			border-radius: 6px;
 			margin-top: 10px;
 		}
 		.msp-card__error {
 			font-size: 12.5px;
-			color: var(--danger);
-			background: #fef2f2;
+			color: var(--alert-text-danger);
+			background: var(--alert-bg-danger);
 			padding: 8px 10px;
 			border-radius: 6px;
 			margin-top: 10px;
@@ -706,61 +752,65 @@ function inject_style(root) {
 			display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
 			margin-top: 12px;
 		}
-		.msp-card__actions .msp-input {
-			width: auto; min-width: 260px;
-		}
+		.msp-card__actions .msp-input { width: auto; min-width: 260px; }
 		.btn-open-assistant .arr { margin-left: 4px; }
 
-		.msp-recent { margin-top: 32px; }
+		/* ---------- Recent runs ---------- */
+		.msp-recent { margin-top: var(--padding-xl); }
 		.msp-section-head {
 			display: flex; align-items: baseline; justify-content: space-between;
-			margin-bottom: 12px;
+			margin-bottom: var(--padding-sm);
 		}
 		.msp-section-title {
-			font-size: 14px;
+			font-size: 12px;
 			text-transform: uppercase;
 			letter-spacing: .1em;
-			color: var(--mute);
+			color: var(--text-muted);
 			font-weight: 600;
 			margin: 0;
 		}
 		.msp-section-link {
 			font-size: 13px;
-			color: var(--ink-soft);
+			color: var(--text-muted);
 			text-decoration: none;
 		}
 		.msp-section-link:hover { color: var(--primary); }
 
 		.msp-recent__list {
 			display: flex; flex-direction: column;
-			border: 1px solid var(--line);
-			border-radius: 10px;
+			border: 1px solid var(--border-color);
+			border-radius: var(--msp-radius);
 			overflow: hidden;
-			background: var(--surface);
+			background: var(--card-bg);
+			box-shadow: var(--msp-shadow-card);
 		}
 		.msp-recent__row {
 			display: grid;
-			grid-template-columns: 130px 1fr 1.3fr 1.6fr auto;
+			grid-template-columns: 130px 1fr 1.2fr 1.5fr auto;
 			gap: 18px;
-			padding: 12px 16px;
-			border-bottom: 1px solid var(--line);
+			padding: 12px var(--padding-md);
+			border-bottom: 1px solid var(--border-color);
 			text-decoration: none;
-			color: var(--ink);
+			color: var(--text-color);
 			font-size: 13px;
 			transition: background-color .12s;
 		}
 		.msp-recent__row:last-child { border-bottom: 0; }
-		.msp-recent__row:hover { background: var(--surface-alt); }
+		.msp-recent__row:hover { background: var(--highlight-color); }
 		.msp-recent__status { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
-		.msp-recent__name { color: var(--ink-soft); font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; }
-		.msp-recent__profile { color: var(--ink-soft); }
-		.msp-recent__nums { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-		.msp-recent__nums strong { color: var(--ink); font-weight: 600; }
-		.msp-recent__nums .danger { color: var(--danger); }
-		.msp-recent__time { color: var(--mute); font-size: 12px; justify-self: end; }
+		.msp-recent__name { color: var(--text-muted); font-family: var(--font-stack-monospace, "SF Mono", Menlo, Consolas, monospace); font-size: 12.5px; }
+		.msp-recent__profile { color: var(--text-muted); }
+		.msp-recent__nums { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+		.msp-recent__nums strong { color: var(--text-color); font-weight: 600; }
+		.msp-recent__nums .danger { color: var(--red-500); }
+		.msp-recent__time { color: var(--text-muted); font-size: 12px; justify-self: end; }
 		.msp-recent__empty {
-			padding: 26px; text-align: center;
-			color: var(--mute); font-size: 13px;
+			padding: var(--padding-xl); text-align: center;
+			color: var(--text-muted); font-size: 13px;
+		}
+		@media (max-width: 900px) {
+			.msp-recent__row { grid-template-columns: auto 1fr; grid-auto-flow: row; gap: 6px 12px; }
+			.msp-recent__profile, .msp-recent__time { grid-column: 2; }
 		}
 
 		.dot {
@@ -768,25 +818,26 @@ function inject_style(root) {
 			width: 7px; height: 7px;
 			border-radius: 50%;
 		}
-		.dot--ok { background: var(--ok); }
-		.dot--warn { background: var(--warn); }
-		.dot--danger { background: var(--danger); }
+		.dot--ok     { background: var(--green-500); }
+		.dot--warn   { background: var(--yellow-500); }
+		.dot--danger { background: var(--red-500); }
 		.dot--accent { background: var(--primary); }
-		.dot--muted { background: var(--mute); }
+		.dot--muted  { background: var(--text-muted); }
 
-		.muted { color: var(--mute); }
+		.muted  { color: var(--text-muted); }
+		.danger { color: var(--red-500); }
 
 		@keyframes msp-fade-in {
 			from { opacity: 0; transform: translateY(4px); }
-			to { opacity: 1; transform: translateY(0); }
+			to   { opacity: 1; transform: translateY(0); }
 		}
 		@keyframes msp-shimmer {
 			from { background-position: 0 0; }
-			to { background-position: -200% 0; }
+			to   { background-position: -200% 0; }
 		}
 		@keyframes msp-spin {
 			from { transform: rotate(0); }
-			to { transform: rotate(360deg); }
+			to   { transform: rotate(360deg); }
 		}
 	`;
 	root.appendChild(style);

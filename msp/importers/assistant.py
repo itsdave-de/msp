@@ -105,15 +105,17 @@ def run_documents(run_name: str) -> list[dict]:
 		return []
 	rows = frappe.db.sql(
 		"""
-		SELECT customer, target_doc_type, target_doc_name,
-		       COUNT(*) AS line_count, SUM(COALESCE(amount, 0)) AS total_amount
-		FROM `tabSupplier Import Line`
-		WHERE parent = %(run)s
-		  AND line_status = 'Created'
-		  AND target_doc_name IS NOT NULL
-		  AND target_doc_name != ''
-		GROUP BY customer, target_doc_type, target_doc_name
-		ORDER BY customer
+		SELECT l.customer, c.customer_name,
+		       l.target_doc_type, l.target_doc_name,
+		       COUNT(*) AS line_count, SUM(COALESCE(l.amount, 0)) AS total_amount
+		FROM `tabSupplier Import Line` l
+		LEFT JOIN `tabCustomer` c ON c.name = l.customer
+		WHERE l.parent = %(run)s
+		  AND l.line_status = 'Created'
+		  AND l.target_doc_name IS NOT NULL
+		  AND l.target_doc_name != ''
+		GROUP BY l.customer, c.customer_name, l.target_doc_type, l.target_doc_name
+		ORDER BY COALESCE(c.customer_name, l.customer)
 		""",
 		{"run": run_name},
 		as_dict=True,
@@ -258,10 +260,12 @@ def customer_context(customer_refs: str | list) -> list[dict]:
 	)
 	cov_map = {r["customer"]: r for r in coverage}
 
-	customers_exist = set(frappe.db.sql_list(
-		"SELECT name FROM tabCustomer WHERE name IN %(refs)s",
+	customer_rows = frappe.db.sql(
+		"SELECT name, customer_name FROM `tabCustomer` WHERE name IN %(refs)s",
 		{"refs": tuple(refs)},
-	))
+		as_dict=True,
+	)
+	customer_name_map = {r["name"]: r["customer_name"] for r in customer_rows}
 
 	rows = []
 	for ref in refs:
@@ -269,7 +273,8 @@ def customer_context(customer_refs: str | list) -> list[dict]:
 		c = cov_map.get(ref, {})
 		rows.append({
 			"customer": ref,
-			"exists": ref in customers_exist,
+			"customer_name": customer_name_map.get(ref),
+			"exists": ref in customer_name_map,
 			"subscriptions": int(s.get("n_subscriptions") or 0),
 			"subscription_qty": int(s.get("qty_total") or 0),
 			"coverages": int(c.get("n_coverages") or 0),
@@ -299,13 +304,14 @@ def run_summary(run_name: str, top_n: int = 5) -> dict:
 	)
 	top = frappe.db.sql(
 		"""
-		SELECT customer,
-		       COUNT(DISTINCT target_doc_name) AS documents,
+		SELECT l.customer, c.customer_name,
+		       COUNT(DISTINCT l.target_doc_name) AS documents,
 		       COUNT(*) AS line_count,
-		       COALESCE(SUM(amount), 0) AS total_amount
-		FROM `tabSupplier Import Line`
-		WHERE parent = %(run)s AND line_status = 'Created'
-		GROUP BY customer
+		       COALESCE(SUM(l.amount), 0) AS total_amount
+		FROM `tabSupplier Import Line` l
+		LEFT JOIN `tabCustomer` c ON c.name = l.customer
+		WHERE l.parent = %(run)s AND l.line_status = 'Created'
+		GROUP BY l.customer, c.customer_name
 		ORDER BY total_amount DESC
 		LIMIT %(limit)s
 		""",
