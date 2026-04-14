@@ -61,15 +61,28 @@ def upsert_supply_subscription(row: CanonicalRow, *, customer: str,
 def create_event(row: CanonicalRow, *, supply_subscription: str,
                  target_doctype: str, target_name: str, target_row: str | None = None,
                  supplier_import_line_row: str | None = None) -> str:
-	"""Erzeugt ein Supply Subscription Event für eine abgerechnete Periode."""
+	"""Erzeugt ein Supply Subscription Event für eine abgerechnete Periode.
+
+	``rate`` und ``amount`` spiegeln den **Kundenpreis** (Listenpreis × Menge),
+	``cost_rate`` und ``cost_amount`` den Einkaufspreis bei Lieferant.
+	Differenz = itsdaves Marge.
+	"""
+	qty = int(row.qty) if row.qty else 0
+	list_price = row.list_price
+	customer_rate = list_price if list_price is not None else (row.unit_price or 0)
+	customer_amount = qty * customer_rate
+
 	event = frappe.get_doc({
 		"doctype": "Supply Subscription Event",
 		"supply_subscription": supply_subscription,
 		"period_start": row.period_start,
 		"period_end": row.period_end,
-		"qty": int(row.qty) if row.qty else 0,
-		"rate": row.unit_price or row.list_price or 0,
-		"amount": row.amount or 0,
+		"qty": qty,
+		"rate": customer_rate,
+		"amount": customer_amount,
+		"cost_rate": row.unit_price,
+		"cost_amount": row.amount,
+		"reseller_discount_pct": row.discount_pct,
 		"booking_type": row.booking_type or "Billing",
 		"sales_invoice": target_name if target_doctype == "Sales Invoice" else None,
 		"sales_invoice_item_row": target_row if target_doctype == "Sales Invoice" else None,

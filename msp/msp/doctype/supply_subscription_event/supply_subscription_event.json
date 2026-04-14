@@ -20,6 +20,12 @@
   "qty",
   "rate",
   "amount",
+  "cost_section",
+  "cost_rate",
+  "cost_amount",
+  "column_break_cost",
+  "reseller_discount_pct",
+  "margin_amount",
   "link_section",
   "sales_invoice",
   "sales_invoice_item_row",
@@ -115,6 +121,42 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount"
+  },
+  {
+   "fieldname": "cost_section",
+   "fieldtype": "Section Break",
+   "label": "Einkauf & Marge",
+   "collapsible": 1,
+   "description": "Interne Daten (was itsdave an den Lieferanten bezahlt hat) — dient nicht der Kundenabrechnung."
+  },
+  {
+   "fieldname": "cost_rate",
+   "fieldtype": "Currency",
+   "label": "Cost Rate",
+   "description": "Einzelpreis nach Wiederverkäufer-Rabatt (z. B. ADN EINZELPREIS)"
+  },
+  {
+   "fieldname": "cost_amount",
+   "fieldtype": "Currency",
+   "label": "Cost Amount",
+   "description": "qty × cost_rate (z. B. ADN POSITIONSPREIS)"
+  },
+  {
+   "fieldname": "column_break_cost",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reseller_discount_pct",
+   "fieldtype": "Float",
+   "label": "Reseller Discount (%)",
+   "description": "Wiederverkäufer-Rabatt gegenüber Listenpreis"
+  },
+  {
+   "fieldname": "margin_amount",
+   "fieldtype": "Currency",
+   "label": "Margin",
+   "read_only": 1,
+   "description": "amount − cost_amount"
   },
   {
    "fieldname": "link_section",

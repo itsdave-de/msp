@@ -3,6 +3,11 @@ from frappe.model.document import Document
 
 
 class SupplySubscriptionEvent(Document):
+	def before_save(self):
+		# Marge berechnen, sofern beide Seiten bekannt sind
+		if self.amount is not None and self.cost_amount is not None:
+			self.margin_amount = float(self.amount) - float(self.cost_amount)
+
 	def on_update(self):
 		self._refresh_subscription_denormals()
 

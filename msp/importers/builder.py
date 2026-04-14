@@ -165,15 +165,16 @@ class DocumentBuilder:
 		if is_return and qty > 0:
 			qty = -qty
 
-		# ERPNext berechnet amount = qty * rate. `rate` muss daher der
-		# tatsächliche Netto-Einzelpreis nach Rabatt sein (EINZELPREIS aus ADN).
-		# Fallback-Reihenfolge: unit_price → amount/qty → list_price
-		if row.unit_price is not None:
+		# WICHTIG: Kundenabrechnungen nutzen den LISTPREIS, nicht den Einkaufspreis.
+		# Der Lieferanten-Rabatt (z. B. 17,5 % bei ADN) ist unsere Marge und
+		# darf nicht an den Endkunden durchgereicht werden.
+		# Fallback-Reihenfolge: list_price → unit_price → amount/qty
+		if row.list_price is not None:
+			rate = row.list_price
+		elif row.unit_price is not None:
 			rate = row.unit_price
 		elif row.amount is not None and qty:
 			rate = row.amount / qty
-		elif row.list_price is not None:
-			rate = row.list_price
 		else:
 			rate = 0
 
@@ -183,11 +184,6 @@ class DocumentBuilder:
 			"rate": rate,
 			"description": self._format_description(row),
 		}
-		# Listenpreis + Rabatt zur Nachvollziehbarkeit in der UI mitführen
-		if row.list_price is not None:
-			item_row["price_list_rate"] = row.list_price
-		if row.discount_pct:
-			item_row["discount_percentage"] = row.discount_pct
 
 		item = doc.append("items", item_row)
 
