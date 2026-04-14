@@ -10,7 +10,7 @@ from msp.importers._runner import run as run_one
 
 
 CSV_SEQUENCE = [
-	"/private/files/433148_Rechnungen_17_10_2025.csv",
+	"/private/files/433148_Rechnungen_16_10_2025.csv",
 	"/private/files/433148_Rechnungen_17_11_2025.csv",
 	"/private/files/433148_Rechnungen_18_12_2025.csv",
 	"/private/files/433148_Rechnungen_16_01_2026.csv",

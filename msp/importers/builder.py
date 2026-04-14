@@ -98,6 +98,11 @@ class DocumentBuilder:
 					o["error"] = str(e)
 			return
 
+		# Title nach Insert festnageln — ERPNext setzt ihn sonst über
+		# title_field/autoname auf "{customer_name}" zurück.
+		if doc.title and "{" not in doc.title:
+			frappe.db.set_value(doc.doctype, doc.name, "title", doc.title)
+
 		result.created_documents.append((doc.doctype, doc.name))
 
 		# Subscription-Events erst nach erfolgreichem Insert, damit wir die
@@ -162,8 +167,13 @@ class DocumentBuilder:
 			        "error": f"Item-Lookup {reason}: vendor_product_id={row.vendor_product_id}"}
 
 		# Deduplizierung: bereits Event für diese Subscription+Period vorhanden?
-		if row.subscription_external_id and event_exists_for_period(
-				row.subscription_external_id, row.period_start, row.period_end):
+		# Gutschriftzeilen (qty<0 oder amount<0) laufen IMMER durch — sie sind inhaltlich
+		# eine Korrektur der bereits erfassten Rechnung, nie eine Dublette.
+		is_credit_row = (row.qty or 0) < 0 or (row.amount or 0) < 0 or row.document_type == "Gutschrift"
+		if (not is_credit_row
+		    and row.subscription_external_id
+		    and event_exists_for_period(
+		        row.subscription_external_id, row.period_start, row.period_end)):
 			return {"row": row, "status": "Skipped",
 			        "error": "Bereits importiert (Subscription+Period existieren)"}
 
