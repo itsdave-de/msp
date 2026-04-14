@@ -1,0 +1,201 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-04-14 09:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "supply_subscription",
+  "booking_type",
+  "column_break_head",
+  "customer",
+  "supplier",
+  "period_section",
+  "period_start",
+  "period_end",
+  "column_break_period",
+  "qty",
+  "rate",
+  "amount",
+  "link_section",
+  "sales_invoice",
+  "sales_invoice_item_row",
+  "column_break_link",
+  "delivery_note",
+  "delivery_note_item_row",
+  "purchase_invoice",
+  "supplier_import_line"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "SUBE-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supply_subscription",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Supply Subscription",
+   "options": "Supply Subscription",
+   "reqd": 1
+  },
+  {
+   "fieldname": "booking_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Booking Type",
+   "options": "\nNew\nRenewal\nBilling\nUpgrade\nCancel"
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "supply_subscription.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "supply_subscription.supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_section",
+   "fieldtype": "Section Break",
+   "label": "Zeitraum & Mengen"
+  },
+  {
+   "fieldname": "period_start",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Period Start",
+   "reqd": 1
+  },
+  {
+   "fieldname": "period_end",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Period End",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_period",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "link_section",
+   "fieldtype": "Section Break",
+   "label": "Verknüpfungen"
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Sales Invoice",
+   "options": "Sales Invoice"
+  },
+  {
+   "fieldname": "sales_invoice_item_row",
+   "fieldtype": "Data",
+   "label": "Sales Invoice Item (row)",
+   "description": "name der Zeile in tabSales Invoice Item"
+  },
+  {
+   "fieldname": "column_break_link",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_note",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Delivery Note",
+   "options": "Delivery Note"
+  },
+  {
+   "fieldname": "delivery_note_item_row",
+   "fieldtype": "Data",
+   "label": "Delivery Note Item (row)"
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Purchase Invoice",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fieldname": "supplier_import_line",
+   "fieldtype": "Data",
+   "label": "Supplier Import Line (row)",
+   "description": "Rückverweis auf die Zeile im Supplier Import Run"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "modified": "2026-04-14 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Supply Subscription Event",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "period_end",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

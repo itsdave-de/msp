@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:SUB-{external_id}",
+ "creation": "2026-04-14 09:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "external_id",
+  "status",
+  "column_break_basics",
+  "customer",
+  "supplier",
+  "vendor",
+  "product_section",
+  "item",
+  "item_name",
+  "vendor_product_id",
+  "column_break_product",
+  "billing_plan",
+  "term_duration",
+  "qty_current",
+  "timeline_section",
+  "start_date",
+  "current_period_end",
+  "column_break_timeline",
+  "last_event_date",
+  "last_booking_type"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "read_only": 1
+  },
+  {
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "External Subscription ID",
+   "reqd": 1,
+   "unique": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nLapsed\nCancelled",
+   "default": "Active"
+  },
+  {
+   "fieldname": "column_break_basics",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Vendor",
+   "options": "\nMicrosoft\nG DATA\nHornetsecurity\nCodeTwo\nOther"
+  },
+  {
+   "fieldname": "product_section",
+   "fieldtype": "Section Break",
+   "label": "Product"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vendor_product_id",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Vendor Product ID",
+   "search_index": 1,
+   "description": "z. B. Microsoft Commercial Product ID (CFQ7TTC0...)"
+  },
+  {
+   "fieldname": "column_break_product",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_plan",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Plan",
+   "options": "\nMonthly\nAnnual\nTriennial"
+  },
+  {
+   "fieldname": "term_duration",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Term Duration",
+   "options": "\nP1M\nP1Y\nP3Y"
+  },
+  {
+   "fieldname": "qty_current",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Qty (current)"
+  },
+  {
+   "fieldname": "timeline_section",
+   "fieldtype": "Section Break",
+   "label": "Laufzeit"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Subscription Start",
+   "description": "Ursprüngliches Anlagedatum beim Lieferanten"
+  },
+  {
+   "fieldname": "current_period_end",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Aktuelles Periodenende",
+   "description": "Ende der zuletzt abgerechneten Periode"
+  },
+  {
+   "fieldname": "column_break_timeline",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_event_date",
+   "fieldtype": "Date",
+   "label": "Letzte Buchung",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_booking_type",
+   "fieldtype": "Data",
+   "label": "Letzter Buchungstyp",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "group": "Events",
+   "link_doctype": "Supply Subscription Event",
+   "link_fieldname": "supply_subscription"
+  }
+ ],
+ "modified": "2026-04-14 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Supply Subscription",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

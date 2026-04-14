@@ -1,0 +1,180 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-04-14 09:12:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "source_row",
+  "customer",
+  "customer_external_ref",
+  "item",
+  "vendor_product_id",
+  "qty",
+  "rate",
+  "amount",
+  "period_start",
+  "period_end",
+  "subscription_external_id",
+  "subscription_start",
+  "billing_plan",
+  "term_duration",
+  "booking_type",
+  "marketplace_ref",
+  "order_ref",
+  "target_doc_type",
+  "target_doc_name",
+  "target_doc_row",
+  "line_status",
+  "error_message",
+  "raw_payload"
+ ],
+ "fields": [
+  {
+   "fieldname": "source_row",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Source Row",
+   "description": "Zeilennummer in der Quelldatei"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_external_ref",
+   "fieldtype": "Data",
+   "label": "Customer External Ref"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "vendor_product_id",
+   "fieldtype": "Data",
+   "label": "Vendor Product ID"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "period_start",
+   "fieldtype": "Date",
+   "label": "Period Start"
+  },
+  {
+   "fieldname": "period_end",
+   "fieldtype": "Date",
+   "label": "Period End"
+  },
+  {
+   "fieldname": "subscription_external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Subscription ID"
+  },
+  {
+   "fieldname": "subscription_start",
+   "fieldtype": "Date",
+   "label": "Subscription Start"
+  },
+  {
+   "fieldname": "billing_plan",
+   "fieldtype": "Select",
+   "label": "Billing Plan",
+   "options": "\nMonthly\nAnnual\nTriennial"
+  },
+  {
+   "fieldname": "term_duration",
+   "fieldtype": "Select",
+   "label": "Term Duration",
+   "options": "\nP1M\nP1Y\nP3Y"
+  },
+  {
+   "fieldname": "booking_type",
+   "fieldtype": "Select",
+   "label": "Booking Type",
+   "options": "\nNew\nRenewal\nBilling\nUpgrade\nCancel"
+  },
+  {
+   "fieldname": "marketplace_ref",
+   "fieldtype": "Data",
+   "label": "Marketplace Ref"
+  },
+  {
+   "fieldname": "order_ref",
+   "fieldtype": "Data",
+   "label": "Order Ref"
+  },
+  {
+   "fieldname": "target_doc_type",
+   "fieldtype": "Select",
+   "label": "Target DocType",
+   "options": "\nSales Invoice\nDelivery Note"
+  },
+  {
+   "fieldname": "target_doc_name",
+   "fieldtype": "Dynamic Link",
+   "options": "target_doc_type",
+   "label": "Target Document",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "target_doc_row",
+   "fieldtype": "Data",
+   "label": "Target Row"
+  },
+  {
+   "fieldname": "line_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nCreated\nSkipped\nError",
+   "default": "Pending"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message"
+  },
+  {
+   "fieldname": "raw_payload",
+   "fieldtype": "Code",
+   "label": "Raw Payload",
+   "options": "JSON"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "modified": "2026-04-14 09:12:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Supplier Import Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

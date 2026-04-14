@@ -1,0 +1,221 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "field:profile_name",
+ "creation": "2026-04-14 09:10:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "profile_name",
+  "enabled",
+  "column_break_header",
+  "supplier",
+  "vendor",
+  "parser_section",
+  "parser_key",
+  "file_type",
+  "column_break_parser",
+  "default_output_mode",
+  "list_price_discount_pct",
+  "defaults_section",
+  "default_company",
+  "default_cost_center",
+  "default_warehouse",
+  "column_break_defaults",
+  "default_taxes_and_charges",
+  "default_payment_terms_template",
+  "default_tc_name",
+  "text_section",
+  "title_prefix",
+  "title_prefix_credit_note",
+  "intro_text_invoice",
+  "intro_text_credit_note",
+  "fallback_section",
+  "fallback_customer"
+ ],
+ "fields": [
+  {
+   "fieldname": "profile_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Profile Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled",
+   "default": "1"
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Vendor",
+   "options": "\nMicrosoft\nG DATA\nHornetsecurity\nCodeTwo\nOther"
+  },
+  {
+   "fieldname": "parser_section",
+   "fieldtype": "Section Break",
+   "label": "Parser"
+  },
+  {
+   "fieldname": "parser_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Parser Key",
+   "reqd": 1,
+   "description": "Technischer Schlüssel, der auf die Python-Parser-Klasse verweist (z. B. adn_monthly_csv_v1)"
+  },
+  {
+   "fieldname": "file_type",
+   "fieldtype": "Select",
+   "label": "File Type",
+   "options": "CSV\nExcel\nJSON\nAPI",
+   "default": "CSV"
+  },
+  {
+   "fieldname": "column_break_parser",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_output_mode",
+   "fieldtype": "Select",
+   "label": "Default Output Mode",
+   "options": "Sales Invoice\nDelivery Note",
+   "default": "Sales Invoice",
+   "reqd": 1
+  },
+  {
+   "fieldname": "list_price_discount_pct",
+   "fieldtype": "Float",
+   "label": "Listen­preis-Rabatt (%)",
+   "description": "Standardrabatt auf Listenpreise für diesen Lieferanten (ersetzt Magic-Number, z. B. 17,5)"
+  },
+  {
+   "fieldname": "defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Dokument-Defaults"
+  },
+  {
+   "fieldname": "default_company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "default_warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "description": "Für Delivery Notes erforderlich"
+  },
+  {
+   "fieldname": "column_break_defaults",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_taxes_and_charges",
+   "fieldtype": "Link",
+   "label": "Taxes and Charges",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "fieldname": "default_payment_terms_template",
+   "fieldtype": "Link",
+   "label": "Payment Terms Template",
+   "options": "Payment Terms Template"
+  },
+  {
+   "fieldname": "default_tc_name",
+   "fieldtype": "Link",
+   "label": "Terms and Conditions",
+   "options": "Terms and Conditions"
+  },
+  {
+   "fieldname": "text_section",
+   "fieldtype": "Section Break",
+   "label": "Titel & Texte"
+  },
+  {
+   "fieldname": "title_prefix",
+   "fieldtype": "Data",
+   "label": "Title Prefix (Invoice)",
+   "description": "z. B. \"Abrechnung Microsoft Abo \" — Monat/Jahr wird beim Import angehängt"
+  },
+  {
+   "fieldname": "title_prefix_credit_note",
+   "fieldtype": "Data",
+   "label": "Title Prefix (Credit Note)"
+  },
+  {
+   "fieldname": "intro_text_invoice",
+   "fieldtype": "Text Editor",
+   "label": "Intro Text (Invoice)"
+  },
+  {
+   "fieldname": "intro_text_credit_note",
+   "fieldtype": "Text Editor",
+   "label": "Intro Text (Credit Note)"
+  },
+  {
+   "fieldname": "fallback_section",
+   "fieldtype": "Section Break",
+   "label": "Fallback"
+  },
+  {
+   "fieldname": "fallback_customer",
+   "fieldtype": "Link",
+   "label": "Fallback Customer",
+   "options": "Customer",
+   "description": "Wird verwendet, wenn der Endkunde in der Datei nicht im ERP gefunden wird"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "modified": "2026-04-14 09:10:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "Supplier Import Profile",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
