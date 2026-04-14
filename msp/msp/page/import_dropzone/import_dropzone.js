@@ -275,29 +275,34 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 		actions_el
 			.querySelector(".btn-open-assistant")
 			.addEventListener("click", () =>
-				open_assistant(file_url, result.handler_key, {
-					wizard_route: result.wizard_route,
-					format_drift: preview.format_drift,
-					suggested_profile: preview.suggested_profile,
-				})
+				open_assistant(
+					file_url,
+					result.handler_key,
+					{
+						wizard_route: result.wizard_route,
+						format_drift: preview.format_drift,
+						suggested_profile: preview.suggested_profile,
+						display_name: result.display_name,
+					},
+					result
+				)
 			);
 	}
 
-	function open_assistant(file_url, handler_key, opts = {}) {
-		// Phase 4: eigenes Assistent-Routing (/import-assistant/<handler>).
-		// Bis das da ist: öffne den Supplier Import Run mit vorbelegtem File + Profil.
-		const route_base = opts.wizard_route || "import-assistant";
-		if (route_base === "import-assistant") {
-			// Aktuell als Sprung auf die bestehende Run-Form mit ?file=…&profile=…
-			const params = new URLSearchParams({ file: file_url });
-			if (opts.suggested_profile) params.set("profile", opts.suggested_profile);
-			if (opts.format_drift) params.set("acknowledge_format_drift", "1");
-			const url = `/app/supplier-import-run/new?${params.toString()}`;
-			window.location.href = url;
-		} else {
-			// Spezial-Wizard-Routen (Future): frappe.set_route(...)
-			frappe.set_route(opts.wizard_route, file_url, handler_key);
-		}
+	function open_assistant(file_url, handler_key, opts = {}, analysis = {}) {
+		// Kontext für den Wizard in route_options ablegen — Frappe überträgt das
+		// beim set_route in die Ziel-Page, dort wird es ausgelesen und sofort
+		// gelöscht.
+		frappe.route_options = {
+			file_url,
+			handler_key,
+			display_name: analysis.display_name || opts.display_name || "",
+			suggested_profile: opts.suggested_profile || "",
+			format_drift: !!opts.format_drift,
+			preview: analysis.preview || null,
+		};
+		const route = opts.wizard_route || "import-assistant";
+		frappe.set_route(route);
 	}
 
 	async function upload_file(file, on_progress) {

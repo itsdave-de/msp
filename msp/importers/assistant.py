@@ -88,6 +88,32 @@ def analyze_file(file_url: str) -> dict:
 
 
 @frappe.whitelist()
+def run_documents(run_name: str) -> list[dict]:
+	"""Gibt die pro Supplier Import Run erzeugten Zieldokumente zurück —
+	gruppiert pro (target_doc_type, target_doc_name), mit Zeilen-Anzahl und
+	Summe. Wird vom Import-Assistent-Wizard benötigt, weil
+	``frappe.client.get_list`` auf Child-Doctypes die `fields` ignoriert."""
+	if not run_name:
+		return []
+	rows = frappe.db.sql(
+		"""
+		SELECT customer, target_doc_type, target_doc_name,
+		       COUNT(*) AS line_count, SUM(COALESCE(amount, 0)) AS total_amount
+		FROM `tabSupplier Import Line`
+		WHERE parent = %(run)s
+		  AND line_status = 'Created'
+		  AND target_doc_name IS NOT NULL
+		  AND target_doc_name != ''
+		GROUP BY customer, target_doc_type, target_doc_name
+		ORDER BY customer
+		""",
+		{"run": run_name},
+		as_dict=True,
+	)
+	return rows
+
+
+@frappe.whitelist()
 def process_file(file_url: str, handler_key: str,
                  config: str | dict | None = None) -> dict:
 	"""Führt den Import mit dem gewählten Handler durch.
