@@ -35,6 +35,26 @@ frappe.pages["import-assistant"].on_page_load = function (wrapper) {
 	}
 
 	inject_style(root);
+
+	// Falls keine Preview mitgereicht wurde (z. B. bei manueller Handler-Zuordnung
+	// in der Dropzone), hole sie jetzt nach — damit Stats angezeigt und die
+	// Drift-Checkbox korrekt positioniert werden kann.
+	if (!ctx.preview) {
+		root.innerHTML = `<div class="msp-assistant-empty">${__("Analysiere Datei …")}</div>`;
+		frappe.call({
+			method: "msp.importers.assistant.analyze_file",
+			args: { file_url: ctx.file_url },
+			callback: (r) => {
+				const m = r.message || {};
+				if (m.preview) ctx.preview = m.preview;
+				if (m.display_name) ctx.display_name = ctx.display_name || m.display_name;
+				if (m.preview && m.preview.format_drift) ctx.format_drift = true;
+				render_page(root, ctx, page);
+			},
+		});
+		return;
+	}
+
 	render_page(root, ctx, page);
 };
 
@@ -133,13 +153,17 @@ function render_config_panel(ctx) {
 					</select>
 					<div class="hint">${__("Leer = der Customer.billing_mode entscheidet pro Kunde.")}</div>
 				</div>
-				<div class="form-row field-drift-wrapper" ${ctx.format_drift ? "" : "hidden"}>
+				<div class="form-row field-drift-wrapper">
 					<label>
 						<input type="checkbox" class="field-ack-drift"
 							${ctx.format_drift ? "checked" : ""} />
 						${__("Abweichendes Format akzeptieren")}
 					</label>
-					<div class="hint warn">${__("Die Analyse hat ein abweichendes CSV-Layout erkannt. Nur aktivieren, wenn du die Quelle kennst.")}</div>
+					<div class="hint ${ctx.format_drift ? "warn" : ""}">
+						${ctx.format_drift
+							? __("Die Analyse hat ein abweichendes CSV-Layout erkannt. Nur aktivieren, wenn du die Quelle kennst.")
+							: __("Aktivieren, falls der Parser die Datei ablehnt, obwohl sie inhaltlich passt.")}
+					</div>
 				</div>
 			</div>
 			<footer>
@@ -205,9 +229,26 @@ async function kick_off_import(root, state, ctx) {
 		state.result = response.message || {};
 		show_result(root, state, ctx);
 	} catch (err) {
-		state.result = { status: "Failed", message: (err && err.message) || String(err) };
+		state.result = { status: "Failed", message: extract_error_message(err) };
 		show_result(root, state, ctx);
 	}
+}
+
+function extract_error_message(err) {
+	if (!err) return "Unbekannter Fehler";
+	// Frappe-RPC-Errors kommen als { exc, exception, _server_messages, ... }
+	if (err._server_messages) {
+		try {
+			const msgs = JSON.parse(err._server_messages);
+			const first = Array.isArray(msgs) ? msgs[0] : msgs;
+			const parsed = typeof first === "string" ? JSON.parse(first) : first;
+			if (parsed && parsed.message) return parsed.message;
+		} catch (_) { /* fallthrough */ }
+	}
+	if (typeof err === "string") return err;
+	if (err.exception) return String(err.exception);
+	if (err.message && typeof err.message === "string") return err.message;
+	try { return JSON.stringify(err); } catch (_) { return String(err); }
 }
 
 function show_result(root, state, ctx) {

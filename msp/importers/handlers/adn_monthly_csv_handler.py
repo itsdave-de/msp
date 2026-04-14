@@ -44,13 +44,17 @@ class ADNMonthlyCSVHandler(BaseFileHandler):
 	def sniff(cls, sample_bytes: bytes, filename: str) -> float:
 		name = (filename or "").lower()
 
-		# ZIP-Dateien können wir nur nach Extension & Namensheuristik erkennen —
-		# der tatsächliche Header kommt erst nach dem Entpacken. Hohe Confidence
-		# bei typischen ADN-Dateinamen, moderate sonst.
+		# ZIP: Inhalt auspacken und die erste CSV-Kopfzeile prüfen. So funktioniert
+		# die Erkennung auch bei umbenannten ZIPs.
 		if name.endswith(".zip"):
-			if "rechnungen" in name or "433148" in name:
-				return 0.85
-			return 0.3  # irgendein ZIP — lieber unbestimmt
+			first_line = cls._peek_first_line_in_zip(sample_bytes)
+			if first_line is None:
+				# Kein CSV im ZIP zu sehen (vielleicht verschlüsselt oder zu groß
+				# im Sample) — greifen zurück auf Namens-Heuristik.
+				if "rechnungen" in name or "433148" in name:
+					return 0.65
+				return 0.0
+			return cls._score_first_line(first_line)
 
 		if not name.endswith(".csv"):
 			return 0.0
@@ -61,14 +65,41 @@ class ADNMonthlyCSVHandler(BaseFileHandler):
 		except Exception:
 			return 0.0
 
-		first_line = head.split("\n", 1)[0].lstrip("\ufeff").strip()
+		first_line = head.split("\n", 1)[0]
+		return cls._score_first_line(first_line)
+
+	@classmethod
+	def _score_first_line(cls, first_line: str) -> float:
+		first_line = (first_line or "").lstrip("\ufeff").strip()
+		if not first_line:
+			return 0.0
 		cols = {c.strip().upper() for c in first_line.split(";")}
 		matching = cls._SIGNATURE_COLUMNS & cols
 		if not matching:
 			return 0.0
 		ratio = len(matching) / len(cls._SIGNATURE_COLUMNS)
-		# ratio=1.0 ⇒ alle Signatur-Spalten drin, perfekter Match
 		return min(1.0, 0.4 + 0.6 * ratio)
+
+	@classmethod
+	def _peek_first_line_in_zip(cls, sample_bytes: bytes) -> str | None:
+		"""Öffnet das ZIP in-memory und gibt die erste Zeile der enthaltenen CSV
+		zurück. None, wenn keine CSV gefunden oder der Sample zu klein ist."""
+		import io
+		import zipfile
+
+		if not sample_bytes:
+			return None
+		try:
+			with zipfile.ZipFile(io.BytesIO(sample_bytes)) as z:
+				csvs = [m for m in z.namelist()
+				        if m.lower().endswith(".csv") and not m.endswith("/")]
+				if not csvs:
+					return None
+				with z.open(csvs[0]) as fh:
+					head = fh.read(2048).decode("utf-8", errors="replace")
+					return head.split("\n", 1)[0]
+		except (zipfile.BadZipFile, EOFError, KeyError):
+			return None
 
 	# ------------------------------------------------------------------
 	# Preview

@@ -41,8 +41,11 @@ def analyze_file(file_url: str) -> dict:
 	if not os.path.exists(path):
 		frappe.throw(f"Datei nicht gefunden: {file_url}")
 
+	# ZIPs müssen komplett gelesen werden (Central Directory steht am Ende);
+	# bei CSVs reichen 8 KiB für den Header.
+	read_full = path.lower().endswith(".zip")
 	with open(path, "rb") as f:
-		sample = f.read(8192)
+		sample = f.read() if read_full else f.read(8192)
 	filename = os.path.basename(path)
 
 	best_cls, confidence, scores = detect_best_handler(sample, filename)
@@ -59,7 +62,8 @@ def analyze_file(file_url: str) -> dict:
 		"error": None,
 	}
 	if best_cls is None:
-		result["error"] = "Kein passender Handler — Format nicht erkannt."
+		# Kein Fehler — sondern „Unmatched": Frontend soll eine manuelle
+		# Handler-Zuordnung über das Dropdown anbieten. error bleibt null.
 		return result
 
 	result["handler_key"] = best_cls.handler_key
