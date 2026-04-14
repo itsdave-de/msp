@@ -123,6 +123,7 @@ class DocumentBuilder:
 				doc.cost_center = profile.default_cost_center
 			if profile.default_taxes_and_charges:
 				doc.taxes_and_charges = profile.default_taxes_and_charges
+				self._copy_tax_template_rows(doc, profile.default_taxes_and_charges)
 			if profile.default_payment_terms_template:
 				doc.payment_terms_template = profile.default_payment_terms_template
 			if profile.default_tc_name:
@@ -145,6 +146,9 @@ class DocumentBuilder:
 		doc.set_posting_time = 1
 		if profile.default_cost_center:
 			doc.cost_center = profile.default_cost_center
+		if profile.default_taxes_and_charges:
+			doc.taxes_and_charges = profile.default_taxes_and_charges
+			self._copy_tax_template_rows(doc, profile.default_taxes_and_charges)
 		if title:
 			doc.title = title
 		if is_return:
@@ -297,6 +301,27 @@ class DocumentBuilder:
 		if invdate:
 			return invdate.strftime("%m.%Y")
 		return _d.today().strftime("%m.%Y")
+
+	@staticmethod
+	def _copy_tax_template_rows(doc, template_name: str) -> None:
+		"""Kopiert die Zeilen des Sales-Taxes-and-Charges-Templates explizit in doc.taxes.
+
+		Hintergrund: Frappe populiert die taxes-Tabelle bei reinem Setzen von
+		``taxes_and_charges`` nicht zuverlässig mit den korrekten Raten. Im Ergebnis
+		führte das dazu, dass Zeilen ohne item_tax_template vollständig aus der
+		Steuerberechnung fielen. Explizites Kopieren stellt sicher, dass die Rate
+		am Dokument auf dem Template-Wert steht.
+		"""
+		template = frappe.get_cached_doc("Sales Taxes and Charges Template", template_name)
+		for tax in template.taxes:
+			doc.append("taxes", {
+				"charge_type": tax.charge_type,
+				"account_head": tax.account_head,
+				"rate": tax.rate,
+				"description": tax.description,
+				"cost_center": tax.cost_center,
+				"included_in_print_rate": tax.included_in_print_rate,
+			})
 
 	@staticmethod
 	def _coerce_german_date(value):
