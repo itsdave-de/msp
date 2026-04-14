@@ -1,1 +1,2 @@
 msp.patches.migrate_rmm_settings
+msp.patches.migrate_adn_included_services_to_license_coverage

@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 import frappe
 
 from msp.importers.base import CanonicalRow
+from msp.importers.coverage import CoverageCache
 from msp.importers.resolution import resolve_customer, resolve_item
 from msp.importers.subscriptions import (
 	create_event,
@@ -23,8 +24,9 @@ class BuildResult:
 
 
 class DocumentBuilder:
-	def __init__(self, profile):
+	def __init__(self, profile, coverage: CoverageCache | None = None):
 		self.profile = profile
+		self.coverage = coverage or CoverageCache()
 		self.output_mode: str = "Sales Invoice"  # wird pro Gruppe gesetzt
 
 	# -----------------------------------------------------------------
@@ -178,38 +180,76 @@ class DocumentBuilder:
 		else:
 			rate = 0
 
-		item_row = {
-			"item_code": item_code,
-			"qty": qty,
-			"rate": rate,
-			"description": self._format_description(row),
+		# License Coverage: ggf. Split in (kostenlose, abgedeckte) + (reguläre Rest-)Position.
+		# Gilt nur für echte Rechnungen — nicht für Gutschriften, die die Originalposition
+		# komplett reversieren.
+		covered_qty = 0
+		if not is_return:
+			covered_qty = self.coverage.get_covered_qty(doc.customer, item_code, row.period_start)
+
+		start_idx = len(doc.items)
+		base_description = self._format_description(row)
+
+		def _append(line_qty: float, description: str, is_covered: bool) -> None:
+			line = {
+				"item_code": item_code,
+				"qty": line_qty,
+				"rate": rate,
+				"description": description,
+			}
+			if is_covered:
+				line["discount_percentage"] = 100
+			item = doc.append("items", line)
+			if self.output_mode == "Delivery Note" and self.profile.default_warehouse:
+				item.warehouse = self.profile.default_warehouse
+
+		if covered_qty > 0 and qty > 0:
+			covered_portion = min(qty, covered_qty)
+			_append(covered_portion,
+			        description=f"{base_description}<br><strong>ohne Berechnung</strong>",
+			        is_covered=True)
+			remaining = qty - covered_portion
+			if remaining > 0:
+				_append(remaining, description=base_description, is_covered=False)
+		else:
+			_append(qty, description=base_description, is_covered=False)
+
+		produced_indices = list(range(start_idx, len(doc.items)))
+		return {
+			"row": row,
+			"status": "Created",
+			"error": None,
+			"item_indices": produced_indices,
+			"covered_qty": min(qty, covered_qty) if (covered_qty > 0 and qty > 0) else 0,
 		}
 
-		item = doc.append("items", item_row)
-
-		# Warehouse für Delivery Note erforderlich
-		if self.output_mode == "Delivery Note" and self.profile.default_warehouse:
-			item.warehouse = self.profile.default_warehouse
-
-		return {"row": row, "status": "Created", "error": None}
-
 	def _post_create_subscriptions(self, doc, rows: list[CanonicalRow], result: BuildResult) -> None:
-		"""Erzeugt pro successful row ein Supply Subscription Event (sofern eine Subscription-ID vorhanden ist)."""
-		# Wir gehen davon aus, dass doc.items in gleicher Reihenfolge wie rows angelegt wurde,
-		# abzüglich der error/skipped-Zeilen.
-		created_rows = [o for o in result.line_outcomes[-len(rows):] if o["status"] == "Created"]
-		if len(created_rows) != len(doc.items):
-			# Fallback: keine 1:1 Zuordnung — überspringen, wird später nachgezogen
-			return
+		"""Erzeugt pro successful row ein Supply Subscription Event (sofern eine Subscription-ID vorhanden ist).
 
-		for outcome, item_row in zip(created_rows, doc.items):
+		Bei License-Coverage-Split kann eine kanonische Zeile 1–2 Item-Rows produziert haben.
+		Wir verwenden die in _append_line gespeicherten ``item_indices``, um das erste
+		(= „primäre") Item als Anker für Subscription + Link-Feld zu nutzen, und setzen
+		den supply_subscription-Link auf *allen* zur Zeile gehörenden Item-Rows.
+		"""
+		created_rows = [o for o in result.line_outcomes[-len(rows):] if o["status"] == "Created"]
+
+		for outcome in created_rows:
 			r: CanonicalRow = outcome["row"]
+			indices = outcome.get("item_indices") or []
+			if not indices:
+				continue
+			item_rows = [doc.items[i] for i in indices if i < len(doc.items)]
+			if not item_rows:
+				continue
+			primary = item_rows[0]
+
 			if not r.subscription_external_id:
 				continue
+
 			vendor = self.profile.vendor
 			supplier = self.profile.supplier
 			sub_name = upsert_supply_subscription(
-				r, customer=doc.customer, supplier=supplier, vendor=vendor, item=item_row.item_code,
+				r, customer=doc.customer, supplier=supplier, vendor=vendor, item=primary.item_code,
 			)
 			if not sub_name:
 				continue
@@ -219,13 +259,14 @@ class DocumentBuilder:
 					supply_subscription=sub_name,
 					target_doctype=doc.doctype,
 					target_name=doc.name,
-					target_row=item_row.name,
+					target_row=primary.name,
 				)
-				# Link auf dem Item-Row setzen
-				frappe.db.set_value(
-					f"{doc.doctype} Item", item_row.name,
-					"supply_subscription", sub_name,
-				)
+				# Link auf allen zur kanonischen Zeile gehörenden Item-Rows setzen
+				for ir in item_rows:
+					frappe.db.set_value(
+						f"{doc.doctype} Item", ir.name,
+						"supply_subscription", sub_name,
+					)
 				outcome["event"] = event_name
 				outcome["supply_subscription"] = sub_name
 			except Exception as e:

@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-04-14 13:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "item",
+  "item_name",
+  "vendor_product_id",
+  "qty",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "item.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "item.hersteller_artikel_nummer",
+   "fieldname": "vendor_product_id",
+   "fieldtype": "Data",
+   "label": "Vendor Product ID",
+   "read_only": 1,
+   "description": "Hersteller-Artikel-Nummer (z. B. Microsoft Commercial Product ID)"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Included Qty",
+   "reqd": 1,
+   "non_negative": 1,
+   "description": "Anzahl Lizenzen, die durch die Coverage ohne Einzelberechnung abgedeckt sind"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "modified": "2026-04-14 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "License Coverage Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

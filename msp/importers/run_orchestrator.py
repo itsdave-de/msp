@@ -22,6 +22,7 @@ from frappe.utils import now_datetime
 
 from msp.importers.base import CanonicalRow, ParseResult
 from msp.importers.builder import BuildResult, DocumentBuilder
+from msp.importers.coverage import load_coverage_cache
 from msp.importers.registry import resolve
 from msp.importers.resolution import determine_effective_output_mode
 
@@ -55,11 +56,16 @@ def execute_run(run) -> dict:
 		grouped = _group_rows(parse_result.rows)
 		log(f"Gruppen (Kunden): {len(grouped)}")
 
+		# Coverage-Cache einmal laden (eine Query für alle Kunden des Runs)
+		coverage = load_coverage_cache(grouped.keys())
+		log(f"License-Coverage: {sum(len(v) for v in coverage._entries.values())} Einträge "
+		    f"für {len({k[0] for k in coverage._entries})} Kunden geladen")
+
 		document_count = 0
 		line_outcomes: list[dict] = []
 		errors: list[str] = []
 
-		builder = DocumentBuilder(profile)
+		builder = DocumentBuilder(profile, coverage=coverage)
 		for customer_ref, group_rows in grouped.items():
 			customer_billing_mode = _customer_billing_mode(customer_ref, profile.fallback_customer)
 			effective_mode = determine_effective_output_mode(

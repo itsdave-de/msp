@@ -1,0 +1,138 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-04-14 13:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "customer",
+  "enabled",
+  "column_break_head",
+  "it_contract",
+  "valid_from",
+  "valid_to",
+  "items_section",
+  "coverage_items",
+  "notes_section",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "LCOV-.#####",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled",
+   "default": "1"
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "it_contract",
+   "fieldtype": "Link",
+   "label": "IT Contract",
+   "options": "IT Contract",
+   "in_standard_filter": 1,
+   "description": "Optional: verknüpfter Vertrag. Rein dokumentarisch — Ablauf des Vertrags beendet die Coverage nicht automatisch, dafür valid_to nutzen."
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From",
+   "description": "Optional. Zeilen werden ignoriert, wenn das Abrechnungsperioden-Start-Datum vor diesem Datum liegt."
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid To",
+   "description": "Optional. Zeilen werden ignoriert, wenn das Abrechnungsperioden-Start-Datum nach diesem Datum liegt."
+  },
+  {
+   "fieldname": "items_section",
+   "fieldtype": "Section Break",
+   "label": "Abgedeckte Lizenzen"
+  },
+  {
+   "fieldname": "coverage_items",
+   "fieldtype": "Table",
+   "label": "Coverage Items",
+   "options": "License Coverage Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notizen",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "group": "Abrechnung",
+   "link_doctype": "Supply Subscription",
+   "link_fieldname": "customer",
+   "parent_doctype": null
+  }
+ ],
+ "modified": "2026-04-14 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "License Coverage",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
