@@ -154,9 +154,53 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lieferanten-Import",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Runs",
+   "link_to": "Supplier Import Run",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Profiles",
+   "link_to": "Supplier Import Profile",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Supply Subscriptions",
+   "link_to": "Supply Subscription",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Subscription Events",
+   "link_to": "Supply Subscription Event",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-03-01 21:56:00.493767",
+ "modified": "2026-04-14 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "MSP",
  "name": "MSP",
@@ -180,6 +224,18 @@
    "doc_view": "List",
    "label": "Solutions",
    "link_to": "IT Solution",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Lieferanten-Import",
+   "link_to": "Supplier Import Run",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Subscriptions",
+   "link_to": "Supply Subscription",
    "type": "DocType"
   }
  ]
