@@ -1,0 +1,27 @@
+{
+ "content": null,
+ "creation": "2026-04-14 20:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "octicon octicon-cloud-upload",
+ "idx": 0,
+ "modified": "2026-04-14 20:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "MSP",
+ "name": "import-dropzone",
+ "owner": "Administrator",
+ "page_name": "import-dropzone",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Accounts Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Lieferanten-Import"
+}
