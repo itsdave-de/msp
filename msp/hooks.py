@@ -164,4 +164,5 @@ override_doctype_class = {
 fixtures = [
     {"doctype": "Print Format", "filters": {"name": "Standard IT Landscape Documentation"}},
     {"doctype": "Custom Field", "filters": {"module": "MSP"}},
+    {"doctype": "Supplier Import Profile", "filters": {"profile_name": ["in", ["ADN Monthly CSV v1"]]}},
 ]

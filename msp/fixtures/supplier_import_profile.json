@@ -1,0 +1,27 @@
+[
+ {
+  "default_company": "itsdave GmbH",
+  "default_cost_center": null,
+  "default_output_mode": "Sales Invoice",
+  "default_payment_terms_template": null,
+  "default_taxes_and_charges": "MwSt. 19%",
+  "default_tc_name": "itsdave Standard AGBs",
+  "default_warehouse": "SST - IG",
+  "docstatus": 0,
+  "doctype": "Supplier Import Profile",
+  "enabled": 1,
+  "fallback_customer": null,
+  "file_type": "CSV",
+  "intro_text_credit_note": null,
+  "intro_text_invoice": null,
+  "list_price_discount_pct": 0.0,
+  "modified": "2026-04-14 11:47:29.503782",
+  "name": "ADN Monthly CSV v1",
+  "parser_key": "adn_monthly_csv_v1",
+  "profile_name": "ADN Monthly CSV v1",
+  "supplier": "SUPP-00887",
+  "title_prefix": "Abrechnung Microsoft Abo ",
+  "title_prefix_credit_note": "Gutschrift Microsoft Abo ",
+  "vendor": "Microsoft"
+ }
+]
