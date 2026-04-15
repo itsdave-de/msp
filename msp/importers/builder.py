@@ -106,6 +106,16 @@ class DocumentBuilder:
 
 		result.created_documents.append((doc.doctype, doc.name))
 
+		# Erfolgreiche Outcomes mit dem Ziel-Dokument annotieren — damit der
+		# Persist-Schritt im Run-Orchestrator die Zeilen rückverlinken kann,
+		# auch wenn keine Subscription-Events erzeugt wurden (z. B. Hornet
+		# ohne Vertrag-Spalte).
+		for o in outcomes_this_group:
+			if o.get("status") == "Created":
+				o.setdefault("target_doctype", doc.doctype)
+				o.setdefault("target_name", doc.name)
+				o.setdefault("resolved_customer", customer)
+
 		# Subscription-Events erst nach erfolgreichem Insert, damit wir die
 		# echten Item-Row-IDs nutzen können.
 		self._post_create_subscriptions(doc, rows, result)
@@ -327,10 +337,14 @@ class DocumentBuilder:
 			return f"{prefix.strip()} {period}".strip()
 
 		customer_name = frappe.db.get_value("Customer", customer, "customer_name") or customer
+		invoice_month = (
+			posting_date.strftime("%m.%Y") if hasattr(posting_date, "strftime") else ""
+		)
 		try:
 			rendered = template.format(
 				prefix=prefix.strip(),
 				period=period,
+				invoice_month=invoice_month,
 				customer=customer,
 				customer_name=customer_name,
 				vendor=profile.vendor or "",

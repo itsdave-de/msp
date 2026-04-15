@@ -103,11 +103,21 @@ def run_documents(run_name: str) -> list[dict]:
 	``frappe.client.get_list`` auf Child-Doctypes die `fields` ignoriert."""
 	if not run_name:
 		return []
+	# Beträge aus dem erzeugten Ziel-Doc nehmen (Sales Invoice / Delivery Note),
+	# nicht aus l.amount — das ist der ADN-Einkaufspreis. Der Endkunde sieht
+	# den Verkaufspreis aus dem SI/DN.
 	rows = frappe.db.sql(
 		"""
 		SELECT l.customer, c.customer_name,
 		       l.target_doc_type, l.target_doc_name,
-		       COUNT(*) AS line_count, SUM(COALESCE(l.amount, 0)) AS total_amount
+		       COUNT(*) AS line_count,
+		       CASE
+		         WHEN l.target_doc_type = 'Sales Invoice'
+		           THEN COALESCE((SELECT total FROM `tabSales Invoice` WHERE name = l.target_doc_name), 0)
+		         WHEN l.target_doc_type = 'Delivery Note'
+		           THEN COALESCE((SELECT total FROM `tabDelivery Note` WHERE name = l.target_doc_name), 0)
+		         ELSE 0
+		       END AS total_amount
 		FROM `tabSupplier Import Line` l
 		LEFT JOIN `tabCustomer` c ON c.name = l.customer
 		WHERE l.parent = %(run)s
@@ -290,28 +300,67 @@ def run_summary(run_name: str, top_n: int = 5) -> dict:
 		return {}
 	totals = frappe.db.sql(
 		"""
-		SELECT COUNT(DISTINCT customer) AS customers,
-		       COUNT(DISTINCT target_doc_name) AS documents,
-		       COALESCE(SUM(CASE WHEN line_status = 'Created' THEN amount END), 0) AS total_created,
-		       SUM(CASE WHEN line_status = 'Created' THEN 1 ELSE 0 END) AS lines_created,
-		       SUM(CASE WHEN line_status = 'Skipped' THEN 1 ELSE 0 END) AS lines_skipped,
-		       SUM(CASE WHEN line_status = 'Error' THEN 1 ELSE 0 END) AS lines_error
-		FROM `tabSupplier Import Line`
-		WHERE parent = %(run)s
+		SELECT COUNT(DISTINCT l.customer) AS customers,
+		       COUNT(DISTINCT l.target_doc_name) AS documents,
+		       SUM(CASE WHEN l.line_status = 'Created' THEN 1 ELSE 0 END) AS lines_created,
+		       SUM(CASE WHEN l.line_status = 'Skipped' THEN 1 ELSE 0 END) AS lines_skipped,
+		       SUM(CASE WHEN l.line_status = 'Error' THEN 1 ELSE 0 END) AS lines_error
+		FROM `tabSupplier Import Line` l
+		WHERE l.parent = %(run)s
 		""",
 		{"run": run_name},
 		as_dict=True,
 	)
+	# Verkaufs-Total über alle erzeugten Ziel-Docs (DISTINCT, damit Multi-Line-
+	# SIs nicht vervielfacht werden).
+	totals_sum = frappe.db.sql(
+		"""
+		SELECT COALESCE(SUM(t.doc_total), 0) AS total_created
+		FROM (
+		  SELECT DISTINCT l.target_doc_type, l.target_doc_name,
+		    CASE
+		      WHEN l.target_doc_type = 'Sales Invoice'
+		        THEN COALESCE((SELECT total FROM `tabSales Invoice` si WHERE si.name = l.target_doc_name), 0)
+		      WHEN l.target_doc_type = 'Delivery Note'
+		        THEN COALESCE((SELECT total FROM `tabDelivery Note` dn WHERE dn.name = l.target_doc_name), 0)
+		      ELSE 0
+		    END AS doc_total
+		  FROM `tabSupplier Import Line` l
+		  WHERE l.parent = %(run)s AND l.line_status = 'Created'
+		    AND l.target_doc_name IS NOT NULL AND l.target_doc_name != ''
+		) t
+		""",
+		{"run": run_name},
+		as_dict=True,
+	)
+	if totals and totals_sum:
+		totals[0]["total_created"] = float(totals_sum[0]["total_created"] or 0)
+
+	# Top-Kunden: erst pro (customer, target_doc) das Doc-Total holen,
+	# dann pro Customer summieren.
 	top = frappe.db.sql(
 		"""
-		SELECT l.customer, c.customer_name,
-		       COUNT(DISTINCT l.target_doc_name) AS documents,
-		       COUNT(*) AS line_count,
-		       COALESCE(SUM(l.amount), 0) AS total_amount
-		FROM `tabSupplier Import Line` l
-		LEFT JOIN `tabCustomer` c ON c.name = l.customer
-		WHERE l.parent = %(run)s AND l.line_status = 'Created'
-		GROUP BY l.customer, c.customer_name
+		SELECT customer, MAX(customer_name) AS customer_name,
+		       COUNT(DISTINCT target_doc_name) AS documents,
+		       SUM(line_count) AS line_count,
+		       SUM(doc_total) AS total_amount
+		FROM (
+		  SELECT l.customer, c.customer_name, l.target_doc_type, l.target_doc_name,
+		    COUNT(*) AS line_count,
+		    CASE
+		      WHEN l.target_doc_type = 'Sales Invoice'
+		        THEN COALESCE((SELECT total FROM `tabSales Invoice` si WHERE si.name = l.target_doc_name), 0)
+		      WHEN l.target_doc_type = 'Delivery Note'
+		        THEN COALESCE((SELECT total FROM `tabDelivery Note` dn WHERE dn.name = l.target_doc_name), 0)
+		      ELSE 0
+		    END AS doc_total
+		  FROM `tabSupplier Import Line` l
+		  LEFT JOIN `tabCustomer` c ON c.name = l.customer
+		  WHERE l.parent = %(run)s AND l.line_status = 'Created'
+		    AND l.target_doc_name IS NOT NULL AND l.target_doc_name != ''
+		  GROUP BY l.customer, c.customer_name, l.target_doc_type, l.target_doc_name
+		) t
+		GROUP BY customer
 		ORDER BY total_amount DESC
 		LIMIT %(limit)s
 		""",

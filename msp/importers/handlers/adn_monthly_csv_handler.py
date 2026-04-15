@@ -47,72 +47,88 @@ class ADNMonthlyCSVHandler(BaseFileHandler):
 	def sniff(cls, sample_bytes: bytes, filename: str) -> float:
 		name = (filename or "").lower()
 
-		# ZIP: Inhalt auspacken und die erste CSV-Kopfzeile prüfen. So funktioniert
-		# die Erkennung auch bei umbenannten ZIPs.
+		# ZIP: Inhalt auspacken und die ersten Zeilen prüfen.
 		if name.endswith(".zip"):
-			first_line = cls._peek_first_line_in_zip(sample_bytes)
-			if first_line is None:
-				# Kein CSV im ZIP zu sehen (vielleicht verschlüsselt oder zu groß
-				# im Sample) — greifen zurück auf Namens-Heuristik.
+			lines = cls._peek_lines_in_zip(sample_bytes)
+			if not lines:
 				if "rechnungen" in name or "433148" in name:
 					return 0.65
 				return 0.0
-			return cls._score_first_line(first_line)
+			return cls._score_lines(lines)
 
 		if not name.endswith(".csv"):
 			return 0.0
 
-		# CSV-Header inspizieren: erste Zeile (bis 8 KiB reicht)
 		try:
 			head = sample_bytes.decode("utf-8", errors="replace")
 		except Exception:
 			return 0.0
 
-		first_line = head.split("\n", 1)[0]
-		return cls._score_first_line(first_line)
+		lines = head.split("\n", 5)[:5]
+		return cls._score_lines(lines)
 
 	@classmethod
-	def _score_first_line(cls, first_line: str) -> float:
-		first_line = (first_line or "").lstrip("\ufeff").strip()
-		if not first_line:
+	def _score_lines(cls, lines: list[str]) -> float:
+		if not lines:
 			return 0.0
-		cols = {c.strip().upper() for c in first_line.split(";")}
-		matching = cls._SIGNATURE_COLUMNS & cols
+		header_line = (lines[0] or "").lstrip("\ufeff").strip()
+		if not header_line:
+			return 0.0
+		header_cols = [c.strip() for c in header_line.split(";")]
+		header_upper = {c.upper() for c in header_cols if c}
+		matching = cls._SIGNATURE_COLUMNS & header_upper
 		if not matching:
 			return 0.0
 		ratio = len(matching) / len(cls._SIGNATURE_COLUMNS)
 		base = 0.4 + 0.55 * ratio  # max ≈ 0.95
-		# MS-Discriminatoren heben uns sicher von Hornet ab, das nur Vertrag
-		# kennt: voller Bonus, wenn alle drei Spalten da sind, sonst anteilig.
-		discriminators = cls._DISCRIMINATOR_COLUMNS & cols
-		if discriminators:
-			base = min(1.0, base + 0.05 * len(discriminators))
+
+		# Inhaltsbasierter Discriminator: ADN exportiert für Hornet dieselbe
+		# Spaltenstruktur (inkl. BILLINGPLAN/MSERP), füllt die MS-spezifischen
+		# Spalten dort aber nicht. Wir prüfen darum die ersten Datenzeilen auf
+		# Werte in BILLINGPLAN / MSERP / VERTRAGSDAUER.
+		ms_evidence = cls._has_ms_payload(header_cols, lines[1:])
+		if ms_evidence:
+			base = min(1.0, base + 0.15)
 		else:
-			# Ohne MS-Discriminatoren ist es entweder Hornet oder ein älterer
-			# MS-Export — wir reichen unter 1.0, damit Hornet entscheiden kann.
-			base = min(0.7, base)
+			# Spalten da, Werte aber leer → typisch Hornet, MS verliert.
+			base = min(0.55, base)
 		return min(1.0, base)
 
+	@staticmethod
+	def _has_ms_payload(header_cols: list[str], data_lines: list[str]) -> bool:
+		header_upper = [c.strip().upper() for c in header_cols]
+		ms_indices = [i for i, c in enumerate(header_upper)
+		              if c in {"BILLINGPLAN", "MSERP", "VERTRAGSDAUER"}]
+		if not ms_indices:
+			return False
+		for line in data_lines:
+			if not line or not line.strip():
+				continue
+			cells = [c.strip().strip('"') for c in line.split(";")]
+			if any(i < len(cells) and cells[i] for i in ms_indices):
+				return True
+		return False
+
 	@classmethod
-	def _peek_first_line_in_zip(cls, sample_bytes: bytes) -> str | None:
-		"""Öffnet das ZIP in-memory und gibt die erste Zeile der enthaltenen CSV
-		zurück. None, wenn keine CSV gefunden oder der Sample zu klein ist."""
+	def _peek_lines_in_zip(cls, sample_bytes: bytes) -> list[str]:
+		"""Öffnet das ZIP in-memory und gibt die ersten ~5 Zeilen der enthaltenen
+		CSV zurück. Leere Liste, wenn keine CSV gefunden oder Sample zu klein."""
 		import io
 		import zipfile
 
 		if not sample_bytes:
-			return None
+			return []
 		try:
 			with zipfile.ZipFile(io.BytesIO(sample_bytes)) as z:
 				csvs = [m for m in z.namelist()
 				        if m.lower().endswith(".csv") and not m.endswith("/")]
 				if not csvs:
-					return None
+					return []
 				with z.open(csvs[0]) as fh:
-					head = fh.read(2048).decode("utf-8", errors="replace")
-					return head.split("\n", 1)[0]
+					head = fh.read(8192).decode("utf-8", errors="replace")
+					return head.split("\n", 5)[:5]
 		except (zipfile.BadZipFile, EOFError, KeyError):
-			return None
+			return []
 
 	# ------------------------------------------------------------------
 	# Preview

@@ -50,8 +50,8 @@
   "supplier": "SUPP-00887",
   "title_prefix": "Abrechnung Hornetsecurity ",
   "title_prefix_credit_note": "Gutschrift Hornetsecurity ",
-  "title_template": "{prefix} {period}",
-  "title_template_credit_note": "{prefix} {period}",
+  "title_template": "{prefix} {invoice_month}",
+  "title_template_credit_note": "{prefix} {invoice_month}",
   "vendor": "Hornetsecurity"
  }
 ]

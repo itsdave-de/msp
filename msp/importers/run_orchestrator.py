@@ -181,11 +181,12 @@ def _persist_lines(run, outcomes: Iterable[dict]) -> None:
 	run.set("lines", [])
 	for o in outcomes:
 		row: CanonicalRow = o["row"]
-		target_doctype = None
-		target_name = None
+		target_doctype = o.get("target_doctype")
+		target_name = o.get("target_name")
 		target_row = None
 		if o.get("status") == "Created":
-			# Aus Subscription-Event das Ziel rückgewinnen (best effort)
+			# Aus Subscription-Event das Ziel rückgewinnen (überschreibt das vom
+			# Builder gesetzte Backup, falls genauer — z. B. Item-Row-ID).
 			event_name = o.get("event")
 			if event_name:
 				ev = frappe.db.get_value(
@@ -204,9 +205,13 @@ def _persist_lines(run, outcomes: Iterable[dict]) -> None:
 						target_name = ev["delivery_note"]
 						target_row = ev.get("delivery_note_item_row")
 
+		# Customer-Ref: bei Lookup-Field-Profilen (Hornet) ist die Ref eine
+		# Domain — der Builder hat dann die echte CUST-ID resolved.
+		customer_field = o.get("resolved_customer") or _customer_or_null(row.customer_external_ref)
+
 		run.append("lines", {
 			"source_row": row.source_row,
-			"customer": _customer_or_null(row.customer_external_ref),
+			"customer": customer_field,
 			"customer_external_ref": row.customer_external_ref,
 			"vendor_product_id": row.vendor_product_id,
 			"qty": row.qty or 0,

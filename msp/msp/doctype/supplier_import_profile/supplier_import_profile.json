@@ -177,7 +177,7 @@
    "fieldname": "title_template",
    "fieldtype": "Data",
    "label": "Title Template (Invoice)",
-   "description": "Optionales Format-String für den Beleg-Titel. Platzhalter: {prefix}, {period}, {customer}, {customer_name}, {vendor}, {posting_date}, {document_type}. Leer = '{prefix} {period}'."
+   "description": "Optionales Format-String für den Beleg-Titel. Platzhalter: {prefix}, {period}, {invoice_month}, {customer}, {customer_name}, {vendor}, {posting_date}, {document_type}. Leer = '{prefix} {period}'."
   },
   {
    "fieldname": "title_template_credit_note",

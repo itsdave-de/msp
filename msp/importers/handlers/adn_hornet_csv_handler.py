@@ -42,21 +42,18 @@ class ADNHornetCSVHandler(BaseFileHandler):
 		"ENDKUNDE_REFERENCE", "VERTRAG",
 		"WARTUNGSBEGINN", "WARTUNGSENDE",
 	}
-	# Spalten, die exklusiv im Microsoft-Format vorkommen — sind sie da,
-	# spricht das gegen Hornet.
-	_NEGATIVE_COLUMNS = {"BILLINGPLAN", "VERTRAGSDAUER", "MSERP", "ADDITIONALID"}
 
 	@classmethod
 	def sniff(cls, sample_bytes: bytes, filename: str) -> float:
 		name = (filename or "").lower()
 
 		if name.endswith(".zip"):
-			first_line = cls._peek_first_line_in_zip(sample_bytes)
-			if first_line is None:
+			lines = cls._peek_lines_in_zip(sample_bytes)
+			if not lines:
 				if "hornet" in name:
 					return 0.65
 				return 0.0
-			score = cls._score_first_line(first_line)
+			score = cls._score_lines(lines)
 			if "hornet" in name:
 				score = min(1.0, score + 0.1)
 			return score
@@ -69,46 +66,71 @@ class ADNHornetCSVHandler(BaseFileHandler):
 		except Exception:
 			return 0.0
 
-		first_line = head.split("\n", 1)[0]
-		score = cls._score_first_line(first_line)
+		lines = head.split("\n", 5)[:5]
+		score = cls._score_lines(lines)
 		if "hornet" in name:
 			score = min(1.0, score + 0.1)
 		return score
 
 	@classmethod
-	def _score_first_line(cls, first_line: str) -> float:
-		first_line = (first_line or "").lstrip("\ufeff").strip()
-		if not first_line:
+	def _score_lines(cls, lines: list[str]) -> float:
+		if not lines:
 			return 0.0
-		cols = {c.strip().upper() for c in first_line.split(";")}
-		matching = cls._SIGNATURE_COLUMNS & cols
+		header_line = (lines[0] or "").lstrip("\ufeff").strip()
+		if not header_line:
+			return 0.0
+		header_cols = [c.strip() for c in header_line.split(";")]
+		header_upper = {c.upper() for c in header_cols if c}
+		matching = cls._SIGNATURE_COLUMNS & header_upper
 		if not matching:
 			return 0.0
 		ratio = len(matching) / len(cls._SIGNATURE_COLUMNS)
 		base = 0.4 + 0.55 * ratio  # max ≈ 0.95
-		# Hard penalty wenn MS-Discriminatoren da sind: dann ist's Microsoft.
-		if cls._NEGATIVE_COLUMNS & cols:
-			base = base * 0.4
+
+		# Inhaltsbasierter Discriminator: wenn die MS-spezifischen Spalten
+		# (BILLINGPLAN/MSERP/VERTRAGSDAUER) zwar im Header stehen, aber in den
+		# ersten Datenzeilen leer bleiben → Hornet-Variante.
+		ms_payload = cls._has_ms_payload(header_cols, lines[1:])
+		if ms_payload:
+			# MS-Werte vorhanden — wir sind hier nicht zuständig.
+			base = base * 0.35
+		else:
+			base = min(1.0, base + 0.1)
 		return min(1.0, base)
 
+	@staticmethod
+	def _has_ms_payload(header_cols: list[str], data_lines: list[str]) -> bool:
+		header_upper = [c.strip().upper() for c in header_cols]
+		ms_indices = [i for i, c in enumerate(header_upper)
+		              if c in {"BILLINGPLAN", "MSERP", "VERTRAGSDAUER"}]
+		if not ms_indices:
+			return False
+		for line in data_lines:
+			if not line or not line.strip():
+				continue
+			cells = [c.strip().strip('"') for c in line.split(";")]
+			if any(i < len(cells) and cells[i] for i in ms_indices):
+				return True
+		return False
+
 	@classmethod
-	def _peek_first_line_in_zip(cls, sample_bytes: bytes) -> str | None:
+	def _peek_lines_in_zip(cls, sample_bytes: bytes) -> list[str]:
 		import io
 		import zipfile
 
 		if not sample_bytes:
-			return None
+			return []
 		try:
 			with zipfile.ZipFile(io.BytesIO(sample_bytes)) as z:
 				csvs = [m for m in z.namelist()
 				        if m.lower().endswith(".csv") and not m.endswith("/")]
 				if not csvs:
-					return None
+					return []
 				with z.open(csvs[0]) as fh:
-					head = fh.read(2048).decode("utf-8", errors="replace")
-					return head.split("\n", 1)[0]
+					head = fh.read(8192).decode("utf-8", errors="replace")
+					return head.split("\n", 5)[:5]
 		except (zipfile.BadZipFile, EOFError, KeyError):
-			return None
+			return []
 
 	# ------------------------------------------------------------------
 	# Preview

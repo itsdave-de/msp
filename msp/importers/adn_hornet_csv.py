@@ -117,7 +117,15 @@ class ADNHornetCSVParser(BaseSupplierParser):
 		return out
 
 	def _to_canonical(self, d: dict[str, str], source_row: int) -> CanonicalRow | None:
+		# ADN-Hornet-CSVs lassen ENDKUNDE_REFERENCE in der Praxis fast immer
+		# leer und tragen die Mail-Domain stattdessen direkt in ENDKUNDE ein.
+		# Legacy-Verhalten (adnconnect.adn_hornet_import.get_invoice_dict_from_csv)
+		# fällt in dem Fall auf ENDKUNDE als Domain zurück.
 		raw_ref = (d.get("ENDKUNDE_REFERENCE") or "").strip() or None
+		endkunde = (d.get("ENDKUNDE") or "").strip() or None
+		if not raw_ref and endkunde and "." in endkunde and " " not in endkunde:
+			# Sieht nach einer Domain aus → als Hornet-Lookup-Schlüssel nutzen.
+			raw_ref = endkunde
 
 		raw_qty = parse_german_decimal(d.get("MENGE")) or 0.0
 		list_price = parse_german_decimal(d.get("LISTPREIS"))
