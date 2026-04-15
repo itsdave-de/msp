@@ -464,7 +464,9 @@ function inject_style(root) {
 	const style = document.createElement("style");
 	style.textContent = `
 		.msp-importer {
-			--msp-accent: #e73249; /* itsdave-Rot — sparsam als Signal */
+			--msp-accent: #e73249;       /* itsdave-Rot — sparsam als Signal */
+			--msp-aurora-1: #2490ef;     /* ERP-Blau, deutlich gesättigter als --primary */
+			--msp-aurora-2: #7856ff;     /* Violett-Tinte */
 			--msp-radius: 10px;
 			--msp-shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04);
 
@@ -609,35 +611,63 @@ function inject_style(root) {
 			background: var(--card-bg);
 			border: 1.5px dashed var(--dark-border-color, var(--border-color));
 			border-radius: var(--msp-radius);
-			padding: var(--padding-2xl) var(--padding-lg);
+			padding: calc(var(--padding-2xl) + 8px) var(--padding-lg);
 			text-align: center;
 			cursor: pointer;
 			transition: background-color .18s, border-color .18s, transform .18s;
 			overflow: hidden;
+			isolation: isolate;
 			animation: msp-fade-in .5s ease .1s both;
 		}
+		/* Aurora-Glow: drei radiale Gradients erzeugen ein blau-violettes
+		   Leuchten mit einem warmen Hauch — durch ::before-Drift animiert */
 		.msp-dropzone::before {
 			content: "";
-			position: absolute; inset: 0;
-			background: radial-gradient(circle at 50% -10%, var(--alert-bg-info), transparent 55%);
-			opacity: .6;
+			position: absolute; inset: -50% -15% auto -15%; height: 220%;
+			background:
+				radial-gradient(55% 50% at 50% 20%, rgba(36, 144, 239, 0.42), transparent 70%),
+				radial-gradient(38% 35% at 18% 80%, rgba(120, 86, 255, 0.30), transparent 72%),
+				radial-gradient(34% 32% at 84% 72%, rgba(231, 50, 73, 0.20), transparent 75%),
+				radial-gradient(28% 28% at 70% 14%, rgba(56, 189, 248, 0.28), transparent 75%);
 			pointer-events: none;
+			z-index: 0;
+			animation: msp-aurora 18s ease-in-out infinite alternate;
+			filter: blur(2px);
+		}
+		/* Sub-Layer: feines Grain + Boden-Schatten für Tiefe */
+		.msp-dropzone::after {
+			content: "";
+			position: absolute; inset: 0;
+			background: radial-gradient(circle at 50% 115%, rgba(15, 23, 42, 0.05), transparent 60%);
+			pointer-events: none;
+			z-index: 0;
 		}
 		.msp-dropzone.is-dragover {
-			border-color: var(--primary);
-			background: var(--alert-bg-info);
-			transform: translateY(-1px);
+			border-color: var(--msp-aurora-1);
+			border-style: solid;
+			transform: translateY(-2px);
+			box-shadow: 0 14px 40px rgba(36, 144, 239, 0.22);
+		}
+		.msp-dropzone.is-dragover::before {
+			animation-duration: 6s;
+			filter: saturate(1.4) brightness(1.1) blur(1px);
 		}
 		.msp-dropzone__inner {
-			display: flex; flex-direction: column; align-items: center; gap: 10px;
+			display: flex; flex-direction: column; align-items: center; gap: 12px;
 			position: relative; z-index: 1;
 		}
 		.msp-dropzone__orb {
-			width: 54px; height: 54px; border-radius: 14px;
+			width: 60px; height: 60px; border-radius: 50%;
 			display: inline-flex; align-items: center; justify-content: center;
-			background: var(--primary);
-			color: var(--neutral-white, #fff);
-			box-shadow: 0 6px 18px rgba(36, 144, 239, 0.25);
+			background:
+				radial-gradient(circle at 30% 22%, rgba(255,255,255,0.55), transparent 55%),
+				linear-gradient(145deg, var(--msp-aurora-1) 0%, #1565b0 60%, #0d3f7a 100%);
+			color: #fff;
+			box-shadow:
+				0 0 0 8px rgba(36, 144, 239, 0.10),
+				0 12px 30px rgba(36, 144, 239, 0.42),
+				inset 0 -2px 6px rgba(0, 0, 0, 0.18);
+			animation: msp-orb-pulse 3.6s ease-in-out infinite;
 		}
 		.msp-dropzone__copy { display: flex; flex-direction: column; gap: 4px; }
 		.msp-dropzone__label {
@@ -838,6 +868,15 @@ function inject_style(root) {
 		@keyframes msp-spin {
 			from { transform: rotate(0); }
 			to   { transform: rotate(360deg); }
+		}
+		@keyframes msp-aurora {
+			0%   { transform: translate3d(0, 0, 0) scale(1); }
+			50%  { transform: translate3d(2%, -1%, 0) scale(1.05); }
+			100% { transform: translate3d(-2%, 1%, 0) scale(1.02); }
+		}
+		@keyframes msp-orb-pulse {
+			0%, 100% { box-shadow: 0 0 0 6px rgba(36, 144, 239, 0.10), 0 10px 28px rgba(36, 144, 239, 0.32); }
+			50%      { box-shadow: 0 0 0 10px rgba(36, 144, 239, 0.06), 0 14px 36px rgba(36, 144, 239, 0.40); }
 		}
 	`;
 	root.appendChild(style);
