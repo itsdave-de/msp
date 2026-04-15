@@ -34,7 +34,8 @@
   "intro_text_invoice",
   "intro_text_credit_note",
   "fallback_section",
-  "fallback_customer"
+  "fallback_customer",
+  "customer_lookup_field"
  ],
  "fields": [
   {
@@ -205,6 +206,12 @@
    "label": "Fallback Customer",
    "options": "Customer",
    "description": "Wird verwendet, wenn der Endkunde in der Datei nicht im ERP gefunden wird"
+  },
+  {
+   "fieldname": "customer_lookup_field",
+   "fieldtype": "Data",
+   "label": "Customer Lookup Field",
+   "description": "Optional: Custom-Field auf Customer (z. B. 'hornet_domain'), über das die Endkunden-Referenz aufgelöst wird. Leer = direkter Customer-Name-Lookup."
   }
  ],
  "index_web_pages_for_search": 0,

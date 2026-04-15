@@ -39,6 +39,9 @@ class ADNMonthlyCSVHandler(BaseFileHandler):
 		"RECHNUNG", "DATUM", "ENDKUNDE", "HERSTELLERNUMMER", "POSITIONSPREIS",
 		"ENDKUNDE_REFERENCE", "SUBSCRIPTION_ID_EXTERNAL",
 	}
+	# Spalten, die ausschließlich im Microsoft-Format vorkommen — sie heben
+	# uns von Hornet-CSVs ab, die dieselbe Header-Familie nutzen.
+	_DISCRIMINATOR_COLUMNS = {"BILLINGPLAN", "VERTRAGSDAUER", "MSERP", "MSERP_BILLINGPERIOD"}
 
 	@classmethod
 	def sniff(cls, sample_bytes: bytes, filename: str) -> float:
@@ -78,7 +81,17 @@ class ADNMonthlyCSVHandler(BaseFileHandler):
 		if not matching:
 			return 0.0
 		ratio = len(matching) / len(cls._SIGNATURE_COLUMNS)
-		return min(1.0, 0.4 + 0.6 * ratio)
+		base = 0.4 + 0.55 * ratio  # max ≈ 0.95
+		# MS-Discriminatoren heben uns sicher von Hornet ab, das nur Vertrag
+		# kennt: voller Bonus, wenn alle drei Spalten da sind, sonst anteilig.
+		discriminators = cls._DISCRIMINATOR_COLUMNS & cols
+		if discriminators:
+			base = min(1.0, base + 0.05 * len(discriminators))
+		else:
+			# Ohne MS-Discriminatoren ist es entweder Hornet oder ein älterer
+			# MS-Export — wir reichen unter 1.0, damit Hornet entscheiden kann.
+			base = min(0.7, base)
+		return min(1.0, base)
 
 	@classmethod
 	def _peek_first_line_in_zip(cls, sample_bytes: bytes) -> str | None:

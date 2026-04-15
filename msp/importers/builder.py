@@ -60,6 +60,7 @@ class DocumentBuilder:
 		first = rows[0]
 		customer, is_fallback = resolve_customer(
 			first.customer_external_ref, self.profile.fallback_customer,
+			lookup_field=getattr(self.profile, "customer_lookup_field", None) or None,
 		)
 		if not customer:
 			for r in rows:

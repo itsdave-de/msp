@@ -66,3 +66,4 @@ def detect_best_handler(sample_bytes: bytes, filename: str,
 def _autoload() -> None:
 	"""Importiert bekannte Handler-Module, damit @register-Dekoratoren laufen."""
 	from msp.importers.handlers import adn_monthly_csv_handler  # noqa: F401
+	from msp.importers.handlers import adn_hornet_csv_handler  # noqa: F401

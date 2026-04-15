@@ -5,16 +5,26 @@ from __future__ import annotations
 import frappe
 
 
-def resolve_customer(external_ref: str | None, fallback: str | None = None) -> tuple[str | None, bool]:
-	"""Gibt (customer_name, is_fallback) zurück. None wenn weder Match noch Fallback greift."""
+def resolve_customer(external_ref: str | None, fallback: str | None = None,
+                     lookup_field: str | None = None) -> tuple[str | None, bool]:
+	"""Gibt (customer_name, is_fallback) zurück. None wenn weder Match noch Fallback greift.
+
+	``lookup_field`` aktiviert Lookups über ein Custom-Field statt direktem
+	Name-Lookup — z. B. ``hornet_domain`` für Hornet-Imports, wo die ADN-CSV
+	keine ERP-Customer-IDs liefert, sondern Mail-Domains.
+	"""
 	if external_ref:
-		exists = frappe.db.exists("Customer", external_ref)
-		if exists:
-			return external_ref, False
-		# Fallback-Match auf customer_name, falls ID nicht existiert
-		match = frappe.db.get_value("Customer", {"customer_name": external_ref}, "name")
-		if match:
-			return match, False
+		if lookup_field:
+			match = frappe.db.get_value("Customer", {lookup_field: external_ref}, "name")
+			if match:
+				return match, False
+		else:
+			if frappe.db.exists("Customer", external_ref):
+				return external_ref, False
+			# Fallback-Match auf customer_name, falls ID nicht existiert
+			match = frappe.db.get_value("Customer", {"customer_name": external_ref}, "name")
+			if match:
+				return match, False
 	if fallback and frappe.db.exists("Customer", fallback):
 		return fallback, True
 	return None, False
