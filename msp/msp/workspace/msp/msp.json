@@ -166,6 +166,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Datei importieren (Dropzone)",
+   "link_to": "import-dropzone",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Import Runs",
    "link_to": "Supplier Import Run",
    "link_type": "DocType",
@@ -225,6 +234,12 @@
    "label": "Solutions",
    "link_to": "IT Solution",
    "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "label": "Datei importieren",
+   "link_to": "import-dropzone",
+   "type": "Page"
   },
   {
    "doc_view": "List",
