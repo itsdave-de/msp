@@ -22,6 +22,8 @@
   "supplier": "SUPP-00887",
   "title_prefix": "Abrechnung Microsoft Abo ",
   "title_prefix_credit_note": "Gutschrift Microsoft Abo ",
+  "title_template": "{prefix} {period}",
+  "title_template_credit_note": "{prefix} {period}",
   "vendor": "Microsoft"
  }
 ]

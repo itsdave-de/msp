@@ -113,16 +113,15 @@ class DocumentBuilder:
 		"""Erzeugt das Grundgerüst (ohne Zeilen) der Sales Invoice / Delivery Note."""
 		profile = self.profile
 		period = self._format_period_label(first)
-		title_prefix = profile.title_prefix_credit_note if is_return else profile.title_prefix
-		title = f"{(title_prefix or '').strip()} {period}".strip()
+		posting_date = self._coerce_german_date(first.raw.get("DATUM") or frappe.utils.today())
+		title = self._render_title(customer, period, posting_date, is_return=is_return)
 
 		if self.output_mode == "Sales Invoice":
 			doc = frappe.new_doc("Sales Invoice")
 			doc.customer = customer
 			doc.company = profile.default_company
 			doc.currency = frappe.db.get_value("Company", profile.default_company, "default_currency") or "EUR"
-			doc.posting_date = first.raw.get("DATUM") or frappe.utils.today()
-			doc.posting_date = self._coerce_german_date(doc.posting_date)
+			doc.posting_date = posting_date
 			doc.set_posting_time = 1
 			if profile.default_cost_center:
 				doc.cost_center = profile.default_cost_center
@@ -147,7 +146,7 @@ class DocumentBuilder:
 		doc = frappe.new_doc("Delivery Note")
 		doc.customer = customer
 		doc.company = profile.default_company
-		doc.posting_date = self._coerce_german_date(first.raw.get("DATUM") or frappe.utils.today())
+		doc.posting_date = posting_date
 		doc.set_posting_time = 1
 		if profile.default_cost_center:
 			doc.cost_center = profile.default_cost_center
@@ -311,6 +310,42 @@ class DocumentBuilder:
 		if invdate:
 			return invdate.strftime("%m.%Y")
 		return _d.today().strftime("%m.%Y")
+
+	def _render_title(self, customer: str, period: str, posting_date, *, is_return: bool) -> str:
+		"""Rendert den Beleg-Titel aus dem konfigurierten Template (mit Fallback).
+
+		Platzhalter: {prefix}, {period}, {customer}, {customer_name},
+		{vendor}, {posting_date}, {document_type}.
+		"""
+		profile = self.profile
+		template = (profile.title_template_credit_note if is_return else profile.title_template) or ""
+		prefix = (profile.title_prefix_credit_note if is_return else profile.title_prefix) or ""
+		template = template.strip()
+		if not template:
+			# Backwards-compat: bisheriges Verhalten "{prefix} {period}".
+			return f"{prefix.strip()} {period}".strip()
+
+		customer_name = frappe.db.get_value("Customer", customer, "customer_name") or customer
+		try:
+			rendered = template.format(
+				prefix=prefix.strip(),
+				period=period,
+				customer=customer,
+				customer_name=customer_name,
+				vendor=profile.vendor or "",
+				posting_date=posting_date.strftime("%d.%m.%Y") if hasattr(posting_date, "strftime") else str(posting_date),
+				document_type=self.output_mode or "",
+			)
+		except (KeyError, IndexError) as e:
+			# Unbekannter Platzhalter — robust auf Fallback zurückfallen, aber dem Run
+			# trotzdem einen Hinweis mitgeben, indem wir den Profilfehler in die Logs schreiben.
+			frappe.log_error(
+				f"Title-Template enthält ungültigen Platzhalter ({e}); fällt auf '{{prefix}} {{period}}' zurück.",
+				"Supplier Import Builder",
+			)
+			rendered = f"{prefix.strip()} {period}".strip()
+		# Mehrfach-Whitespace zusammenfassen
+		return " ".join(rendered.split())
 
 	@staticmethod
 	def _copy_tax_template_rows(doc, template_name: str) -> None:

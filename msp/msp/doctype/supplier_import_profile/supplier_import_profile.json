@@ -29,6 +29,8 @@
   "text_section",
   "title_prefix",
   "title_prefix_credit_note",
+  "title_template",
+  "title_template_credit_note",
   "intro_text_invoice",
   "intro_text_credit_note",
   "fallback_section",
@@ -169,6 +171,18 @@
    "fieldname": "title_prefix_credit_note",
    "fieldtype": "Data",
    "label": "Title Prefix (Credit Note)"
+  },
+  {
+   "fieldname": "title_template",
+   "fieldtype": "Data",
+   "label": "Title Template (Invoice)",
+   "description": "Optionales Format-String für den Beleg-Titel. Platzhalter: {prefix}, {period}, {customer}, {customer_name}, {vendor}, {posting_date}, {document_type}. Leer = '{prefix} {period}'."
+  },
+  {
+   "fieldname": "title_template_credit_note",
+   "fieldtype": "Data",
+   "label": "Title Template (Credit Note)",
+   "description": "Wie 'Title Template (Invoice)', nur für Gutschriften. Leer = '{prefix} {period}'."
   },
   {
    "fieldname": "intro_text_invoice",
