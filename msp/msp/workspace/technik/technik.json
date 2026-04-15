@@ -5,7 +5,7 @@
    "label": "Meine Performance"
   }
  ],
- "content": "[{\"id\":\"HEmp649Etq\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Technik</span>\",\"col\":12}},{\"id\":\"AW8p3HUvHt\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Meine Performance\",\"col\":12}},{\"id\":\"vBNumIecsh\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"zJ7GHiOCcI\",\"type\":\"card\",\"data\":{\"card_name\":\"MSP\",\"col\":5}},{\"id\":\"XNPhytxMcq\",\"type\":\"card\",\"data\":{\"card_name\":\"Service Reports\",\"col\":5}},{\"id\":\"ylnuD9q8fE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"eEKiBdq-Qj\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Service Report Work Times Calendar\",\"col\":12}}]",
+ "content": "[{\"id\":\"HEmp649Etq\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Technik</span>\",\"col\":12}},{\"id\":\"sc_imp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Datei importieren\",\"col\":3}},{\"id\":\"AW8p3HUvHt\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Meine Performance\",\"col\":12}},{\"id\":\"vBNumIecsh\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"zJ7GHiOCcI\",\"type\":\"card\",\"data\":{\"card_name\":\"MSP\",\"col\":5}},{\"id\":\"XNPhytxMcq\",\"type\":\"card\",\"data\":{\"card_name\":\"Service Reports\",\"col\":5}},{\"id\":\"liefImp\",\"type\":\"card\",\"data\":{\"card_name\":\"Lieferanten-Import\",\"col\":5}},{\"id\":\"ylnuD9q8fE\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"eEKiBdq-Qj\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Service Report Work Times Calendar\",\"col\":12}}]",
  "creation": "2024-06-25 14:11:39.269749",
  "custom_blocks": [
   {
@@ -80,6 +80,65 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lieferanten-Import",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Datei importieren (Dropzone)",
+   "link_count": 0,
+   "link_to": "import-dropzone",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Runs",
+   "link_count": 0,
+   "link_to": "Supplier Import Run",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Profiles",
+   "link_count": 0,
+   "link_to": "Supplier Import Profile",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Supply Subscriptions",
+   "link_count": 0,
+   "link_to": "Supply Subscription",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Subscription Events",
+   "link_count": 0,
+   "link_to": "Supply Subscription Event",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
  "modified": "2026-02-24 17:50:21.661536",
@@ -93,6 +152,13 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 3.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "label": "Datei importieren",
+   "link_to": "import-dropzone",
+   "type": "Page"
+  }
+ ],
  "title": "Technik"
 }
