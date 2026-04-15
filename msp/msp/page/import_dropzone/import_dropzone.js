@@ -46,7 +46,7 @@ frappe.pages["import-dropzone"].on_page_load = function (wrapper) {
 					<button class="btn btn-primary btn-sm msp-dropzone__browse" type="button">
 						${__("Datei auswählen")}
 					</button>
-					<input type="file" class="msp-dropzone__input" multiple hidden
+					<input type="file" class="msp-dropzone__input msp-visually-hidden" multiple
 						accept=".csv,.zip,application/zip,application/x-zip-compressed,text/csv" />
 				</div>
 			</section>
@@ -676,6 +676,19 @@ function inject_style(root) {
 		}
 		.msp-dropzone__hint { font-size: 13px; color: var(--text-muted); }
 		.msp-dropzone__browse { margin-top: 8px; font-weight: 500; }
+
+		/* File-Input visuell ausblenden, aber im Layout halten — manche
+		   Browser öffnen den Native-File-Picker nicht für display:none Inputs */
+		.msp-visually-hidden {
+			position: absolute !important;
+			width: 1px; height: 1px;
+			padding: 0; margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+			pointer-events: none;
+		}
 
 		/* ---------- Upload-Cards ---------- */
 		.msp-cards {
