@@ -3,6 +3,7 @@ import json
 from datetime import datetime, date, timedelta
 import math
 from frappe.database import get_db
+from frappe.utils import getdate
 from erpnext.stock.utils import get_stock_balance
 import pandas as pd
 import requests
@@ -251,20 +252,64 @@ def get_holidays_list(from_date, to_date):
     
     return holidays_list
 
+def get_hr_employee(employee):
+    """Loest einen ERPNext-Employee auf den zugehoerigen HR Employee auf."""
+    if not frappe.db.exists("DocType", "HR Employee"):
+        return None
+
+    hr_employee = frappe.db.get_value("HR Employee", {"source_employee": employee}, "name")
+    if not hr_employee and frappe.db.exists("HR Employee", employee):
+        hr_employee = employee
+
+    return hr_employee
+
+
 def get_attendance_list(employee, from_date, to_date):
+    """Soll-mindernde Abwesenheiten je Tag aus itsdave_hr.
 
-    # List of attendance data for the employee in the specified period
-    attendance_data = frappe.get_all("Attendance",
-                                     filters={
-                                         "employee": employee,
-                                         "attendance_date": (">=", from_date),
-                                         "attendance_date": ("<=", to_date)
-                                     },
-                                     fields=["attendance_date", "status"])
+    Liefert {Datum: "On Leave"} fuer ganze und {Datum: "Half Day"} fuer halbe
+    Abwesenheitstage. Beruecksichtigt werden nur genehmigte Antraege, deren
+    Abwesenheitsart das Soll reduziert (HR Absence Type.affects_target_hours).
+    """
+    hr_employee = get_hr_employee(employee)
+    if not hr_employee:
+        return {}
 
-    # Dictionary with date as key and attendance status as value
-    attendance_dict = {entry["attendance_date"]: entry["status"] for entry in attendance_data}
-    return attendance_dict
+    from_date = getdate(from_date)
+    to_date = getdate(to_date)
+
+    absences = frappe.get_all("HR Absence Request",
+                              filters={
+                                  "employee": hr_employee,
+                                  "status": "Approved",
+                                  "from_date": ("<=", to_date),
+                                  "to_date": (">=", from_date)
+                              },
+                              fields=["absence_type", "from_date", "to_date",
+                                      "half_day_start", "half_day_end"],
+                              order_by="from_date asc, name asc")
+
+    day_factors = {}
+
+    for absence in absences:
+        if not frappe.get_cached_value("HR Absence Type", absence["absence_type"], "affects_target_hours"):
+            continue
+
+        absence_from = getdate(absence["from_date"])
+        absence_to = getdate(absence["to_date"])
+
+        current_date = max(from_date, absence_from)
+        last_date = min(to_date, absence_to)
+
+        while current_date <= last_date:
+            half_day = ((absence["half_day_start"] and current_date == absence_from)
+                        or (absence["half_day_end"] and current_date == absence_to))
+            factor = 0.5 if half_day else 1.0
+            day_factors[current_date] = min(1.0, day_factors.get(current_date, 0.0) + factor)
+            current_date += timedelta(days=1)
+
+    return {day: ("On Leave" if factor >= 1.0 else "Half Day")
+            for day, factor in day_factors.items()}
 
 
 @frappe.whitelist()
